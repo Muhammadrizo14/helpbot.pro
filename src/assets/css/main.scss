@@ -1,0 +1,14 @@
+@import "./variables";
+@import './font';
+@import './defaults';
+
+* {
+  padding: 0;
+  margin: 0;
+  font-family: 'Ubuntu regular', sans-serif;
+}
+
+.df {
+  display: flex;
+  align-items: center;
+}
