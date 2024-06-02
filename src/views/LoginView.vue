@@ -1,10 +1,26 @@
 <script setup>
-import Box from '../components/Box/box.vue'
+import Box from '../components/box.vue'
+import Preloader from "../components/preloader.vue";
+import {onMounted, ref} from "vue";
+
+const show = ref(true)
+
+
+const showContent = () => {
+  setTimeout(() => {
+    show.value = false
+  }, 1000)
+}
+
+onMounted(() => {
+  showContent()
+})
+
 </script>
 
 <template>
   <div class="container">
-      <img src="../assets/images/Logo.png" alt="">
+    <img src="../assets/images/Logo.png" alt="">
     <div class="login">
       <Box>
         <h2>Войдите в аккаунт</h2>
@@ -21,7 +37,8 @@ import Box from '../components/Box/box.vue'
           <div class="login__form-email">
             <label for="email">E-mail</label>
             <input type="text" id="email" placeholder="example@email.com">
-            <label for="email" style="color: var(--red)">Аккаунт не найден. Повторите попытку или зарегистрируйтесь</label>
+            <label for="email" style="color: var(--red)">Аккаунт не найден. Повторите попытку или
+              зарегистрируйтесь</label>
           </div>
           <div class="login__form-password">
             <label for="password">Password</label>
@@ -42,14 +59,16 @@ import Box from '../components/Box/box.vue'
       </Box>
     </div>
   </div>
+  <Preloader v-if="show"/>
 </template>
 
 
 <style scoped lang="scss">
 .container {
   padding: 30px 35px;
-  background: rgba(246, 246, 249, 1);
+  background: var(--grey-07);
   height: calc(100vh - 60px);
+
   .login {
     width: 550px;
     max-height: 704px;
@@ -58,9 +77,11 @@ import Box from '../components/Box/box.vue'
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+
     h2 {
       padding-bottom: 40px;
     }
+
     .continue-google {
       background: var(--primary-04);
       border: 0;
@@ -71,7 +92,7 @@ import Box from '../components/Box/box.vue'
       width: 100%;
       justify-content: center;
       color: var(--primary-01);
-      gap: 12px ;
+      gap: 12px;
       margin-bottom: 40px;
       cursor: pointer;
     }
@@ -79,9 +100,11 @@ import Box from '../components/Box/box.vue'
     .choice {
       gap: 20px;
       padding-bottom: 40px;
+
       span {
         color: var(--grey-02);
       }
+
       .line {
         width: 100%;
         height: 1px;
@@ -94,6 +117,7 @@ import Box from '../components/Box/box.vue'
         display: flex;
         flex-direction: column;
         gap: 8px;
+
         input {
           border-radius: 8px;
           padding: 12px;
@@ -116,6 +140,7 @@ import Box from '../components/Box/box.vue'
         display: flex;
         flex-direction: column;
         gap: 8px;
+
         input {
           border-radius: 8px;
           padding: 12px;
@@ -138,9 +163,11 @@ import Box from '../components/Box/box.vue'
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-bottom:   40px;
+        padding-bottom: 40px;
+
         .savepassword {
           gap: 8px;
+
           label {
             color: var(--grey-02);
           }
@@ -162,10 +189,12 @@ import Box from '../components/Box/box.vue'
 
       &-signup {
         text-align: center;
+
         a {
           text-decoration: none;
           font-size: inherit;
           color: var(--primary-01);
+
           &:hover {
             color: var(--primary-02);
           }
