@@ -1,6 +1,7 @@
 <script setup>
 import Box from '../../components/box.vue'
 import router from "../../router";
+import BaseInput from '../../components/base-input.vue'
 </script>
 
 <template>
@@ -21,12 +22,10 @@ import router from "../../router";
         </div>
         <form action="#" class="login__form">
           <div class="login__form-email">
-            <label for="email">E-mail</label>
-            <input type="text" id="email" placeholder="example@email.com">
+            <BaseInput id="login__form-email" type="text" label="E-mail" placeholder="example@gmail.com"/>
           </div>
           <div class="login__form-password">
-            <label for="password">Пароль</label>
-            <input type="text" id="password" placeholder="******">
+            <BaseInput id="login__form-password" type="password" label="Пароль" placeholder="******"/>
           </div>
           <div class="login__form-check">
             <div class="df login__form-check-agreement">
@@ -38,8 +37,6 @@ import router from "../../router";
               обработку ваших <a href="#">Персональных данных</a>
             </p>
           </div>
-
-
           <button class="login__form-submit" v-on:click.prevent="validate" @click="router.push({ path: 'create' })" type="submit">Зарегистрироваться</button>
           <p class="login__form-signup">
            <RouterLink to="/">Уже есть аккаунт?</RouterLink>
@@ -63,6 +60,10 @@ import router from "../../router";
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+
+    @media (max-width: 1000px) {
+      width: 80%;
+    }
 
     h2 {
       padding-bottom: 40px;

@@ -6,8 +6,8 @@
         <h2>Создайте вашего первого бота</h2>
         <form action="#" class="create__form">
           <div class="create__form-title">
-            <label for="title">Название бота</label>
-            <input type="text" id="title" placeholder="Мой_первый_бот">
+              <BaseInput id="create__form-title" type="text" label="Название бота" placeholder="Мой_первый_бот"/>
+
           </div>
           <button type="submit" class="create__form-submit">
             Создать
@@ -20,6 +20,7 @@
 
 <script setup>
 import Box from '../components/box.vue'
+import BaseInput from "../components/base-input.vue";
 </script>
 
 <style lang="scss" scoped>

@@ -5,6 +5,9 @@ import {ref} from "vue";
 import BaseInput from "../../components/base-input.vue";
 
 const forgotPassword = ref(false)
+
+const loginEmail = ref('')
+const loginPassword = ref('')
 </script>
 <template>
   <div class="container">
@@ -24,12 +27,12 @@ const forgotPassword = ref(false)
         </div>
         <form action="#" class="login__form">
           <div class="login__form-email">
-            <BaseInput type="text" :invalid="true" label="E-mail" placeholder="example@gmail.com"/>
+            <BaseInput id="login__form-email" v-model="loginEmail" type="text" :invalid="true" label="E-mail" placeholder="example@gmail.com"/>
             <label for="email" style="color: var(--red)">Аккаунт не найден. Повторите попытку или
               зарегистрируйтесь</label>
           </div>
           <div class="login__form-password">
-            <BaseInput type="password" label="Пароль" placeholder="******"/>
+            <BaseInput id="login__form-password" v-model="loginPassword" type="password" label="Пароль" placeholder="******"/>
           </div>
           <div class="login__form-check">
             <div class="df savepassword">
@@ -50,8 +53,7 @@ const forgotPassword = ref(false)
     <p>Введите адрес электронной почты, связанный <br> с вашей учетной записью, и мы вышлем вам <br> ссылку для сброса пароля</p>
     <form action="#" class="restore__form">
       <div class="restore__form-email">
-        <label for="restore-email">E-mail</label>
-        <input type="text" id="restore-email" placeholder="example@email.com">
+        <BaseInput id="restore__form-email" type="text" label="E-mail" placeholder="example@gmail.com"/>
       </div>
       <button type="submit" class="restore__form-submit">
         Отправить
@@ -73,6 +75,10 @@ const forgotPassword = ref(false)
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+
+    @media (max-width: 1000px) {
+      width: 80%;
+    }
 
     h2 {
       padding-bottom: 40px;
