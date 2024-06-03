@@ -1,32 +1,20 @@
 <script setup>
-import Box from '../components/box.vue'
-import Preloader from "../components/preloader.vue";
-import {onMounted, ref} from "vue";
+import Box from '../../components/box.vue'
+import Popup from "../../components/popup.vue";
+import {ref} from "vue";
 
-const show = ref(true)
-
-
-const showContent = () => {
-  setTimeout(() => {
-    show.value = false
-  }, 1000)
-}
-
-onMounted(() => {
-  showContent()
-})
-
+const forgotPassword = ref(false)
 </script>
-
 <template>
   <div class="container">
-    <img src="../assets/images/Logo.png" alt="">
+    <RouterLink to="/"><img src="../../assets/images/Logo.png" alt=""></RouterLink>
+
     <div class="login">
       <Box>
         <h2>Войдите в аккаунт</h2>
         <button class="continue-google">
           Войти при помощи Google
-          <img src="../assets/images/icons/google.png" alt="">
+          <img src="../../assets/images/icons/google.png" alt="">
         </button>
         <div class="choice df">
           <div class="line"></div>
@@ -41,7 +29,7 @@ onMounted(() => {
               зарегистрируйтесь</label>
           </div>
           <div class="login__form-password">
-            <label for="password">Password</label>
+            <label for="password">Пароль</label>
             <input type="text" id="password" placeholder="******">
           </div>
           <div class="login__form-check">
@@ -49,17 +37,28 @@ onMounted(() => {
               <input checked type="checkbox" id="savepassword">
               <label for="savepassword">Запомнить пароль</label>
             </div>
-            <a href="#">Забыли пароль?</a>
+            <a href="#" @click='forgotPassword = true'>Забыли пароль?</a>
           </div>
           <button class="login__form-button">Войти</button>
           <p class="login__form-signup">
-            Еще нет аккаунта? <a href="#">Зарегистрируйтесь!</a>
+            Еще нет аккаунта? <RouterLink to="/register">Зарегистрируйтесь!</RouterLink>
           </p>
         </form>
       </Box>
     </div>
   </div>
-  <Preloader v-if="show"/>
+  <Popup v-if="forgotPassword" v-model="forgotPassword">
+    <p>Введите адрес электронной почты, связанный <br> с вашей учетной записью, и мы вышлем вам <br> ссылку для сброса пароля</p>
+    <form action="#" class="restore__form">
+      <div class="restore__form-email">
+        <label for="restore-email">E-mail</label>
+        <input type="text" id="restore-email" placeholder="example@email.com">
+      </div>
+      <button type="submit" class="restore__form-submit">
+        Отправить
+      </button>
+    </form>
+  </Popup>
 </template>
 
 
@@ -67,11 +66,9 @@ onMounted(() => {
 .container {
   padding: 30px 35px;
   background: var(--grey-07);
-  height: calc(100vh - 60px);
+  height: 100vh;
 
   .login {
-    width: 550px;
-    max-height: 704px;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -201,6 +198,38 @@ onMounted(() => {
         }
       }
     }
+  }
+}
+
+.restore__form {
+  &-email {
+    padding: 40px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    input {
+      border-radius: 8px;
+      padding: 12px;
+      border: 2px solid var(--grey-04);
+
+      &::placeholder {
+        color: var(--grey-04);
+        font-size: 18px;
+      }
+
+      &:active {
+        border: 2px solid var(--grey-02);
+      }
+    }
+  }
+  &-submit {
+    background: var(--primary-01);
+    border: 0;
+    padding: 16px 0;
+    border-radius: 8px;
+    width: 100%;
+    color: var(--grey-09);
+    cursor: pointer;
   }
 }
 </style>
