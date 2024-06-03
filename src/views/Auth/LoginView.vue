@@ -2,6 +2,7 @@
 import Box from '../../components/box.vue'
 import Popup from "../../components/popup.vue";
 import {ref} from "vue";
+import BaseInput from "../../components/base-input.vue";
 
 const forgotPassword = ref(false)
 </script>
@@ -23,14 +24,12 @@ const forgotPassword = ref(false)
         </div>
         <form action="#" class="login__form">
           <div class="login__form-email">
-            <label for="email">E-mail</label>
-            <input type="text" id="email" placeholder="example@email.com">
+            <BaseInput type="text" :invalid="true" label="E-mail" placeholder="example@gmail.com"/>
             <label for="email" style="color: var(--red)">Аккаунт не найден. Повторите попытку или
               зарегистрируйтесь</label>
           </div>
           <div class="login__form-password">
-            <label for="password">Пароль</label>
-            <input type="text" id="password" placeholder="******">
+            <BaseInput type="password" label="Пароль" placeholder="******"/>
           </div>
           <div class="login__form-check">
             <div class="df savepassword">
@@ -114,22 +113,6 @@ const forgotPassword = ref(false)
         display: flex;
         flex-direction: column;
         gap: 8px;
-
-        input {
-          border-radius: 8px;
-          padding: 12px;
-          border: 2px solid var(--red);
-
-          &::placeholder {
-            color: var(--grey-04);
-            font-size: 18px;
-          }
-
-          &:active {
-            border: 2px solid var(--grey-02);
-          }
-        }
-
         padding-bottom: 24px;
       }
 
