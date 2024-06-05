@@ -4,7 +4,7 @@ import RegisterView from '../views/Auth/RegisterView.vue'
 import Create from '../views/create.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes: [
     {
       path: '/',
@@ -24,4 +24,4 @@ const router = createRouter({
   ]
 })
 
-export default router
+export default router;

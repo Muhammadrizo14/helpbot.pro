@@ -1,14 +1,12 @@
-# .
+# ![](/home/manra/Documents/work/helpbotpro/src/assets/images/Logo.png) 
 
-This template should help get you started developing with Vue 3 in Vite.
 
-## Recommended IDE Setup
+## Stack
+* Vue 3 (Vite) + Ts
+* Scss
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## [Link to figma](https://www.figma.com/design/CHo4pVoEZliv47BSarRY8d/helpbot.pro-%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D1%8B%D0%B9-%D0%B4%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD?node-id=2002-2751&t=A2ggzCzKeygWFUQz-0)
 
 ## Project Setup
 

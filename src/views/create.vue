@@ -18,7 +18,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Box from '../components/box.vue'
 import BaseInput from "../components/base-input.vue";
 </script>

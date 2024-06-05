@@ -1,13 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import Box from '../../components/box.vue'
 import Popup from "../../components/popup.vue";
 import {ref} from "vue";
 import BaseInput from "../../components/base-input.vue";
 
-const forgotPassword = ref(false)
+const forgotPassword = ref<boolean>(false)
 
-const loginEmail = ref('')
-const loginPassword = ref('')
+const loginEmail = ref<string>('')
+const loginPassword = ref<string>('')
 </script>
 <template>
   <div class="container">
@@ -16,19 +16,10 @@ const loginPassword = ref('')
     <div class="login">
       <Box>
         <h2>Войдите в аккаунт</h2>
-        <button class="continue-google">
-          Войти при помощи Google
-          <img src="../../assets/images/icons/google.png" alt="">
-        </button>
-        <div class="choice df">
-          <div class="line"></div>
-          <p>или</p>
-          <div class="line"></div>
-        </div>
         <form action="#" class="login__form">
           <div class="login__form-email">
             <BaseInput id="login__form-email" v-model="loginEmail" type="text" :invalid="true" label="E-mail" placeholder="example@gmail.com"/>
-            <label for="email" style="color: var(--red)">Аккаунт не найден. Повторите попытку или
+            <label for="login__form-email" style="color: var(--red)">Аккаунт не найден. Повторите попытку или
               зарегистрируйтесь</label>
           </div>
           <div class="login__form-password">

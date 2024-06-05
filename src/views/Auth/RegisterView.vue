@@ -1,6 +1,6 @@
-<script setup>
+<script setup lang="ts">
 import Box from '../../components/box.vue'
-import router from "../../router";
+import router from "../../router/index";
 import BaseInput from '../../components/base-input.vue'
 </script>
 
@@ -11,15 +11,6 @@ import BaseInput from '../../components/base-input.vue'
     <div class="login">
       <Box>
         <h2>Зарегистрируйтесь, чтобы начать</h2>
-        <button class="continue-google">
-          Зарегистрироваться при помощи Google
-          <img src="../../assets/images/icons/google.png" alt="">
-        </button>
-        <div class="choice df">
-          <div class="line"></div>
-          <p>или</p>
-          <div class="line"></div>
-        </div>
         <form action="#" class="login__form">
           <div class="login__form-email">
             <BaseInput id="login__form-email" type="text" label="E-mail" placeholder="example@gmail.com"/>

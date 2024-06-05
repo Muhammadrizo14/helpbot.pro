@@ -9,10 +9,17 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Box from './box.vue'
-const props = defineProps(['modelValue'])
-const emit = defineEmits(['update:modelValue'])
+
+interface Prop {
+  modelValue: boolean
+}
+
+const props = defineProps<Prop>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: boolean): void
+}>();
 
 const closePopup = () => {
   emit('update:modelValue', false)

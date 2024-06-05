@@ -16,8 +16,9 @@
 
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, computed } from 'vue';
+
 
 const props = defineProps({
   type: {
@@ -46,7 +47,8 @@ const props = defineProps({
   }
 });
 
-const isPasswordVisible = ref(false);
+
+const isPasswordVisible = ref<boolean>(false);
 
 const passwordFieldType = computed(() => (isPasswordVisible.value ? 'text' : 'password'));
 const passwordIcon = computed(() => (isPasswordVisible.value ? 'fas fa-eye-slash' : 'fas fa-eye'));
@@ -55,9 +57,12 @@ const togglePasswordVisibility = () => {
   isPasswordVisible.value = !isPasswordVisible.value;
 };
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void;
+}>();
 
-const internalValue = ref(props.modelValue);
+
+const internalValue = ref<string>(props.modelValue);
 
 watch(() => props.modelValue, (newValue) => {
   internalValue.value = newValue;
