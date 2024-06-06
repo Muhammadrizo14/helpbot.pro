@@ -2,34 +2,73 @@
 import Box from '../../components/box.vue'
 import router from "../../router/index";
 import BaseInput from '../../components/base-input.vue'
+import {reactive} from "vue";
+import {email, helpers, required} from "@vuelidate/validators";
+import {useVuelidate} from "@vuelidate/core";
+
+const data = reactive({
+  email: '',
+  password: ''
+});
+
+const customMessages = {
+  required: 'Это поле не может быть пустым',
+  email: 'Введите правильный адрес электронной почты'
+};
+
+const rules = {
+  email: {
+    required: helpers.withMessage(customMessages.required, required),
+    email: helpers.withMessage(customMessages.email, email),
+  },
+  password: {
+    required: helpers.withMessage(customMessages.required, required)
+  }
+};
+
+const v$ = useVuelidate(rules, data);
+
+const submit = async () => {
+  const result = await v$.value.$validate();
+  if (!result) {
+    // when form is invalid
+    return;
+  }
+  // when form is valid
+  console.log(data.email);
+  console.log(data.password);
+  router.push({ path: 'create' })
+};
 </script>
 
 <template>
   <div class="container">
     <RouterLink to="/"><img src="../../assets/images/Logo.png" alt=""></RouterLink>
 
-    <div class="login">
+    <div class="register">
       <Box>
         <h2>Зарегистрируйтесь, чтобы начать</h2>
-        <form action="#" class="login__form">
-          <div class="login__form-email">
-            <BaseInput id="login__form-email" type="text" label="E-mail" placeholder="example@gmail.com"/>
+        <form @submit.prevent="submit" class="register__form">
+          <div class="register__form-email"  :class="{ error: v$.email.$errors.length }">
+            <BaseInput v-model="data.email"  :invalid="v$.email.$errors.length > 0" id="register__form-email" type="text" label="E-mail" placeholder="example@gmail.com"/>
+            <label for="login__form-email" v-for="error in v$.email.$errors" :key="error.$uid" style="color: var(--red)">{{ error.$message }}</label>
           </div>
-          <div class="login__form-password">
-            <BaseInput id="login__form-password" type="password" label="Пароль" placeholder="******"/>
+          <div class="register__form-password"  :class="{ error: v$.password.$errors.length }">
+            <BaseInput v-model="data.password"  :invalid="v$.password.$errors.length > 0" id="register__form-password" type="password" label="Пароль" placeholder="******"/>
+            <label for="login__form-password" v-for="error in v$.password.$errors" :key="error.$uid" style="color: var(--red)">{{ error.$message }}</label>
           </div>
-          <div class="login__form-check">
-            <div class="df login__form-check-agreement">
+          <div class="register__form-check">
+            <div class="df register__form-check-agreement">
               <input type="checkbox" id="agreement">
               <label for="agreement">Согласен(-на) на рассылку рекламных материалов</label>
             </div>
-            <p class="login__form-check-personal">
+            <p class="register__form-check-personal">
               Нажимая “Зарегистрироваться”, вы соглашаетесь на <br>
               обработку ваших <a href="#">Персональных данных</a>
             </p>
           </div>
-          <button class="login__form-submit" v-on:click.prevent="validate" @click="router.push({ path: 'create' })" type="submit">Зарегистрироваться</button>
-          <p class="login__form-signup">
+          <button class="register__form-submit" type="submit">Зарегистрироваться</button>
+          <p class="register__form-signup">
            <RouterLink to="/">Уже есть аккаунт?</RouterLink>
           </p>
         </form>
@@ -45,7 +84,8 @@ import BaseInput from '../../components/base-input.vue'
   background: var(--grey-07);
   height: 100vh;
 
-  .login {
+  .register {
+    width: 550px;
     position: absolute;
     left: 50%;
     top: 50%;

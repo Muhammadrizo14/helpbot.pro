@@ -7,7 +7,6 @@
         <form action="#" class="create__form">
           <div class="create__form-title">
               <BaseInput id="create__form-title" type="text" label="Название бота" placeholder="Мой_первый_бот"/>
-
           </div>
           <button type="submit" class="create__form-submit">
             Создать

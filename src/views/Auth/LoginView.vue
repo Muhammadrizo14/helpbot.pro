@@ -1,38 +1,75 @@
 <script setup lang="ts">
-import Box from '../../components/box.vue'
-import Popup from "../../components/popup.vue";
-import {ref} from "vue";
-import BaseInput from "../../components/base-input.vue";
+import { reactive, ref } from 'vue';
+import { useVuelidate } from '@vuelidate/core';
+import { required, email, helpers } from '@vuelidate/validators';
+import Box from '../../components/box.vue';
+import Popup from '../../components/popup.vue';
+import BaseInput from '../../components/base-input.vue';
 
-const forgotPassword = ref<boolean>(false)
+const forgotPassword = ref<boolean>(false);
 
-const loginEmail = ref<string>('')
-const loginPassword = ref<string>('')
+const data = reactive({
+  email: '',
+  password: ''
+});
+
+const customMessages = {
+  required: 'Это поле не может быть пустым',
+  email: 'Введите правильный адрес электронной почты'
+};
+
+const rules = {
+  email: {
+    required: helpers.withMessage(customMessages.required, required),
+    email: helpers.withMessage(customMessages.email, email),
+  },
+  password: {
+    required: helpers.withMessage(customMessages.required, required)
+  }
+};
+
+const v$ = useVuelidate(rules, data);
+
+const submit = async () => {
+  const result = await v$.value.$validate();
+  if (!result) {
+    // when form is invalid
+    return;
+  }
+  // when form is valid
+  console.log(data.email);
+  console.log(data.password);
+};
+
+const submitForgotPassword = async () => {
+};
 </script>
+
+
 <template>
   <div class="container">
-    <RouterLink to="/"><img src="../../assets/images/Logo.png" alt=""></RouterLink>
+    <RouterLink to="/"><img src="../../assets/images/Logo.png" alt="Logo" /></RouterLink>
 
     <div class="login">
       <Box>
         <h2>Войдите в аккаунт</h2>
-        <form action="#" class="login__form">
-          <div class="login__form-email">
-            <BaseInput id="login__form-email" v-model="loginEmail" type="text" :invalid="true" label="E-mail" placeholder="example@gmail.com"/>
-            <label for="login__form-email" style="color: var(--red)">Аккаунт не найден. Повторите попытку или
-              зарегистрируйтесь</label>
+        <form @submit.prevent="submit" class="login__form">
+          <div class="login__form-email" :class="{ error: v$.email.$errors.length }">
+            <BaseInput id="login__form-email" v-model="data.email" type="text" :invalid="v$.email.$errors.length > 0" label="E-mail" placeholder="example@gmail.com" />
+            <label for="login__form-email" v-for="error in v$.email.$errors" :key="error.$uid" style="color: var(--red)">{{ error.$message }}</label>
           </div>
-          <div class="login__form-password">
-            <BaseInput id="login__form-password" v-model="loginPassword" type="password" label="Пароль" placeholder="******"/>
+          <div class="login__form-password" :class="{ error: v$.password.$errors.length }">
+            <BaseInput id="login__form-password" v-model="data.password" type="password" :invalid="v$.password.$errors.length > 0" label="Пароль" placeholder="******" />
+            <label for="login__form-password" v-for="error in v$.password.$errors" :key="error.$uid" style="color: var(--red)">{{ error.$message }}</label>
           </div>
           <div class="login__form-check">
             <div class="df savepassword">
-              <input checked type="checkbox" id="savepassword">
+              <input type="checkbox" id="savepassword" />
               <label for="savepassword">Запомнить пароль</label>
             </div>
-            <a href="#" @click='forgotPassword = true'>Забыли пароль?</a>
+            <a href="#" @click.prevent="forgotPassword = true">Забыли пароль?</a>
           </div>
-          <button class="login__form-button">Войти</button>
+          <button type="submit" class="login__form-button">Войти</button>
           <p class="login__form-signup">
             Еще нет аккаунта? <RouterLink to="/register">Зарегистрируйтесь!</RouterLink>
           </p>
@@ -42,13 +79,11 @@ const loginPassword = ref<string>('')
   </div>
   <Popup v-if="forgotPassword" v-model="forgotPassword">
     <p>Введите адрес электронной почты, связанный <br> с вашей учетной записью, и мы вышлем вам <br> ссылку для сброса пароля</p>
-    <form action="#" class="restore__form">
+    <form @submit.prevent="submitForgotPassword" class="restore__form">
       <div class="restore__form-email">
-        <BaseInput id="restore__form-email" type="text" label="E-mail" placeholder="example@gmail.com"/>
+        <BaseInput id="restore__form-email" type="text" label="E-mail" placeholder="example@gmail.com" />
       </div>
-      <button type="submit" class="restore__form-submit">
-        Отправить
-      </button>
+      <button type="submit" class="restore__form-submit">Отправить</button>
     </form>
   </Popup>
 </template>
@@ -61,6 +96,7 @@ const loginPassword = ref<string>('')
   height: 100vh;
 
   .login {
+    width: 550px;
     position: absolute;
     left: 50%;
     top: 50%;
