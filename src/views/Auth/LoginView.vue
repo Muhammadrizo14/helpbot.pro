@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import { useVuelidate } from '@vuelidate/core';
-import { required, email, helpers } from '@vuelidate/validators';
+import {reactive, ref} from 'vue';
+import {useVuelidate} from '@vuelidate/core';
+import {required, email, helpers} from '@vuelidate/validators';
 import Box from '../../components/box.vue';
 import Popup from '../../components/popup.vue';
 import BaseInput from '../../components/base-input.vue';
+import axios from "axios";
+import {useAuthStore} from "../../stores/AuthStore";
+import router from "../../router/index";
 
-const forgotPassword = ref<boolean>(false);
+const store = useAuthStore()
+
+const forgotPassword = ref(false);
 
 const data = reactive({
   email: '',
@@ -33,55 +38,64 @@ const v$ = useVuelidate(rules, data);
 const submit = async () => {
   const result = await v$.value.$validate();
   if (!result) {
-    // when form is invalid
+    console.log('Form validation failed');
     return;
   }
-  // when form is valid
-  console.log(data.email);
-  console.log(data.password);
+
+  store.login(data.email, data.password)
+      .then((res) => {
+        store.addToken(res.data)
+        router.push({path: '/create'})
+      })
+      .catch(err => console.log(err));
 };
 
+
 const submitForgotPassword = async () => {
+  console.log('Verify email for forgot password');
 };
 </script>
 
 
 <template>
-  <div class="container">
-    <RouterLink to="/"><img src="../../assets/images/Logo.png" alt="Logo" /></RouterLink>
 
-    <div class="login">
-      <Box>
-        <h2>Войдите в аккаунт</h2>
-        <form @submit.prevent="submit" class="login__form">
-          <div class="login__form-email" :class="{ error: v$.email.$errors.length }">
-            <BaseInput id="login__form-email" v-model="data.email" type="text" :invalid="v$.email.$errors.length > 0" label="E-mail" placeholder="example@gmail.com" />
-            <label for="login__form-email" v-for="error in v$.email.$errors" :key="error.$uid" style="color: var(--red)">{{ error.$message }}</label>
+  <div class="login">
+    <Box>
+      <h2>Войдите в аккаунт</h2>
+      <form @submit.prevent="submit" class="login__form">
+        <div class="login__form-email" :class="{ error: v$.email.$errors.length }">
+          <BaseInput id="login__form-email" v-model="data.email" type="text" :invalid="v$.email.$errors.length > 0"
+                     label="E-mail" placeholder="example@gmail.com"/>
+          <label for="login__form-email" v-for="error in v$.email.$errors" :key="error.$uid"
+                 style="color: var(--red)">{{ error.$message }}</label>
+        </div>
+        <div class="login__form-password" :class="{ error: v$.password.$errors.length }">
+          <BaseInput id="login__form-password" v-model="data.password" type="password"
+                     :invalid="v$.password.$errors.length > 0" label="Пароль" placeholder="******"/>
+          <label for="login__form-password" v-for="error in v$.password.$errors" :key="error.$uid"
+                 style="color: var(--red)">{{ error.$message }}</label>
+        </div>
+        <div class="login__form-check">
+          <div class="df savepassword">
+            <input type="checkbox" id="savepassword"/>
+            <label for="savepassword">Запомнить пароль</label>
           </div>
-          <div class="login__form-password" :class="{ error: v$.password.$errors.length }">
-            <BaseInput id="login__form-password" v-model="data.password" type="password" :invalid="v$.password.$errors.length > 0" label="Пароль" placeholder="******" />
-            <label for="login__form-password" v-for="error in v$.password.$errors" :key="error.$uid" style="color: var(--red)">{{ error.$message }}</label>
-          </div>
-          <div class="login__form-check">
-            <div class="df savepassword">
-              <input type="checkbox" id="savepassword" />
-              <label for="savepassword">Запомнить пароль</label>
-            </div>
-            <a href="#" @click.prevent="forgotPassword = true">Забыли пароль?</a>
-          </div>
-          <button type="submit" class="login__form-button">Войти</button>
-          <p class="login__form-signup">
-            Еще нет аккаунта? <RouterLink to="/register">Зарегистрируйтесь!</RouterLink>
-          </p>
-        </form>
-      </Box>
-    </div>
+          <a href="#" @click.prevent="forgotPassword = true">Забыли пароль?</a>
+        </div>
+        <button type="submit" class="login__form-button">Войти</button>
+        <p class="login__form-signup">
+          Еще нет аккаунта?
+          <RouterLink to="/auth/register">Зарегистрируйтесь!</RouterLink>
+        </p>
+      </form>
+    </Box>
   </div>
   <Popup v-if="forgotPassword" v-model="forgotPassword">
-    <p>Введите адрес электронной почты, связанный <br> с вашей учетной записью, и мы вышлем вам <br> ссылку для сброса пароля</p>
+    <p>Введите адрес электронной почты, связанный <br> с вашей учетной записью, и мы вышлем вам <br> ссылку для сброса
+      пароля</p>
     <form @submit.prevent="submitForgotPassword" class="restore__form">
       <div class="restore__form-email">
-        <BaseInput id="restore__form-email" type="text" label="E-mail" placeholder="example@gmail.com" />
+        <BaseInput id="restore__form-email" type="text" label="E-mail" placeholder="example@gmail.com"/>
       </div>
       <button type="submit" class="restore__form-submit">Отправить</button>
     </form>
@@ -90,10 +104,7 @@ const submitForgotPassword = async () => {
 
 
 <style scoped lang="scss">
-.container {
-  padding: 30px 35px;
-  background: var(--grey-07);
-  height: 100vh;
+
 
   .login {
     width: 550px;
@@ -102,6 +113,8 @@ const submitForgotPassword = async () => {
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+    max-height: 100%;
+    overflow: auto;
 
     @media (max-width: 1000px) {
       width: 80%;
@@ -198,6 +211,19 @@ const submitForgotPassword = async () => {
         border-radius: 8px;
         margin-bottom: 40px;
 
+        &:hover {
+          background: var(--primary-02);
+        }
+
+        &:active {
+          background: var(--primary-03);
+        }
+
+        &:disabled {
+          background: var(--grey-06);
+          color: var(--grey-03);
+          cursor: auto;
+        }
       }
 
       &-signup {
@@ -213,7 +239,6 @@ const submitForgotPassword = async () => {
           }
         }
       }
-    }
   }
 }
 
@@ -223,6 +248,7 @@ const submitForgotPassword = async () => {
     display: flex;
     flex-direction: column;
     gap: 8px;
+
     input {
       border-radius: 8px;
       padding: 12px;
@@ -238,6 +264,7 @@ const submitForgotPassword = async () => {
       }
     }
   }
+
   &-submit {
     background: var(--primary-01);
     border: 0;

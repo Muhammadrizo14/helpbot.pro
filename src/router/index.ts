@@ -1,27 +1,52 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import LoginView from '../views/Auth/LoginView.vue'
 import RegisterView from '../views/Auth/RegisterView.vue'
-import Create from '../views/create.vue'
+import AuthView from '../views/Auth/Auth.vue'
+import CreateView from '../views/create.vue'
+import HomeView from '../views/home.vue'
+
+const routes = [
+
+  {
+    path: '/',
+    component: HomeView
+  },
+
+  {
+    path: '/auth',
+    component: AuthView,
+    children: [
+      {
+
+        path: '',
+        component: LoginView,
+      },
+      {
+        path: 'register',
+        component: RegisterView,
+      },
+    ],
+  },
+  {
+    path: '/create',
+    component: CreateView
+  }
+]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: [
-    {
-      path: '/',
-      name: 'login',
-      component: LoginView
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: RegisterView
-    },
-    {
-      path: '/create',
-      name: 'create',
-      component: Create
-    },
-  ]
+  routes
 })
+
+
+router.beforeEach((to, from, next) => {
+  const user = localStorage.getItem("token");
+  if (!user && !to.path.includes('/auth')) {
+    next('/auth');
+  } else {
+    next();
+  }
+});
+
 
 export default router;

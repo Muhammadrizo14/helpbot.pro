@@ -41,6 +41,11 @@ input[type='checkbox'] {
   cursor: pointer;
   height: 16px;
   width: 16px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+
   &:before {
     content: "";
     display: block;
@@ -59,6 +64,7 @@ input[type='checkbox'] {
       border: 2px solid var(--primary-01);
     }
   }
+
   &:checked:after {
     content: "";
     display: block;
@@ -80,12 +86,22 @@ input[type='checkbox'] {
         background: var(--primary-02);
       }
     }
+
     &:before {
       border: 2px solid transparent;
       background: var(--primary-01);
     }
   }
+
+  /* Remove focus outline when checkbox is focused */
+  &:focus {
+    outline: none;
+    &:before {
+      border: 2px solid var(--primary-01);
+    }
+  }
 }
+
 
 
 //input {

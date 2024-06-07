@@ -81,8 +81,8 @@ watch(internalValue, (newValue) => {
 }
 
 input {
-  padding: 8px;
-  padding-right: 30px;
+  padding: 8px 30px 8px 8px;
+  font-size: 18px;
   flex: 1;
 }
 
