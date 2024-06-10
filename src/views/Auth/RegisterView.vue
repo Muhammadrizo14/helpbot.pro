@@ -241,6 +241,20 @@ const submit = async () => {
       border-radius: 8px;
       margin-bottom: 40px;
 
+      &:hover {
+        background: var(--primary-02);
+      }
+
+      &:active {
+        background: var(--primary-03);
+      }
+
+      &:disabled {
+        background: var(--grey-06);
+        color: var(--grey-03);
+        cursor: auto;
+      }
+
     }
 
     &-signup {

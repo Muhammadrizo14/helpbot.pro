@@ -1,8 +1,7 @@
 <template>
   <div class="container">
-    <RouterLink to="/"><img src="../../assets/images/Logo.png" alt="Logo"/></RouterLink>
-
-      <router-view/>
+    <RouterLink to="/"><img class="logo" src="../../assets/images/Logo.png" alt="Logo"/></RouterLink>
+    <router-view/>
   </div>
 </template>
 
@@ -15,5 +14,9 @@
   padding: 30px 35px;
   background: var(--grey-07);
   height: 100vh;
+}
+
+.logo {
+  width: 209px;
 }
 </style>

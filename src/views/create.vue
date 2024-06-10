@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <RouterLink to="/"><img src="../assets/images/Logo.png" alt=""></RouterLink>
+    <RouterLink to="/"><img class="logo" src="../assets/images/Logo.png" alt=""></RouterLink>
     <div class="create">
       <Box>
         <h2>Создайте вашего первого бота</h2>
@@ -27,6 +27,10 @@ import BaseInput from "../components/base-input.vue";
   padding: 30px 35px;
   background: var(--grey-07);
   height: 100vh;
+
+  .logo {
+    width: 209px;
+  }
 
   .create {
     position: absolute;
@@ -69,6 +73,20 @@ import BaseInput from "../components/base-input.vue";
         width: 100%;
         padding: 16px 0;
         border-radius: 8px;
+
+        &:hover {
+          background: var(--primary-02);
+        }
+
+        &:active {
+          background: var(--primary-03);
+        }
+
+        &:disabled {
+          background: var(--grey-06);
+          color: var(--grey-03);
+          cursor: auto;
+        }
       }
     }
 
