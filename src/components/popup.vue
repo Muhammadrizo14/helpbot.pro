@@ -44,7 +44,7 @@ const closePopup = () => {
     transform: translate(-50%, -50%);
     &-close {
       position: absolute;
-      top: 18px;
+      top: 38px;
       right: 18px;
       cursor: pointer;
     }

@@ -7,6 +7,7 @@
       :id="id"
       :class="invalid ? 'default invalid' : 'default'"
       :placeholder="placeholder"
+      :style="type === 'password' && 'padding-right: 42px;'"
   />
     <span v-if="type === 'password'" class="toggle-icon" @click="togglePasswordVisibility">
       <img src="../assets/images/icons/eye.png" alt="">
