@@ -1,9 +1,12 @@
 @import "./variables";
 @import './font';
 @import './defaults';
+@import './custom'; // custom change of primeVue
+
+@import "theme";
 
 * {
-  padding: 0;
+  //padding: 0;
   margin: 0;
   box-sizing: border-box;
   font-family: 'Ubuntu regular', sans-serif;

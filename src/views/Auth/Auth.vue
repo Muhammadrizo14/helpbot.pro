@@ -2,11 +2,12 @@
   <div class="container">
     <RouterLink to="/"><img class="logo" src="../../assets/images/Logo.png" alt="Logo"/></RouterLink>
     <router-view/>
+    <Toast />
   </div>
 </template>
 
 <script setup>
-
+import Toast from 'primevue/toast';
 </script>
 
 <style lang="scss" scoped>

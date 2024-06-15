@@ -1,12 +1,18 @@
 <script setup lang="ts">
+import Button from "primevue/button";
 </script>
 
 <template>
   <div class="wrap">
-    <RouterLink to="/auth">GO TO AUTH</RouterLink>
+    <RouterLink to="/auth">
+      <Button>GO TO AUTH</Button>
+    </RouterLink>
     <br>
     <br>
-    <RouterLink to="/create">GO TO CREATE</RouterLink>
+    <RouterLink to="/create">
+      <Button>GO TO CREATE</Button>
+    </RouterLink>
+
   </div>
 </template>
 

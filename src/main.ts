@@ -1,14 +1,21 @@
 import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router/index'
-import './assets/css/main.scss'
 import { createPinia } from 'pinia'
+import './assets/css/main.scss'
+import PrimeVue from 'primevue/config';
+// import 'primevue/resources/themes/aura-light-green/theme.css'
+// import 'primevue/resources/primevue.min.css'
+import 'primeflex/primeflex.min.css'
+import ToastService from 'primevue/toastservice';
 
 const pinia = createPinia()
 
 export const apiUrl = import.meta.env.VITE_APP_URL
 
 const app = createApp(App)
+app.use(PrimeVue);
+app.use(ToastService);
 app.use(router)
 app.use(pinia)
 app.mount('#app')

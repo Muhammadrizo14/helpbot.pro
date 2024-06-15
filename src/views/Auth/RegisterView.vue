@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import Box from '../../components/box.vue'
 import router from "../../router/index";
-import BaseInput from '../../components/base-input.vue'
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 import {email, helpers, required} from "@vuelidate/validators";
 import {useVuelidate} from "@vuelidate/core";
 import {useAuthStore} from "../../stores/AuthStore";
+import { useToast } from "primevue/usetoast";
+
+const toast = useToast();
 
 const store = useAuthStore()
 
@@ -16,6 +18,8 @@ const data = reactive({
   name: '',
   surname: '',
 });
+
+const agree = ref()
 
 const customMessages = {
   required: 'Это поле не может быть пустым',
@@ -40,12 +44,20 @@ const rules = {
 
 const v$ = useVuelidate(rules, data);
 
+
+
 const submit = async () => {
   const result = await v$.value.$validate();
   if (!result) {
-    // when form is invalid
+    // if form is invalid
+
     return;
   }
+
+
+  console.log(
+      data
+  )
 
   // when form is valid
   store.register(data.email, data.password, data.name, data.surname)
@@ -53,55 +65,77 @@ const submit = async () => {
         console.log(res)
         router.push({path: '/auth'})
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        toast.add({ severity: 'error', summary: 'Ошибка', detail: err.message, life: 3000 });
+        console.log(err)
+      })
 };
 
 
 </script>
 
 <template>
-  <div class="register">
+  <div class="register m-auto">
     <Box>
-      <h2>Зарегистрируйтесь, чтобы начать</h2>
+      <h2 class="pb-5">Зарегистрируйтесь, чтобы начать</h2>
       <form @submit.prevent="submit" class="register__form">
-        <div class="register__form-name register__form-email" :class="{ error: v$.name.$errors.length }">
-          <BaseInput v-model="data.name" :invalid="v$.name.$errors.length > 0" id="register__form-name" type="text"
-                     label="Имя"/>
+
+        <div class="flex flex-column gap-2 pb-4" :class="{ error: v$.name.$errors.length }">
+          <label for="username">Имя</label>
+          <InputText v-model="data.name" :invalid="v$.name.$errors.length > 0" id="username"
+                     aria-describedby="username-help"/>
           <label for="login__form-name" v-for="error in v$.name.$errors" :key="error.$uid"
                  style="color: var(--red)">{{ error.$message }}</label>
         </div>
 
-        <div class="register__form-surname register__form-email" :class="{ error: v$.surname.$errors.length }">
-          <BaseInput v-model="data.surname" :invalid="v$.surname.$errors.length > 0" id="register__form-surname"
-                     type="text" label="Фамилия"/>
-          <label for="login__form-surname" v-for="error in v$.surname.$errors" :key="error.$uid"
+        <div class="flex flex-column gap-2 pb-4" :class="{ error: v$.surname.$errors.length }">
+          <label for="surname">Фамилия</label>
+          <InputText v-model="data.surname" :invalid="v$.surname.$errors.length > 0" id="username"
+                     aria-describedby="username-help"/>
+          <label for="login__form-name" v-for="error in v$.surname.$errors" :key="error.$uid"
                  style="color: var(--red)">{{ error.$message }}</label>
         </div>
-        <div class="register__form-email" :class="{ error: v$.email.$errors.length }">
-          <BaseInput v-model="data.email" :invalid="v$.email.$errors.length > 0" id="register__form-email" type="text"
-                     label="E-mail" placeholder="example@gmail.com"/>
-          <label for="login__form-email" v-for="error in v$.email.$errors" :key="error.$uid" style="color: var(--red)">{{
-              error.$message
-            }}</label>
+
+        <div class="flex flex-column gap-2 pb-4" :class="{ error: v$.email.$errors.length }">
+          <label for="email">E-mail</label>
+          <InputText v-model="data.email" :invalid="v$.email.$errors.length > 0" id="username"
+                     placeholder="example@gmail.com" aria-describedby="username-help"/>
+          <label for="login__form-email" v-for="error in v$.email.$errors" :key="error.$uid"
+                 style="color: var(--red)">{{ error.$message }}</label>
         </div>
-        <div class="register__form-password" :class="{ error: v$.password.$errors.length }">
-          <BaseInput v-model="data.password" :invalid="v$.password.$errors.length > 0" id="register__form-password"
-                     type="password" label="Пароль" placeholder="******"/>
+
+
+        <div class="flex flex-column gap-2 pb-4 w-full" :class="{ error: v$.password.$errors.length }">
+          <label for="password">Пароль</label>
+          <div class="flex justify-content-start w-full">
+            <Password :invalid="v$.password.$errors.length > 0" :inputStyle="{width: '100%'}"
+                      :svgStyle="{ margin: 'auto' }" :feedback="false" toggleMask
+                      id="password" class="register-password" v-model="data.password" aria-describedby="password-help"
+                      placeholder="*****"/>
+          </div>
           <label for="login__form-password" v-for="error in v$.password.$errors" :key="error.$uid"
                  style="color: var(--red)">{{ error.$message }}</label>
         </div>
-        <div class="register__form-check">
-          <div class="df register__form-check-agreement">
-            <input type="checkbox" id="agreement">
-            <label for="agreement">Согласен(-на) на рассылку рекламных материалов</label>
+
+
+        <div class="flex flex-column gap-3 pb-4">
+          <div class="flex align-items-center">
+            <Checkbox v-model="agree" inputId="ingredient1" name="save" :binary="true"/>
+            <label for="ingredient1" class="ml-2">Согласен(-на) на рассылку рекламных материалов</label>
           </div>
           <p class="register__form-check-personal">
             Нажимая “Зарегистрироваться”, вы соглашаетесь на <br>
             обработку ваших <a href="#">Персональных данных</a>
           </p>
         </div>
-        <button class="register__form-submit" type="submit">Зарегистрироваться</button>
-        <p class="register__form-signup">
+
+
+        <Button type="submit" class="flex justify-content-center w-full p-3 mb-4">
+          <p>Зарегистрироваться</p>
+        </Button>
+
+
+        <p class="register__form-signup text-center">
           <RouterLink to="/auth">Уже есть аккаунт?</RouterLink>
         </p>
       </form>
@@ -121,193 +155,13 @@ const submit = async () => {
   transform: translate(-50%, -50%);
   max-height: 100%;
   overflow: auto;
-  @media (max-width: 1000px) {
-    width: 80%;
-  }
 
-  h2 {
-    padding-bottom: 40px;
-  }
-
-  .continue-google {
-    background: var(--primary-04);
-    border: 0;
-    display: flex;
-    align-items: center;
-    padding: 16px 0;
-    border-radius: 8px;
+  .register-password {
     width: 100%;
-    justify-content: center;
-    color: var(--primary-01);
-    gap: 12px;
-    margin-bottom: 40px;
-    cursor: pointer;
-  }
 
-  .choice {
-    gap: 20px;
-    padding-bottom: 40px;
-
-    p {
-      color: var(--grey-02);
+    * {
+      margin: revert-layer;
     }
-
-    .line {
-      width: 100%;
-      height: 1px;
-      background: var(--grey-06);
-    }
-  }
-
-  &__form {
-    &-email {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-
-      input {
-        border-radius: 8px;
-        padding: 12px;
-        border: 2px solid var(--grey-04);
-
-
-        &::placeholder {
-          color: var(--grey-04);
-          font-size: 18px;
-        }
-
-        &:active {
-          border: 2px solid var(--grey-02);
-        }
-      }
-
-      padding-bottom: 24px;
-    }
-
-    &-password {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-
-      input {
-        border-radius: 8px;
-        padding: 12px;
-        border: 2px solid var(--grey-04);
-
-        &::placeholder {
-          color: var(--grey-04);
-          font-size: 18px;
-        }
-
-        &:active {
-          border: 2px solid var(--grey-02);
-        }
-      }
-
-      padding-bottom: 24px;
-    }
-
-    &-check {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      padding-bottom: 40px;
-
-      &-agreement {
-        gap: 8px;
-
-        label {
-          color: var(--grey-02);
-        }
-      }
-
-      &-personal {
-        color: var(--grey-02);
-
-        a {
-          font-size: inherit;
-        }
-      }
-    }
-
-    &-submit {
-      background: var(--primary-01);
-      color: var(--grey-09);
-      border: 0;
-      cursor: pointer;
-      bottom: 40px;
-      width: 100%;
-      padding: 16px 0;
-      border-radius: 8px;
-      margin-bottom: 40px;
-
-      &:hover {
-        background: var(--primary-02);
-      }
-
-      &:active {
-        background: var(--primary-03);
-      }
-
-      &:disabled {
-        background: var(--grey-06);
-        color: var(--grey-03);
-        cursor: auto;
-      }
-
-    }
-
-    &-signup {
-      text-align: center;
-
-      a {
-        text-decoration: none;
-        font-size: 18px;
-        color: var(--primary-01);
-
-        &:hover {
-          color: var(--primary-02);
-        }
-      }
-    }
-  }
-}
-
-.restore__form {
-  &-email {
-    padding: 40px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    input {
-      border-radius: 8px;
-      padding: 12px;
-      border: 2px solid var(--grey-04);
-
-      &::placeholder {
-        color: var(--grey-04);
-        font-size: 18px;
-      }
-
-      &:active {
-        border: 2px solid var(--grey-02);
-      }
-    }
-  }
-
-  &-submit {
-    background: var(--primary-01);
-    border: 0;
-    padding: 16px 0;
-    border-radius: 8px;
-    width: 100%;
-    color: var(--grey-09);
-    cursor: pointer;
   }
 }
 </style>
-
-
-<!--rizo0142-->
-<!--rizo0142@gmail.com-->

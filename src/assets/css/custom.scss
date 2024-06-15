@@ -1,0 +1,46 @@
+.p-button {
+  background: var(--primary-01);
+  color: var(--grey-09);
+  border: 0;
+  cursor: pointer;
+  width: 100%;
+  padding: 16px 0;
+  border-radius: 8px;
+
+  &:hover {
+    background: var(--primary-02);
+  }
+
+  &:active {
+    background: var(--primary-03);
+  }
+
+  &:disabled {
+
+    background: var(--grey-06);
+    color: var(--grey-03);
+    cursor: auto;
+  }
+  &:focus-visible {
+    outline: 1px solid var(--grey-01);
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+}
+
+.p-inputtext {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 18px;
+  border: 2px solid var(--grey-04);
+
+
+  &:enabled:focus {
+    outline-color: transparent;
+    border: 2px solid var(--grey-01);
+  }
+
+  &[type='password'] {
+    padding-right: 40px;
+  }
+}

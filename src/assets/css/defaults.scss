@@ -36,71 +36,71 @@ a {
 }
 
 
-input[type='checkbox'] {
-  position: relative;
-  cursor: pointer;
-  height: 16px;
-  width: 16px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
-
-  &:before {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    top: 0;
-    left: 0;
-    border: 2px solid var(--grey-04);
-    border-radius: 3px;
-    background-color: white;
-  }
-
-  &:hover {
-    &:before {
-      border: 2px solid var(--primary-01);
-    }
-  }
-
-  &:checked:after {
-    content: "";
-    display: block;
-    width: 5px;
-    height: 10px;
-    border: solid var(--grey-09);
-    border-width: 0 2px 2px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-    position: absolute;
-    top: 2px;
-    left: 6px;
-  }
-
-  &:checked {
-    &:hover {
-      &:before {
-        background: var(--primary-02);
-      }
-    }
-
-    &:before {
-      border: 2px solid transparent;
-      background: var(--primary-01);
-    }
-  }
-
-  /* Remove focus outline when checkbox is focused */
-  &:focus {
-    outline: none;
-    &:before {
-      border: 2px solid var(--primary-01);
-    }
-  }
-}
+//input[type='checkbox'] {
+//  position: relative;
+//  cursor: pointer;
+//  height: 16px;
+//  width: 16px;
+//  -webkit-appearance: none;
+//  -moz-appearance: none;
+//  appearance: none;
+//  outline: none;
+//
+//  &:before {
+//    content: "";
+//    display: block;
+//    position: absolute;
+//    width: 16px;
+//    height: 16px;
+//    top: 0;
+//    left: 0;
+//    border: 2px solid var(--grey-04);
+//    border-radius: 3px;
+//    background-color: white;
+//  }
+//
+//  &:hover {
+//    &:before {
+//      border: 2px solid var(--primary-01);
+//    }
+//  }
+//
+//  &:checked:after {
+//    content: "";
+//    display: block;
+//    width: 5px;
+//    height: 10px;
+//    border: solid var(--grey-09);
+//    border-width: 0 2px 2px 0;
+//    -webkit-transform: rotate(45deg);
+//    -ms-transform: rotate(45deg);
+//    transform: rotate(45deg);
+//    position: absolute;
+//    top: 2px;
+//    left: 6px;
+//  }
+//
+//  &:checked {
+//    &:hover {
+//      &:before {
+//        background: var(--primary-02);
+//      }
+//    }
+//
+//    &:before {
+//      border: 2px solid transparent;
+//      background: var(--primary-01);
+//    }
+//  }
+//
+//  /* Remove focus outline when checkbox is focused */
+//  &:focus {
+//    outline: none;
+//    &:before {
+//      border: 2px solid var(--primary-01);
+//    }
+//  }
+//}
 
 
 
