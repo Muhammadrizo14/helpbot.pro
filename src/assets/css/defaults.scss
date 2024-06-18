@@ -17,16 +17,25 @@ p {
   font-size: 18px;
 }
 
-button {
-  font-family: 'Ubuntu medium',sans-serif;
-  font-weight: 500;
-  font-size: 18px;
+
+
+a.nonunderlined {
+  font-size: inherit;
+  font-weight: 400;
+  text-decoration: none;
+  color: var(--primary-01);
+  &:hover {
+    color: var(--primary-02);
+  }
+  &:active {
+    color: var(--primary-03);
+  }
 }
 
-a {
-  font-size: 14px;
+a.link {
+  font-size: inherit;
   font-weight: 400;
-  color: var(--grey-01);
+  color: var(--grey-011);
   &:hover {
     color: var(--primary-01);
   }
@@ -34,79 +43,3 @@ a {
     color: var(--primary-03);
   }
 }
-
-
-//input[type='checkbox'] {
-//  position: relative;
-//  cursor: pointer;
-//  height: 16px;
-//  width: 16px;
-//  -webkit-appearance: none;
-//  -moz-appearance: none;
-//  appearance: none;
-//  outline: none;
-//
-//  &:before {
-//    content: "";
-//    display: block;
-//    position: absolute;
-//    width: 16px;
-//    height: 16px;
-//    top: 0;
-//    left: 0;
-//    border: 2px solid var(--grey-04);
-//    border-radius: 3px;
-//    background-color: white;
-//  }
-//
-//  &:hover {
-//    &:before {
-//      border: 2px solid var(--primary-01);
-//    }
-//  }
-//
-//  &:checked:after {
-//    content: "";
-//    display: block;
-//    width: 5px;
-//    height: 10px;
-//    border: solid var(--grey-09);
-//    border-width: 0 2px 2px 0;
-//    -webkit-transform: rotate(45deg);
-//    -ms-transform: rotate(45deg);
-//    transform: rotate(45deg);
-//    position: absolute;
-//    top: 2px;
-//    left: 6px;
-//  }
-//
-//  &:checked {
-//    &:hover {
-//      &:before {
-//        background: var(--primary-02);
-//      }
-//    }
-//
-//    &:before {
-//      border: 2px solid transparent;
-//      background: var(--primary-01);
-//    }
-//  }
-//
-//  /* Remove focus outline when checkbox is focused */
-//  &:focus {
-//    outline: none;
-//    &:before {
-//      border: 2px solid var(--primary-01);
-//    }
-//  }
-//}
-
-
-
-//input {
-//  &:focus {
-//    outline: 2px solid var(--grey-01);
-//    outline-offset: 2px;
-//  }
-//}

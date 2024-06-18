@@ -90,16 +90,16 @@ const submit = async () => {
 
         <div class="flex flex-column gap-2 pb-4" :class="{ error: v$.surname.$errors.length }">
           <label for="surname">Фамилия</label>
-          <InputText v-model="data.surname" :invalid="v$.surname.$errors.length > 0" id="username"
-                     aria-describedby="username-help"/>
+          <InputText v-model="data.surname" :invalid="v$.surname.$errors.length > 0" id="surname"
+                     aria-describedby="surname-help"/>
           <label for="login__form-name" v-for="error in v$.surname.$errors" :key="error.$uid"
                  style="color: var(--red)">{{ error.$message }}</label>
         </div>
 
         <div class="flex flex-column gap-2 pb-4" :class="{ error: v$.email.$errors.length }">
           <label for="email">E-mail</label>
-          <InputText v-model="data.email" :invalid="v$.email.$errors.length > 0" id="username"
-                     placeholder="example@gmail.com" aria-describedby="username-help"/>
+          <InputText v-model="data.email" :invalid="v$.email.$errors.length > 0" id="email"
+                     placeholder="example@gmail.com" aria-describedby="email-help"/>
           <label for="login__form-email" v-for="error in v$.email.$errors" :key="error.$uid"
                  style="color: var(--red)">{{ error.$message }}</label>
         </div>
@@ -125,12 +125,12 @@ const submit = async () => {
           </div>
           <p class="register__form-check-personal">
             Нажимая “Зарегистрироваться”, вы соглашаетесь на <br>
-            обработку ваших <a href="#">Персональных данных</a>
+            обработку ваших <a href="#" class="link">Персональных данных</a>
           </p>
         </div>
 
 
-        <Button type="submit" class="flex justify-content-center w-full p-3 mb-4">
+        <Button type="submit" severity="submit" class="flex justify-content-center w-full p-3 mb-4">
           <p>Зарегистрироваться</p>
         </Button>
 
@@ -155,6 +155,7 @@ const submit = async () => {
   transform: translate(-50%, -50%);
   max-height: 100%;
   overflow: auto;
+  scrollbar-width: none;
 
   .register-password {
     width: 100%;

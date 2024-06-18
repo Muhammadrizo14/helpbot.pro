@@ -76,9 +76,9 @@ const submitForgotPassword = async () => {
                       :feedback="false" toggleMask
                       :invalid="v$.password.$errors.length > 0" id="password" class="login-password"
                       aria-describedby="password-help" placeholder="*****"/>
-            <label for="login__form-password" v-for="error in v$.password.$errors" :key="error.$uid"
-                   style="color: var(--red)">{{ error.$message }}</label>
           </div>
+          <label for="login__form-password" v-for="error in v$.password.$errors" :key="error.$uid"
+                 style="color: var(--red)">{{ error.$message }}</label>
         </div>
 
         <div class="flex justify-content-between">
@@ -86,19 +86,19 @@ const submitForgotPassword = async () => {
             <Checkbox v-model="remember" inputId="ingredient1" name="save" :binary="true"/>
             <label for="ingredient1" class="ml-2">Запомнить пароль</label>
           </div>
-          <RouterLink to="#" @click="restore = true">
+          <RouterLink to="#" @click="restore = true" class="link">
             Забыли пароль?
           </RouterLink>
         </div>
 
-        <Button class="flex justify-content-center w-full p-3" type="submit">
-          <p>Войти</p>
-        </Button>
+        <Button class="flex justify-content-center w-full p-3" severity="submit" type="submit" label="Войти"/>
       </form>
 
       <p class="pt-4 text-center">
         Еще нет аккаунта?
-        <RouterLink to="auth/register">Зарегистрируйтесь!</RouterLink>
+        <RouterLink class="nonunderlined" to="auth/register">
+          Зарегистрируйтесь!
+        </RouterLink>
       </p>
     </Box>
 
@@ -113,10 +113,9 @@ const submitForgotPassword = async () => {
       <div class="flex flex-column align-items-start gap-2 mb-3">
         <label for="username">Email</label>
         <InputText class="w-full" id="username" aria-describedby="username-help" placeholder="example@gmail.com"/>
-        <!--          <small id="username-help">Enter your username to reset your password.</small>-->
       </div>
 
-      <Button class="w-full" type="button" label="Отправить" @click="visible = false"/>
+      <Button class="w-full" type="submit" severity="submit" label="Отправить" @click="visible = false"/>
     </Dialog>
 
   </div>

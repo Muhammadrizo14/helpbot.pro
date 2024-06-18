@@ -19,5 +19,6 @@ import Toast from 'primevue/toast';
 
 .logo {
   width: 209px;
+
 }
 </style>
