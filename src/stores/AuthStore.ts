@@ -8,6 +8,7 @@ export const useAuthStore = defineStore('auth', ()=> {
   const token = ref(localStorage.getItem('token') || null)
 
   const login = async (username: string, password:string)=> {
+    console.log(username, password)
     return await axios
       .post(`${apiUrl}/user/login`, {
         username,

@@ -64,7 +64,7 @@ const submitForgotPassword = async () => {
       <form @submit.prevent="submit" class="flex flex-column gap-4">
         <div class="flex flex-column gap-2">
           <label for="username">Email</label>
-          <InputText v-model="data.email" :invalid="v$.email.$errors.length > 0" id="username"
+          <InputText class="custom-input" v-model="data.email" :invalid="v$.email.$errors.length > 0" id="username"
                      placeholder="example@gmail.com" aria-describedby="username-help"/>
           <label for="login__form-email" v-for="error in v$.email.$errors" :key="error.$uid"
                  style="color: var(--red)">{{ error.$message }}</label>
@@ -72,7 +72,7 @@ const submitForgotPassword = async () => {
         <div class="flex flex-column gap-2 w-full">
           <label for="password">Пароль</label>
           <div class="flex justify-content-start w-full">
-            <Password v-model="data.password" :inputStyle="{width: '100%'}" :svgStyle="{ margin: 'auto' }"
+            <Password v-model="data.password" inputClass="custom-input" :inputStyle="{width: '100%'}" :svgStyle="{ margin: 'auto' }"
                       :feedback="false" toggleMask
                       :invalid="v$.password.$errors.length > 0" id="password" class="login-password"
                       aria-describedby="password-help" placeholder="*****"/>
@@ -112,7 +112,7 @@ const submitForgotPassword = async () => {
       </p>
       <div class="flex flex-column align-items-start gap-2 mb-3">
         <label for="username">Email</label>
-        <InputText class="w-full" id="username" aria-describedby="username-help" placeholder="example@gmail.com"/>
+        <InputText class="w-full custom-input" id="username" aria-describedby="username-help" placeholder="example@gmail.com"/>
       </div>
 
       <Button class="w-full" type="submit" severity="submit" label="Отправить" @click="visible = false"/>
@@ -134,6 +134,7 @@ const submitForgotPassword = async () => {
 
   .login-password {
     width: 100%;
+
 
     * {
       margin: revert-layer;

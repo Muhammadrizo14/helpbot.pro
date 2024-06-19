@@ -1,3 +1,5 @@
+$primary-color: #7958DB;
+
 :root {
   font-family: "Inter var", sans-serif;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -1650,11 +1652,15 @@
     margin-bottom: 0;
   }
   .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
-    color: #047857;
-    background: #ecfdf5;
+    svg {
+      margin-left: -0.5rem !important;
+      margin-right: 0.5rem !important;
+    }
+    color: var(--grey-01);
+    background: var(--grey-07);
   }
   .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight.p-focus {
-    background: #d1fae5;
+    background: var(--grey-07);
   }
   .p-dropdown-panel .p-dropdown-items .p-dropdown-item:not(.p-highlight):not(.p-disabled).p-focus {
     color: #1e293b;

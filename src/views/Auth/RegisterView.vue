@@ -55,10 +55,6 @@ const submit = async () => {
   }
 
 
-  console.log(
-      data
-  )
-
   // when form is valid
   store.register(data.email, data.password, data.name, data.surname)
       .then((res) => {
@@ -82,7 +78,7 @@ const submit = async () => {
 
         <div class="flex flex-column gap-2 pb-4" :class="{ error: v$.name.$errors.length }">
           <label for="username">Имя</label>
-          <InputText v-model="data.name" :invalid="v$.name.$errors.length > 0" id="username"
+          <InputText class="custom-input" v-model="data.name" :invalid="v$.name.$errors.length > 0" id="username"
                      aria-describedby="username-help"/>
           <label for="login__form-name" v-for="error in v$.name.$errors" :key="error.$uid"
                  style="color: var(--red)">{{ error.$message }}</label>
@@ -90,7 +86,7 @@ const submit = async () => {
 
         <div class="flex flex-column gap-2 pb-4" :class="{ error: v$.surname.$errors.length }">
           <label for="surname">Фамилия</label>
-          <InputText v-model="data.surname" :invalid="v$.surname.$errors.length > 0" id="surname"
+          <InputText class="custom-input" v-model="data.surname" :invalid="v$.surname.$errors.length > 0" id="surname"
                      aria-describedby="surname-help"/>
           <label for="login__form-name" v-for="error in v$.surname.$errors" :key="error.$uid"
                  style="color: var(--red)">{{ error.$message }}</label>
@@ -98,7 +94,7 @@ const submit = async () => {
 
         <div class="flex flex-column gap-2 pb-4" :class="{ error: v$.email.$errors.length }">
           <label for="email">E-mail</label>
-          <InputText v-model="data.email" :invalid="v$.email.$errors.length > 0" id="email"
+          <InputText class="custom-input" v-model="data.email" :invalid="v$.email.$errors.length > 0" id="email"
                      placeholder="example@gmail.com" aria-describedby="email-help"/>
           <label for="login__form-email" v-for="error in v$.email.$errors" :key="error.$uid"
                  style="color: var(--red)">{{ error.$message }}</label>
@@ -108,7 +104,7 @@ const submit = async () => {
         <div class="flex flex-column gap-2 pb-4 w-full" :class="{ error: v$.password.$errors.length }">
           <label for="password">Пароль</label>
           <div class="flex justify-content-start w-full">
-            <Password :invalid="v$.password.$errors.length > 0" :inputStyle="{width: '100%'}"
+            <Password inputClass="custom-input" :invalid="v$.password.$errors.length > 0" :inputStyle="{width: '100%'}"
                       :svgStyle="{ margin: 'auto' }" :feedback="false" toggleMask
                       id="password" class="register-password" v-model="data.password" aria-describedby="password-help"
                       placeholder="*****"/>

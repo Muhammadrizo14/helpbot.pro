@@ -1,18 +1,14 @@
 <script setup lang="ts">
 import Button from "primevue/button";
+import sidebar from '../layouts/sidebar.vue'
 </script>
 
 <template>
-  <div class="wrap">
-    <RouterLink to="/auth">
-      <Button>GO TO AUTH</Button>
-    </RouterLink>
-    <br>
-    <br>
-    <RouterLink to="/create">
-      <Button>GO TO CREATE</Button>
-    </RouterLink>
+  <div class="wrap flex gap-4">
+    <sidebar />
+    <div>
 
+    </div>
   </div>
 </template>
 
@@ -20,7 +16,8 @@ import Button from "primevue/button";
 
 
 .wrap {
-  padding: 30px;
   font-size: 26px;
+  background: var(--grey-07);
+  height: 100vh;
 }
 </style>
