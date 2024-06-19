@@ -149,7 +149,7 @@ const toggleUserInfo = () => {
       }
 
       p {
-        padding-left: 15px;
+        padding-left: 10px;
       }
       .sidebar__submenu {
         margin-left: 24px;
