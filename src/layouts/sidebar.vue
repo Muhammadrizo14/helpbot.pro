@@ -1,8 +1,8 @@
 <template>
   <Box class="sidebar">
-    <router-link to="/"><img class="sidebar__logo pb-4" src="../assets/images/Logo.png" alt=""></router-link>
+    <router-link to="/"><img class="sidebar__logo " src="../assets/images/Logo.png" alt=""></router-link>
 
-    <Dropdown class="default-select"  checkmark v-model="selectedCity" :options="cities" optionLabel="name">
+    <Dropdown class="default-select mt-3"  checkmark v-model="selectedCity" :options="cities" optionLabel="name">
       <template #dropdownicon>
         <svg width="12" height="19" viewBox="0 0 14 21" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M6.4733 0.966068C6.76534 0.677977 7.23466 0.677977 7.5267 0.966068L13.0267 6.3916C13.3216 6.68249 13.3248 7.15735 13.0339 7.45224C12.743 7.74712 12.2682 7.75035 11.9733 7.45946L7 2.5535L2.0267 7.45946C1.73182 7.75035 1.25696 7.74712 0.966068 7.45224C0.675178 7.15735 0.678414 6.68249 0.973297 6.3916L6.4733 0.966068ZM0.966068 13.5478C1.25696 13.2529 1.73182 13.2496 2.0267 13.5405L7 18.4465L11.9733 13.5405C12.2682 13.2496 12.743 13.2529 13.0339 13.5478C13.3248 13.8426 13.3216 14.3175 13.0267 14.6084L7.5267 20.0339C7.23466 20.322 6.76534 20.322 6.4733 20.0339L0.973297 14.6084C0.678414 14.3175 0.675178 13.8426 0.966068 13.5478Z" fill="#14182C"/>
@@ -78,7 +78,7 @@
         <div class="sidebar__user-icon">
           И
         </div>
-        <p>user</p>
+        <p>Иван Иванов</p>
       </div>
     </div>
   </Box>
@@ -120,7 +120,7 @@ const toggleUserInfo = () => {
 .sidebar {
   width: 360px;
   margin: 0;
-  padding: 30px;
+  padding: 20px;
   border-radius: 0;
   display: flex;
   flex-direction: column;
@@ -131,10 +131,10 @@ const toggleUserInfo = () => {
 
   &__line {
     position: relative;
-    width: calc(100% + 60px);
+    width: calc(100% + 40px);
     height: 1px;
     background: var(--grey-07);
-    margin: 30px 0 30px -30px;
+    margin: 15px 0 15px -20px;
   }
 
   &__list {
