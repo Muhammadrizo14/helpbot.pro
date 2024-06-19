@@ -4,13 +4,12 @@
     <div class="create">
       <Box>
         <h2>Создайте вашего первого бота</h2>
-        <form action="#" class="create__form">
+        <form action="#" class="create__form pt-5 flex flex-column gap-5">
           <div class="create__form-title">
-              <BaseInput id="create__form-title" type="text" label="Название бота" placeholder="Мой_первый_бот"/>
+            <label for="create__form-title">Название бота</label>
+            <InputText :style="{'width': '100%', 'margin-top': '10px'}" id="create__form-title" type="text" placeholder="Мой_первый_бот"/>
           </div>
-          <button type="submit" class="create__form-submit">
-            Создать
-          </button>
+          <Button type="submit" class="create__form-submit" label="Создать"/>
         </form>
       </Box>
     </div>
@@ -19,7 +18,6 @@
 
 <script setup lang="ts">
 import Box from '../components/box.vue'
-import BaseInput from "../components/base-input.vue";
 </script>
 
 <style lang="scss" scoped>
@@ -33,63 +31,15 @@ import BaseInput from "../components/base-input.vue";
   }
 
   .create {
+    width: 550px;
     position: absolute;
     left: 50%;
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-
-    &__form {
-      &-title {
-        padding: 40px 0;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-
-        input {
-          border-radius: 8px;
-          padding: 12px;
-          border: 2px solid var(--grey-04);
-
-
-          &::placeholder {
-            color: var(--grey-04);
-            font-size: 18px;
-          }
-
-          &:active {
-            border: 2px solid var(--grey-02);
-          }
-        }
-        padding-bottom: 24px;
-      }
-
-      &-submit {
-        background: var(--primary-01);
-        color: var(--grey-09);
-        border: 0;
-        cursor: pointer;
-        bottom: 40px;
-        width: 100%;
-        padding: 16px 0;
-        border-radius: 8px;
-
-        &:hover {
-          background: var(--primary-02);
-        }
-
-        &:active {
-          background: var(--primary-03);
-        }
-
-        &:disabled {
-          background: var(--grey-06);
-          color: var(--grey-03);
-          cursor: auto;
-        }
-      }
-    }
-
+    max-height: 100%;
+    overflow: auto;
+    scrollbar-width: none;
   }
 }
 </style>
