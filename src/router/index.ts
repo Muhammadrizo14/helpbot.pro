@@ -5,19 +5,59 @@ import AuthView from '../views/Auth/Auth.vue'
 import CreateView from '../views/create.vue'
 import HomeView from '../views/home.vue'
 
+//Dashboard
+import MainView from '../views/Dashboard/main.vue'
+import IntegrationView from '../views/Dashboard/integration.vue'
+import UsersView from '../views/Dashboard/users.vue'
+import SettingsView from '../views/Dashboard/settings.vue'
+
+// Dashboard => Content
+import QuestionsView from '../views/Dashboard/Content/questions.vue'
+import TemplatesView from '../views/Dashboard/Content/templates.vue'
+import DataBaseView from '../views/Dashboard/Content/data-base.vue'
+
 const routes = [
 
   {
     path: '/',
-    component: HomeView
+    name: 'dashboard',
+    component: HomeView,
+    children: [
+      {
+        path: '',
+        component: MainView,
+      },
+      {
+        path: '/integration',
+        component: IntegrationView,
+      },
+      {
+        path: '/users',
+        component: UsersView,
+      },
+      {
+        path: '/settings',
+        component: SettingsView,
+      },
+      {
+        path: '/content/questions',
+        component: QuestionsView
+      },
+      {
+        path: '/content/templates',
+        component: TemplatesView
+      },
+      {
+        path: '/content/database',
+        component: DataBaseView
+      }
+    ]
   },
-
   {
     path: '/auth',
     component: AuthView,
     children: [
       {
-
         path: '',
         component: LoginView,
       },
@@ -37,6 +77,19 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 })
+
+
+// router.beforeEach((to, from, next) => {
+//   const user = localStorage.getItem("token");
+//   if (!user && !to.path.includes('/auth')) {
+//     next('/auth');
+//   } else {
+//     next();
+//   }
+// });
+
+
+
 
 
 

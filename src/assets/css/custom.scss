@@ -1,15 +1,16 @@
 .p-button-submit {
   color: var(--grey-09);
-  border: 0 ;
+  border: 0;
   width: 100%;
   padding: 16px 0;
   border-radius: 8px;
 
   span {
-    font-family: 'Ubuntu medium',sans-serif;
+    font-family: 'Ubuntu medium', sans-serif;
     font-weight: 500;
     font-size: 18px;
   }
+
   &:active {
     background: var(--primary-03);
   }
@@ -19,6 +20,26 @@
     color: var(--grey-03);
     cursor: auto;
   }
+
+  &:focus-visible {
+    outline: 1px solid var(--grey-01);
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+
+
+}
+
+.p-button-outlined:not(.p-button-danger) {
+  border: 2px solid rgba(116, 119, 131, 1);
+  color: var(--grey-02);
+
+  &:hover {
+    border: 2px solid var(--grey-01);
+    color: var(--grey-01);
+    background: transparent;
+  }
+
   &:focus-visible {
     outline: 1px solid var(--grey-01);
     outline-offset: 2px;
@@ -26,10 +47,35 @@
   }
 }
 
-.p-button {
+.p-button-danger {
+  border: 2px solid var(--red);
+
+  &:hover {
+    background: rgba(245, 84, 107, 0.1);
+  }
+
+  &:active {
+    background: rgba(245, 84, 107, 0.2);
+  }
+}
+
+.p-button:not(.p-button-outlined) {
   &:active {
     border: var(--primary-03) 1px solid;
     background: var(--primary-03);
+  }
+}
+
+
+.p-toast {
+  * {
+    margin: revert-layer;
+  }
+
+  .users-error {
+    svg {
+      display: none;
+    }
   }
 }
 
@@ -62,7 +108,7 @@
 }
 
 
-.default-select {
+.dashboard-select {
   border-radius: 8px;
   background-color: var(--grey-07);
   outline: none;
@@ -73,16 +119,22 @@
   &:hover {
     background-color: var(--grey-05);
   }
+}
+
+.default-select {
+  border-radius: 8px;
+  outline: none;
+  border: 1px solid var(--grey-04);
 
 }
 
 .p-overlaypanel {
   &:before {
-    content:none;
+    content: none;
   }
 
   &:after {
-    content:none;
+    content: none;
   }
 
   margin-top: 0px;
@@ -91,4 +143,57 @@
 
 .p-dropdown-label.p-inputtext {
   font-size: 18px
+}
+
+
+.p-datatable-table {
+  .p-datatable-thead {
+    tr {
+      th {
+        background: transparent;
+        color: var(--grey-02);
+        font-size: 18px;
+        font-weight: 400;
+        border: 0;
+      }
+    }
+  }
+
+  .p-datatable-tbody {
+    tr {
+      height: 60px;
+      max-height: 60px;
+      &:hover {
+        background: var(--grey-08);
+      }
+
+      td {
+        border: 0;
+      }
+    }
+
+    tr:first-child {
+      td {
+        &:first-child {
+          border-top-left-radius: 16px;
+        }
+
+        &:last-child {
+          border-top-right-radius: 16px;
+        }
+      }
+    }
+
+    tr:last-child {
+      td {
+        &:first-child {
+          border-bottom-left-radius: 16px;
+        }
+
+        &:last-child {
+          border-bottom-right-radius: 16px;
+        }
+      }
+    }
+  }
 }

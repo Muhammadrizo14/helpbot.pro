@@ -3,9 +3,6 @@ import {reactive, ref} from 'vue';
 import {useVuelidate} from '@vuelidate/core';
 import {required, email, helpers} from '@vuelidate/validators';
 import Box from '../../components/box.vue';
-import Popup from '../../components/popup.vue';
-import BaseInput from '../../components/base-input.vue';
-import axios from "axios";
 import {useAuthStore} from "../../stores/AuthStore";
 import router from "../../router/index";
 
@@ -63,8 +60,8 @@ const submitForgotPassword = async () => {
       <h2 class="pb-5">Войдите в аккаунт</h2>
       <form @submit.prevent="submit" class="flex flex-column gap-4">
         <div class="flex flex-column gap-2">
-          <label for="username">Email</label>
-          <InputText class="custom-input" v-model="data.email" :invalid="v$.email.$errors.length > 0" id="username"
+          <label for="email">Email</label>
+          <InputText class="custom-input" v-model="data.email" :invalid="v$.email.$errors.length > 0" id="email"
                      placeholder="example@gmail.com" aria-describedby="username-help"/>
           <label for="login__form-email" v-for="error in v$.email.$errors" :key="error.$uid"
                  style="color: var(--red)">{{ error.$message }}</label>

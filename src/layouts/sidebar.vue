@@ -2,7 +2,7 @@
   <Box class="sidebar">
     <router-link to="/"><img class="sidebar__logo " src="../assets/images/Logo.png" alt=""></router-link>
 
-    <Dropdown class="default-select mt-3"  checkmark v-model="selectedCity" :options="cities" optionLabel="name">
+    <Dropdown class="dashboard-select mt-3" checkmark v-model="selectedCity" :options="cities" optionLabel="name">
       <template #dropdownicon>
         <svg width="12" height="19" viewBox="0 0 14 21" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M6.4733 0.966068C6.76534 0.677977 7.23466 0.677977 7.5267 0.966068L13.0267 6.3916C13.3216 6.68249 13.3248 7.15735 13.0339 7.45224C12.743 7.74712 12.2682 7.75035 11.9733 7.45946L7 2.5535L2.0267 7.45946C1.73182 7.75035 1.25696 7.74712 0.966068 7.45224C0.675178 7.15735 0.678414 6.68249 0.973297 6.3916L6.4733 0.966068ZM0.966068 13.5478C1.25696 13.2529 1.73182 13.2496 2.0267 13.5405L7 18.4465L11.9733 13.5405C12.2682 13.2496 12.743 13.2529 13.0339 13.5478C13.3248 13.8426 13.3216 14.3175 13.0267 14.6084L7.5267 20.0339C7.23466 20.322 6.76534 20.322 6.4733 20.0339L0.973297 14.6084C0.678414 14.3175 0.675178 13.8426 0.966068 13.5478Z" fill="#14182C"/>
@@ -13,43 +13,59 @@
     <div class="sidebar__line"/>
 
     <ul class="sidebar__list">
-      <li class="flex align-items-center p-3 active">
-        <HomeIcon/>
-        <p>Обзор</p>
-      </li>
+
+      <router-link to="/">
+        <li class="flex align-items-center p-3" :class="route.path === '/' && 'active'">
+          <HomeIcon/>
+          <p>Обзор</p>
+        </li>
+      </router-link>
+
       <li class="flex flex-column">
-        <div class="flex align-items-center p-3">
+        <div class="flex align-items-center p-3" :class="route.path.includes('content') && 'active'">
           <contentIcon/>
           <p>Контент</p>
         </div>
         <ul class="sidebar__submenu flex align-items-start">
           <div class="sidebar__submenu-line"/>
           <div class="w-full">
-            <li class="p-2 flex w-full justify-content-between">
-              <p>Вопросы без ответа</p>
-              <Badge value="2" severity="danger"></Badge>
-            </li>
-            <li class="p-2  flex w-full justify-content-between">
+            <router-link to="/content/questions">
+              <li class="p-2 flex w-full justify-content-between" :style="route.path === '/content/questions' && {color: 'var(--grey-01)'}">
+                <p>Вопросы без ответа</p>
+                <Badge value="2" severity="danger"></Badge>
+              </li>
+            </router-link>
+            <router-link to="/content/database">
+              <li class="p-2  flex w-full justify-content-between" :style="route.path === '/content/database' && {color: 'var(--grey-01)'}">
               <p>База данных</p>
             </li>
-            <li class="p-2  flex w-full justify-content-between">
+            </router-link>
+            <router-link to="/content/templates">
+              <li class="p-2  flex w-full justify-content-between" :style="route.path === '/content/templates' && {color: 'var(--grey-01)'}">
               <p>Шаблоны</p>
             </li>
+            </router-link>
           </div>
         </ul>
       </li>
-      <li class="flex align-items-center p-3">
+      <router-link to="/integration">
+        <li class="flex align-items-center p-3" :class="route.path === '/integration' && 'active'">
         <integrationIcon/>
         <p>Интеграции</p>
       </li>
-      <li class="flex align-items-center p-3">
+      </router-link>
+      <router-link to="/users">
+        <li class="flex align-items-center p-3" :class="route.path === '/users' && 'active'">
         <UsersIcon/>
         <p>Пользователи</p>
       </li>
-      <li class="flex align-items-center p-3">
+      </router-link>
+      <router-link to="/settings">
+        <li class="flex align-items-center p-3"  :class="route.path === '/settings' && 'active'">
         <SettingsIcon/>
         <p>Настройки</p>
       </li>
+      </router-link>
     </ul>
 
 
@@ -94,7 +110,9 @@ import UsersIcon from "../components/Icons/Sidebar/users-icon.vue";
 import SettingsIcon from "../components/Icons/Sidebar/settings-icon.vue";
 import PaymentIcon from "../components/Icons/Sidebar/payment-icon.vue";
 import SingoutIcon from "../components/Icons/Sidebar/singout-icon.vue";
+import {useRoute} from "vue-router";
 
+const route = useRoute()
 const userInfo = ref(false);
 const userInfoActivity = ref(false);
 
@@ -114,16 +132,22 @@ const toggleUserInfo = () => {
   userInfoActivity.value = !userInfoActivity.value
 }
 
+
 </script>
 
 <style scoped lang="scss">
 .sidebar {
   width: 360px;
+  min-width: 360px;
   margin: 0;
   padding: 20px;
   border-radius: 0;
   display: flex;
   flex-direction: column;
+  a {
+    text-decoration: none;
+    color: black;
+  }
 
   &__logo {
     width: 209px;
