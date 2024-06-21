@@ -28,6 +28,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SettingsIcon: typeof import('./src/components/Icons/Sidebar/settings-icon.vue')['default']
     SingoutIcon: typeof import('./src/components/Icons/Sidebar/singout-icon.vue')['default']
+    TabMenu: typeof import('primevue/tabmenu')['default']
     UsersIcon: typeof import('./src/components/Icons/Sidebar/users-icon.vue')['default']
   }
 }

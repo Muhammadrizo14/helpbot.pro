@@ -1,12 +1,75 @@
 <template>
   <div>
-    <h1>Settings</h1>
+    <h1>Настройки</h1>
+
+    <TabMenu v-model:activeIndex="active" :model="items" class="settings-tabmenu pt-3"/>
+
+
+    <form class="pt-5" v-if="active === 0">
+      <div class="flex flex-column gap-2  pb-3">
+        <label for="title">
+          <p>Название</p>
+        </label>
+        <InputText v-model="data.title" class="w-25rem" :invalid="v$.title.$errors.length > 0" id="title"
+                   placeholder="Название" aria-describedby="username-help"/>
+        <label for="login__form-title" v-for="error in v$.title.$errors" :key="error.$uid"
+               style="color: var(--red)">{{ error.$message }}</label>
+      </div>
+      <Button label="Сохранить" class="px-4 py-3 border-round-lg"/>
+    </form>
+
+
+    <form class="pt-5" v-if="active === 1">
+      <div class="flex flex-column gap-2  pb-3">
+        <label for="title">
+          <p>Полностью удалите данные бота</p>
+        </label>
+        <InputText v-model="data.title" class="w-25rem" :invalid="v$.title.$errors.length > 0" id="title"
+                   placeholder="Название" aria-describedby="username-help"/>
+        <p :style="{color: 'var(--grey-02)', width: '360px'}">
+          Если вы удалите бота, пути назад уже не будет. Пожалуйста, будьте уверены.
+        </p>
+        <label for="login__form-title" v-for="error in v$.title.$errors" :key="error.$uid"
+               style="color: var(--red)">{{ error.$message }}</label>
+      </div>
+      <Button label="Удалить этого бота" icon="pi pi-trash" severity="danger" outlined class="px-4 py-3 border-round-lg"/>
+    </form>
   </div>
 </template>
 
 <script setup>
+import {reactive, ref} from 'vue'
+import {email, helpers, required} from "@vuelidate/validators";
+import {useVuelidate} from "@vuelidate/core";
+
+
+const data = reactive({
+  title: '',
+});
+
+const customMessages = {
+  required: 'Это поле не может быть пустым',
+};
+
+const rules = {
+  title: {
+    required: helpers.withMessage(customMessages.required, required)
+  }
+};
+
+const v$ = useVuelidate(rules, data);
+
+
+const active = ref(0);
+const items = ref([
+  {label: 'Название бота'},
+  {label: 'Удаление'},
+]);
 </script>
 
 <style scoped lang="scss">
-
+.settings {
+  &-tabmenu {
+  }
+}
 </style>

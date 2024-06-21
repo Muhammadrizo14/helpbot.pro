@@ -83,7 +83,7 @@
               <p>Настройки</p>
             </li>
             <div class="sidebar__user-panel-line"/>
-            <li class="flex align-items-center">
+            <li class="flex align-items-center" @click="logout">
               <SingoutIcon/>
               <p>Выйти</p>
             </li>
@@ -111,6 +111,7 @@ import SettingsIcon from "../components/Icons/Sidebar/settings-icon.vue";
 import PaymentIcon from "../components/Icons/Sidebar/payment-icon.vue";
 import SingoutIcon from "../components/Icons/Sidebar/singout-icon.vue";
 import {useRoute} from "vue-router";
+import router from "../router";
 
 const route = useRoute()
 const userInfo = ref(false);
@@ -132,6 +133,11 @@ const toggleUserInfo = () => {
   userInfoActivity.value = !userInfoActivity.value
 }
 
+const logout = ()=> {
+  window.localStorage.removeItem('token')
+  router.push({path: '/auth'})
+
+}
 
 </script>
 

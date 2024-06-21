@@ -6,7 +6,7 @@
     </div>
     <DataTable :value="products" :tableClass="'users-data'" class="users-table">
       <template #empty>
-        asdfasd
+        <p class="text-center">Добавьте хотя бы одного пользователя</p>
       </template>
       <Column field="name" header="Имя">
 
@@ -119,30 +119,32 @@ const v$ = useVuelidate(rules, data);
 
 const inviteUser = ref(false)
 
-const products = ref([
-  {
-    id: 3,
-    name: 'Иван Иванов',
-    email: 'ex@email.com',
-    role: 'Владелец',
-    status: ''
-  },
-  {
-    id: 2,
-    name: 'Олег Коржиков',
-    email: 'exa2@email.com',
-    role: 'Администратор',
-    status: ''
-  },
-
-  {
-    id: 1,
-    name: 'Пётр Петров',
-    email: 'ex3@email.com',
-    role: 'Администратор',
-    status: 'Ожидает'
-  },
-]);
+const products = ref(
+    // [
+    //   {
+    //     id: 3,
+    //     name: 'Иван Иванов',
+    //     email: 'ex@email.com',
+    //     role: 'Владелец',
+    //     status: ''
+    //   },
+    //   {
+    //     id: 2,
+    //     name: 'Олег Коржиков',
+    //     email: 'exa2@email.com',
+    //     role: 'Администратор',
+    //     status: ''
+    //   },
+    //
+    //   {
+    //     id: 1,
+    //     name: 'Пётр Петров',
+    //     email: 'ex3@email.com',
+    //     role: 'Администратор',
+    //     status: 'Ожидает'
+    //   },
+    // ]
+);
 </script>
 
 <style scoped lang="scss">

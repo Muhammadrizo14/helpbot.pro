@@ -163,7 +163,8 @@
     tr {
       height: 60px;
       max-height: 60px;
-      &:hover {
+
+      &:hover:not(.p-datatable-emptymessage) {
         background: var(--grey-08);
       }
 
@@ -192,6 +193,25 @@
 
         &:last-child {
           border-bottom-right-radius: 16px;
+        }
+      }
+    }
+  }
+}
+
+.p-tabmenu.settings-tabmenu {
+  .p-tabmenu-ink-bar {
+    height: 2px
+  }
+  .p-tabmenu-nav {
+    background: transparent;
+    .p-tabmenuitem {
+      .p-menuitem-link {
+        background: transparent;
+        .p-menuitem-text {
+          font-size: 18px;
+          font-weight: 400;
+          text-align: left;
         }
       }
     }
