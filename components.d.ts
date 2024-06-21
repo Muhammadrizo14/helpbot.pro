@@ -20,6 +20,7 @@ declare module 'vue' {
     HomeIcon: typeof import('./src/components/Icons/Sidebar/home-icon.vue')['default']
     InputText: typeof import('primevue/inputtext')['default']
     IntegrationIcon: typeof import('./src/components/Icons/Sidebar/integration-icon.vue')['default']
+    MultiSelect: typeof import('primevue/multiselect')['default']
     OverlayPanel: typeof import('primevue/overlaypanel')['default']
     Password: typeof import('primevue/password')['default']
     PaymentIcon: typeof import('./src/components/Icons/Sidebar/payment-icon.vue')['default']
