@@ -7,7 +7,7 @@ export const useAuthStore = defineStore('auth', ()=> {
   const user = ref(JSON.parse(localStorage.getItem('user') || null))
   const token = ref(localStorage.getItem('token') || null)
 
-  const login = async (username: string, password:string)=> {
+  const login = async (question: string, similar:string, answer: string)=> {
     return await axios
       .post(`${apiUrl}/user/login`, {
         username,

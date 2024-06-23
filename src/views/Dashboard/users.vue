@@ -111,7 +111,7 @@ const sendInventation = () => {
     severity: 'error',
     summary: 'Заголовок ошибки',
     detail: 'Текст ошибки текст ошибки текст ошибки текст ошибки текст ошибки текст ошибки текст ошибки текст ошибки',
-    life: 30000,
+    life: 3000,
   });
 }
 
@@ -120,30 +120,30 @@ const v$ = useVuelidate(rules, data);
 const inviteUser = ref(false)
 
 const products = ref(
-    // [
-    //   {
-    //     id: 3,
-    //     name: 'Иван Иванов',
-    //     email: 'ex@email.com',
-    //     role: 'Владелец',
-    //     status: ''
-    //   },
-    //   {
-    //     id: 2,
-    //     name: 'Олег Коржиков',
-    //     email: 'exa2@email.com',
-    //     role: 'Администратор',
-    //     status: ''
-    //   },
-    //
-    //   {
-    //     id: 1,
-    //     name: 'Пётр Петров',
-    //     email: 'ex3@email.com',
-    //     role: 'Администратор',
-    //     status: 'Ожидает'
-    //   },
-    // ]
+    [
+      {
+        id: 3,
+        name: 'Иван Иванов',
+        email: 'ex@email.com',
+        role: 'Владелец',
+        status: ''
+      },
+      {
+        id: 2,
+        name: 'Олег Коржиков',
+        email: 'exa2@email.com',
+        role: 'Администратор',
+        status: ''
+      },
+
+      {
+        id: 1,
+        name: 'Пётр Петров',
+        email: 'ex3@email.com',
+        role: 'Администратор',
+        status: 'Ожидает'
+      },
+    ]
 );
 </script>
 

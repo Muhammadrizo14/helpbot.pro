@@ -24,16 +24,33 @@
         <label for="title">
           <p>Полностью удалите данные бота</p>
         </label>
-        <InputText v-model="data.title" class="w-25rem" :invalid="v$.title.$errors.length > 0" id="title"
-                   placeholder="Название" aria-describedby="username-help"/>
+<!--        <InputText v-model="data.title" class="w-25rem" :invalid="v$.title.$errors.length > 0" id="title"-->
+<!--                   placeholder="Название" aria-describedby="username-help"/>-->
         <p :style="{color: 'var(--grey-02)', width: '360px'}">
           Если вы удалите бота, пути назад уже не будет. Пожалуйста, будьте уверены.
         </p>
         <label for="login__form-title" v-for="error in v$.title.$errors" :key="error.$uid"
                style="color: var(--red)">{{ error.$message }}</label>
       </div>
-      <Button label="Удалить этого бота" icon="pi pi-trash" severity="danger" outlined class="px-4 py-3 border-round-lg"/>
+      <Button label="Удалить этого бота" icon="pi pi-trash" severity="danger" outlined class="px-4 py-3 border-round-lg" @click="sureDialog = true"/>
     </form>
+
+    <Dialog v-model:visible="sureDialog" modal header="Вы абсолютно уверены?" :draggable="false">
+      <span class="p-text-secondary block mb-5 w-27rem">
+        Это действие не может быть отменено. Это приведет к безвозвратному удалению вашего бота и его данных с наших серверов..
+      </span>
+
+      <div class="flex flex-column gap-2 pb-4">
+        <label for="title" class="database-add__label">Пожалуйста, введите название бота для продолжения</label>
+        <InputText id="title" placeholder="Название бота"/>
+      </div>
+
+      <div class="flex justify-content-center gap-2">
+        <Button type="button" label="Отмена" @click="sureDialog = false"></Button>
+        <Button type="button" label="Удалить" outlined disabled icon="pi pi-trash" @click="sureDialog = false"></Button>
+      </div>
+    </Dialog>
+
   </div>
 </template>
 
@@ -42,7 +59,7 @@ import {reactive, ref} from 'vue'
 import {email, helpers, required} from "@vuelidate/validators";
 import {useVuelidate} from "@vuelidate/core";
 
-
+const sureDialog = ref(false)
 const data = reactive({
   title: '',
 });

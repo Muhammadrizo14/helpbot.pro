@@ -14,7 +14,7 @@ import SettingsView from '../views/Dashboard/settings.vue'
 // Dashboard => Content
 import QuestionsView from '../views/Dashboard/Content/questions.vue'
 import TemplatesView from '../views/Dashboard/Content/templates.vue'
-import DataBaseView from '../views/Dashboard/Content/data-base.vue'
+import DataBaseView from '../views/Dashboard/Content/Data-Base/data-base.vue'
 
 const routes = [
 

@@ -3193,9 +3193,8 @@ $primary-color: #7958DB;
     border-color: #9677F3;
   }
   .p-button:not(:disabled):active {
-    background: #047857;
-    color: #ffffff;
-    border-color: #047857;
+    background: var(--primary-03);
+    border-color: var(--primary-03);
   }
   .p-button.p-button-outlined {
     background-color: transparent;

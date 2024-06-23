@@ -26,8 +26,6 @@
     outline-offset: 2px;
     box-shadow: none;
   }
-
-
 }
 
 .p-button-outlined:not(.p-button-danger) {
@@ -47,24 +45,28 @@
   }
 }
 
+
+.p-fileupload-content {
+  padding: 0;
+}
+
 .p-button-danger {
   border: 2px solid var(--red);
 
   &:hover {
+      border: 2px solid var(--red);
+
     background: rgba(245, 84, 107, 0.1);
   }
 
   &:active {
+      border: 2px solid var(--red);
+
     background: rgba(245, 84, 107, 0.2);
   }
 }
 
-.p-button:not(.p-button-outlined) {
-  &:active {
-    border: var(--primary-03) 1px solid;
-    background: var(--primary-03);
-  }
-}
+
 
 
 .p-toast {
@@ -146,8 +148,22 @@
 }
 
 
-.p-datatable-table {
+.p-datatable-footer {
+  background: transparent;
+  color: var(--grey-02);
+  font-size: 18px;
+  font-weight: 400;
+  border: 0;
+}
+
+
+.users-data {
+  border-collapse: collapse;
+
+
+
   .p-datatable-thead {
+    border-left: 16px solid transparent;
     tr {
       th {
         background: transparent;
@@ -159,10 +175,21 @@
     }
   }
 
+
+
   .p-datatable-tbody {
+    border: 20px solid #fff;
+    border-radius: 16px;
+
     tr {
       height: 60px;
       max-height: 60px;
+      border-radius: 16px;
+
+
+      &[data-p-highlight="true"] {
+      background: var(--primary-04);
+    }
 
       &:hover:not(.p-datatable-emptymessage) {
         background: var(--grey-08);
@@ -170,20 +197,21 @@
 
       td {
         border: 0;
+        vertical-align: baseline;
       }
     }
 
-    tr:first-child {
-      td {
-        &:first-child {
-          border-top-left-radius: 16px;
-        }
-
-        &:last-child {
-          border-top-right-radius: 16px;
-        }
-      }
-    }
+    //tr:first-child {
+    //  td {
+    //    &:first-child {
+    //      border-top-left-radius: 16px;
+    //    }
+    //
+    //    &:last-child {
+    //      border-top-right-radius: 16px;
+    //    }
+    //  }
+    //}
 
     tr:last-child {
       td {
@@ -203,11 +231,14 @@
   .p-tabmenu-ink-bar {
     height: 2px
   }
+
   .p-tabmenu-nav {
     background: transparent;
+
     .p-tabmenuitem {
       .p-menuitem-link {
         background: transparent;
+
         .p-menuitem-text {
           font-size: 18px;
           font-weight: 400;
@@ -220,4 +251,51 @@
 
 .p-multiselect-panel .p-multiselect-items .p-multiselect-item .p-checkbox {
   margin-right: 0.5rem !important;
+}
+
+.p-button-light {
+  color: var(--primary-01);
+  background: var(--primary-04);
+  border: 0;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+
+  span {
+    font-family: 'Ubuntu medium', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+  }
+
+
+  &:hover {
+    background: var(--primary-05);
+  }
+
+
+  &:active {
+    border: 0 !important;
+    background: var(--primary-06) !important;
+  }
+
+  &:disabled {
+    background: var(--grey-06);
+    color: var(--grey-03);
+    cursor: auto;
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--grey-01);
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+}
+
+
+.close-icon {
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
 }
