@@ -11,11 +11,7 @@
 
 
     <!--База знаний tab-->
-    <knowlednge v-if="selectedTab === 1"/>
-
-
-
-
+    <knowledge v-if="selectedTab === 1"/>
 
 
   </div>
@@ -24,9 +20,9 @@
 <script setup>
 import {ref} from "vue";
 import Questionnaire from "./questionnaire.vue";
-import Knowlednge from "./knowlednge.vue";
+import Knowledge from "./knowlednge.vue";
 
-const selectedTab = ref(1);
+const selectedTab = ref(0);
 
 
 const items = ref([
