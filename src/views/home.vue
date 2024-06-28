@@ -31,11 +31,12 @@ import Toast from 'primevue/toast';
 .wrap {
   font-size: 26px;
   background: var(--grey-07);
-  height: 100vh;
+  height: 100%;
   .dashboard-content {
     padding: 15px;
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
+    height: 100vh;
   }
 }
 </style>

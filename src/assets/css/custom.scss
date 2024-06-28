@@ -54,13 +54,13 @@
   border: 2px solid var(--red);
 
   &:hover {
-      border: 2px solid var(--red);
+    border: 2px solid var(--red);
 
     background: rgba(245, 84, 107, 0.1);
   }
 
   &:active {
-      border: 2px solid var(--red);
+    border: 2px solid var(--red);
 
     background: rgba(245, 84, 107, 0.2);
   }
@@ -154,14 +154,33 @@
   border: 0;
 }
 
-
-.users-data {
-  border-collapse: collapse;
-
-
-
+.asdf {
   .p-datatable-thead {
     border-left: 16px solid transparent;
+
+    tr {
+      th {
+        background: transparent;
+        color: var(--grey-01) !important;
+        font-size: 18px;
+        font-weight: 400;
+        border: 0;
+      }
+    }
+  }
+
+  .p-datatable-tbody {
+    td {
+      border: 0;
+      vertical-align: middle !important;
+    }
+  }
+}
+
+.archive-data {
+  .p-datatable-thead {
+    border-left: 16px solid transparent;
+
     tr {
       th {
         background: transparent;
@@ -172,7 +191,34 @@
       }
     }
   }
+  .p-datatable-tbody {
+    tr {
+      td {
+        border: 0;
+        vertical-align: baseline;
+        color: var(--grey-02);
+      }
+    }
+  }
+}
 
+.users-data {
+  border-collapse: collapse;
+
+
+  .p-datatable-thead {
+    border-left: 16px solid transparent;
+
+    tr {
+      th {
+        background: transparent;
+        color: var(--grey-02);
+        font-size: 18px;
+        font-weight: 400;
+        border: 0;
+      }
+    }
+  }
 
 
   .p-datatable-tbody {
@@ -187,8 +233,8 @@
 
 
       &[data-p-highlight="true"] {
-      background: var(--primary-04);
-    }
+        background: var(--primary-04);
+      }
 
       &:hover:not(.p-datatable-emptymessage) {
         background: var(--grey-08);
@@ -297,4 +343,8 @@
   top: 20px;
   right: 20px;
   cursor: pointer;
+}
+
+.default-switch {
+
 }

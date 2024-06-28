@@ -15,7 +15,11 @@
           icon="pi pi-plus"
           @click="addDataModal = true"
         />
-        <Button severity="light" label="Редактировать источник данных" />
+        <Button
+          severity="light"
+          @click="editDataModal = true"
+          label="Редактировать источник данных"
+        />
       </div>
     </div>
     <Divider />
@@ -135,6 +139,54 @@
         </template>
       </Column>
     </DataTable>
+
+<!--    <Dialog-->
+<!--      modal-->
+<!--      v-model:visible="editDataModal"-->
+<!--      header="Редактировать источник данных"-->
+<!--      :closable="false"-->
+<!--      style="width: 1000px"-->
+<!--      :draggable="false"-->
+<!--    >-->
+<!--      <img-->
+<!--        src="@/assets/images/icons/close.png"-->
+<!--        alt="Close"-->
+<!--        class="close-icon"-->
+<!--        @click="editDataModal = false"-->
+<!--      />-->
+<!--      <p class="text-500 pb-4">Заполните форму, чтобы добавить сайт</p>-->
+<!--      <Box class="p-4">-->
+<!--        <div class="flex gap-2 flex-column">-->
+<!--          <div class="flex align-items-center justify-content-between">-->
+<!--            <p>https://mysite-bigname.site/page-1-1-1</p>-->
+<!--            <p>По умолчанию</p>-->
+<!--            <p>Сайт</p>-->
+<!--            <div class="flex gap-2 align-items-center">-->
+<!--              <Button icon="pi pi-copy"/>-->
+<!--              <Button icon="pi pi-sync"/>-->
+<!--              <Button icon="pi pi-trash" outlined/>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="flex align-items-center justify-content-between">-->
+<!--            <p>По умолчанию</p>-->
+<!--            <p>Сайт</p>-->
+<!--            <div class="flex gap-2 align-items-center">-->
+<!--              <Button icon="pi pi-trash" outlined/>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="flex align-items-center justify-content-between">-->
+<!--            <p>https://mysite-bigname.site/page-1-1-1</p>-->
+<!--            <p>По умолчанию</p>-->
+<!--            <p>Сайт</p>-->
+<!--            <div class="flex gap-2 align-items-center">-->
+<!--              <Button icon="pi pi-copy"/>-->
+<!--              <Button icon="pi pi-sync"/>-->
+<!--              <Button icon="pi pi-trash" outlined/>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </Box>-->
+<!--    </Dialog>-->
 
     <Dialog
       v-model:visible="addDataModal"
@@ -345,9 +397,11 @@
 import { reactive, ref } from "vue";
 import { helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import Box from "../../../../components/box.vue";
 
 const fileInput = ref(null);
 const uploadedFile = ref(null);
+const editDataModal = ref(true);
 
 const triggerFileInput = () => {
   fileInput.value.click();

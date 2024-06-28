@@ -10,6 +10,7 @@ import MainView from '../views/Dashboard/main.vue'
 import IntegrationView from '../views/Dashboard/integration.vue'
 import UsersView from '../views/Dashboard/users.vue'
 import SettingsView from '../views/Dashboard/settings.vue'
+import PaymentView from '../views/Dashboard/payment.vue'
 
 // Dashboard => Content
 import QuestionsView from '../views/Dashboard/Content/questions.vue'
@@ -34,6 +35,10 @@ const routes = [
       {
         path: '/users',
         component: UsersView,
+      },
+      {
+        path: '/payment',
+        component: PaymentView,
       },
       {
         path: '/settings',
