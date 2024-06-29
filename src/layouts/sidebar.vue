@@ -125,16 +125,18 @@
       <OverlayPanel ref="userInfo">
         <div class="flex flex-column gap-3 w-25rem sidebar__user-panel">
           <ul class="flex flex-column">
-            <router-link to="/payment" style="text-decoration: none;">
+            <router-link to="/payment" style="text-decoration: none">
               <li class="flex align-items-center">
                 <PaymentIcon width-="10px" />
                 <p>Оплата</p>
               </li>
             </router-link>
-            <li class="flex align-items-center">
-              <SettingsIcon />
-              <p>Настройки</p>
-            </li>
+            <router-link to="/settings" style="text-decoration: none">
+              <li class="flex align-items-center">
+                <SettingsIcon />
+                <p>Настройки</p>
+              </li>
+            </router-link>
             <div class="sidebar__user-panel-line" />
             <li class="flex align-items-center" @click="logout">
               <SingoutIcon />
@@ -145,9 +147,10 @@
       </OverlayPanel>
       <div
         class="flex align-items-center sidebar__user"
-        :class="route.path === '/payment' && 'active', userInfoActivity === true && 'active'"
-
-
+        :class="
+          (route.path === '/payment' && 'active',
+          userInfoActivity === true && 'active')
+        "
         @click="toggleUserInfo()"
       >
         <div class="sidebar__user-icon">И</div>
@@ -194,6 +197,7 @@ const logout = () => {
 
 <style scoped lang="scss">
 .sidebar {
+  position: fixed;
   height: 100vh;
   width: 360px;
   min-width: 360px;
