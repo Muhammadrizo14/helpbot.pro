@@ -38,7 +38,7 @@ const routes = [
         component: UsersView,
       },
       {
-        path: '/settings',
+        path: '/user-settings',
         component: UserSettingsView,
       },
       {
