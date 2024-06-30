@@ -6,12 +6,14 @@ import Toast from "primevue/toast";
 
 <template>
   <div class="wrap flex">
+
     <sidebar />
     <Toast position="bottom-right" />
 
     <div class="dashboard-content">
       <RouterView />
     </div>
+
   </div>
 </template>
 

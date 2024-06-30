@@ -131,7 +131,7 @@
                 <p>Оплата</p>
               </li>
             </router-link>
-            <router-link to="/settings" style="text-decoration: none">
+            <router-link to="/user-settings" style="text-decoration: none">
               <li class="flex align-items-center">
                 <SettingsIcon />
                 <p>Настройки</p>
