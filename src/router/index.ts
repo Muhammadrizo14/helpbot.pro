@@ -11,7 +11,9 @@ import IntegrationView from '../views/Dashboard/integration.vue'
 import UsersView from '../views/Dashboard/users.vue'
 import SettingsView from '../views/Dashboard/settings.vue'
 import UserSettingsView from '../views/Dashboard/User/settings.vue'
+import changePasswordView from '../views/Dashboard/User/change-password.vue'
 import PaymentView from '../views/Dashboard/payment.vue'
+import error404 from '../views/Dashboard/Errors/404.vue'
 
 // Dashboard => Content
 import QuestionsView from '../views/Dashboard/Content/questions.vue'
@@ -80,7 +82,15 @@ const routes = [
   {
     path: '/create',
     component: CreateView
-  }
+  },
+  {
+    path: '/user-password',
+    component: changePasswordView,
+  },
+  {
+    path: '/:notFound',
+    component: error404,
+  },
 ]
 
 const router = createRouter({

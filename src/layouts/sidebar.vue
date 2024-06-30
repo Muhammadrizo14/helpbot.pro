@@ -33,7 +33,7 @@
     <ul class="sidebar__list">
       <router-link to="/">
         <li
-          class="flex align-items-center p-3"
+          class="flex align-items-center p-2"
           :class="route.path === '/' && 'active'"
         >
           <HomeIcon />
@@ -43,7 +43,7 @@
 
       <li class="flex flex-column">
         <div
-          class="flex align-items-center p-3"
+          class="flex align-items-center p-2"
           :class="route.path.includes('content') && 'active'"
         >
           <contentIcon />
@@ -94,7 +94,7 @@
       </li>
       <router-link to="/integration">
         <li
-          class="flex align-items-center p-3"
+          class="flex align-items-center p-2"
           :class="route.path === '/integration' && 'active'"
         >
           <integrationIcon />
@@ -103,7 +103,7 @@
       </router-link>
       <router-link to="/users">
         <li
-          class="flex align-items-center p-3"
+          class="flex align-items-center p-2"
           :class="route.path === '/users' && 'active'"
         >
           <UsersIcon />
@@ -112,7 +112,7 @@
       </router-link>
       <router-link to="/settings">
         <li
-          class="flex align-items-center p-3"
+          class="flex align-items-center p-2"
           :class="route.path === '/settings' && 'active'"
         >
           <SettingsIcon />
@@ -126,19 +126,19 @@
         <div class="flex flex-column gap-3 w-25rem sidebar__user-panel">
           <ul class="flex flex-column">
             <router-link to="/payment" style="text-decoration: none">
-              <li class="flex align-items-center">
+              <li class="flex align-items-center p-1">
                 <PaymentIcon width-="10px" />
                 <p>Оплата</p>
               </li>
             </router-link>
             <router-link to="/user-settings" style="text-decoration: none">
-              <li class="flex align-items-center">
+              <li class="flex align-items-center p-1">
                 <SettingsIcon />
                 <p>Настройки</p>
               </li>
             </router-link>
             <div class="sidebar__user-panel-line" />
-            <li class="flex align-items-center" @click="logout">
+            <li class="flex align-items-center p-1" @click="logout">
               <SingoutIcon />
               <p>Выйти</p>
             </li>
@@ -213,7 +213,7 @@ const logout = () => {
   }
 
   &__logo {
-    width: 209px;
+    width: 155px;
   }
 
   &__line {
@@ -326,7 +326,6 @@ const logout = () => {
     }
 
     li {
-      padding: 8px;
       cursor: pointer;
       gap: 8px;
 
