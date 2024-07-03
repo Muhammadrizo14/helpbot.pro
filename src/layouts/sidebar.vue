@@ -193,7 +193,7 @@
 
 <script setup>
 import Box from "../components/box.vue";
-import { ref } from "vue";
+import {computed, ref, watch} from "vue";
 import HomeIcon from "../components/Icons/Sidebar/home-icon.vue";
 import ContentIcon from "../components/Icons/Sidebar/content-icon.vue";
 import IntegrationIcon from "../components/Icons/Sidebar/integration-icon.vue";
@@ -212,13 +212,14 @@ const contentSubmenu = ref(false);
 const userInfo = ref(false);
 const userInfoActivity = ref(false);
 
-const cities = ref([
-  { name: store.bot, code: "MyBot" },
-  { name: "Супер Бот", code: "SuperBot" },
-]);
+const selectedCity = ref(null)
 
-const selectedCity = ref(cities.value[0]);
+const cities = computed(() => [
+  { name: store.bot, code: 'MyBot' },
+  { name: 'Супер Бот', code: 'SuperBot' }
+])
 
+selectedCity.value = cities.value[0]
 const toggleUserInfo = () => {
   userInfo.value.toggle(event);
   userInfoActivity.value = !userInfoActivity.value;
@@ -232,6 +233,13 @@ const logout = () => {
 const contentToggle = () => {
   contentSubmenu.value = !contentSubmenu.value;
 };
+
+watch(
+    () => store.bot,
+    (newBotName) => {
+      selectedCity.value = { name: newBotName, code: 'MyBot' }
+    }
+)
 </script>
 
 <style scoped lang="scss">
