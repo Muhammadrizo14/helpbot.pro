@@ -106,7 +106,7 @@
 
     <DataTable
       v-model:selection="selectedProduct"
-      :tableClass="`users-data asdf ${selectedTab === 2 && 'archive-data'}`"
+      :tableClass="` asdf ${selectedTab === 2 ? 'archive-data' : ''}`"
       class="users-table pt-4"
       :value="filteredQuestions"
       tableStyle="min-width: 50rem"

@@ -27,6 +27,7 @@ declare module 'vue' {
     Menu: typeof import('primevue/menu')['default']
     MultiSelect: typeof import('primevue/multiselect')['default']
     OverlayPanel: typeof import('primevue/overlaypanel')['default']
+    PanelMenu: typeof import('primevue/panelmenu')['default']
     Password: typeof import('primevue/password')['default']
     PaymentIcon: typeof import('./src/components/Icons/Sidebar/payment-icon.vue')['default']
     Popup: typeof import('./src/components/popup.vue')['default']

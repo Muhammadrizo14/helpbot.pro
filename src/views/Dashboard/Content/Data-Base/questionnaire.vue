@@ -1,7 +1,6 @@
 <template>
-  <div class="database__questions-empty">
+  <div class="database__questions-empty" v-if="questionsList.length === 0">
     <div
-      v-if="questionsList.length === 0"
       class="flex align-items-center justify-content-center flex-column h-full"
     >
       <img src="@/assets/images/database-question-empty.png" alt="" />

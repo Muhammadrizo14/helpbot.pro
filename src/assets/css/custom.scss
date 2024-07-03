@@ -159,6 +159,9 @@
     border-left: 16px solid transparent;
 
     tr {
+      * {
+        margin: revert-layer;
+      }
       th {
         background: transparent;
         color: var(--grey-01) !important;
@@ -170,6 +173,11 @@
   }
 
   .p-datatable-tbody {
+    tr {
+      &[data-p-highlight="true"] {
+        background: var(--primary-04);
+      }
+    }
     td {
       border: 0;
       vertical-align: middle !important;
@@ -211,6 +219,9 @@ button {
   border-collapse: collapse;
 
 
+
+
+
   .p-datatable-thead {
     border-left: 16px solid transparent;
 
@@ -227,7 +238,7 @@ button {
 
 
   .p-datatable-tbody {
-    border: 20px solid #fff;
+    border: 10px solid #fff;
     border-radius: 16px;
 
     tr {

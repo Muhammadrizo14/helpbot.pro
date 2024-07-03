@@ -3,7 +3,6 @@
     <router-link to="/"
       ><img class="sidebar__logo" src="../assets/images/Logo.png" alt=""
     /></router-link>
-
     <Dropdown
       class="dashboard-select mt-3"
       checkmark
@@ -44,12 +43,16 @@
       <li class="flex flex-column">
         <div
           class="flex align-items-center p-2"
-          :class="route.path.includes('content') && 'active'"
+          :class="
+            route.path.includes('content') && 'active',
+            contentSubmenu && 'activesub'
+          "
+          @click="contentToggle"
         >
           <contentIcon />
           <p>Контент</p>
         </div>
-        <ul class="sidebar__submenu flex align-items-start">
+        <ul class="sidebar__submenu  align-items-start" :style="!contentSubmenu && 'display: none; !important'">
           <div class="sidebar__submenu-line" />
           <div class="w-full">
             <router-link to="/content/questions">
@@ -172,13 +175,17 @@ import PaymentIcon from "../components/Icons/Sidebar/payment-icon.vue";
 import SingoutIcon from "../components/Icons/Sidebar/singout-icon.vue";
 import { useRoute } from "vue-router";
 import router from "../router";
+import { useBotStore } from "@/stores/BotStore.ts";
+
+const store = useBotStore();
 
 const route = useRoute();
+const contentSubmenu = ref(false);
 const userInfo = ref(false);
 const userInfoActivity = ref(false);
 
 const cities = ref([
-  { name: "МойБот", code: "MyBot" },
+  { name: store.bot, code: "MyBot" },
   { name: "Супер Бот", code: "SuperBot" },
 ]);
 
@@ -192,6 +199,10 @@ const toggleUserInfo = () => {
 const logout = () => {
   window.localStorage.removeItem("token");
   router.push({ path: "/auth" });
+};
+
+const contentToggle = () => {
+  contentSubmenu.value = !contentSubmenu.value;
 };
 </script>
 
@@ -240,6 +251,7 @@ const logout = () => {
       }
 
       .sidebar__submenu {
+        display: flex;
         margin-left: 24px;
 
         &-line {

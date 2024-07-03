@@ -13,7 +13,7 @@
 
     <div class="pt-6 user-data">
       <p class="label">Пароль</p>
-      <a href="/user-password" class="changer">Изменить пароль</a>
+      <router-link to="/user-password" class="changer">Изменить пароль</router-link>
     </div>
 
     <Dialog
