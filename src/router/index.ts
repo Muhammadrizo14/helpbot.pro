@@ -13,6 +13,7 @@ import SettingsView from '../views/Dashboard/settings.vue'
 import UserSettingsView from '../views/Dashboard/User/settings.vue'
 import changePasswordView from '../views/Dashboard/User/change-password.vue'
 import PaymentView from '../views/Dashboard/payment.vue'
+import BotsView from '../views/Dashboard/bots.vue'
 import error404 from '../views/Dashboard/Errors/404.vue'
 
 // Dashboard => Content
@@ -42,6 +43,10 @@ const routes = [
       {
         path: '/user-settings',
         component: UserSettingsView,
+      },
+      {
+        path: '/bots',
+        component: BotsView,
       },
       {
         path: '/payment',
