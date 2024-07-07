@@ -9,6 +9,7 @@ import 'primeflex/primeflex.min.css'
 import 'primeicons/primeicons.css'
 import ToastService from 'primevue/toastservice';
 import Tooltip from 'primevue/tooltip';
+import Chart from 'primevue/chart';
 
 
 const pinia = createPinia()
