@@ -32,7 +32,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SettingsIcon: typeof import('./src/components/Icons/Sidebar/settings-icon.vue')['default']
-    Sidebar: typeof import('primevue/sidebar')['default']
     SingoutIcon: typeof import('./src/components/Icons/Sidebar/singout-icon.vue')['default']
     TabMenu: typeof import('primevue/tabmenu')['default']
     Textarea: typeof import('primevue/textarea')['default']

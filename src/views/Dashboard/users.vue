@@ -172,7 +172,7 @@
         />
 
         <Button class="w-fit py-2 border-round-lg mt-3 mx-auto" type="submit"
-        >Отправить приглашение
+        >Изменить
         </Button>
       </form>
     </Dialog>
