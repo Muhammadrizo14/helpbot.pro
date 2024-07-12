@@ -2,7 +2,7 @@
   <div class="home">
     <div class="home__side">
       <Box class="flex align-items-end gap-3 p-3 m-0 justify-content-between">
-        <div style="width: 80%">
+        <div style="width: 70%">
           <h1 class="pb-3">МойБот</h1>
           <div class="flex align-items-center w-full justify-content-between">
             <p class="text-500">Количество токенов</p>
@@ -13,14 +13,16 @@
             <p>05.05.2024</p>
           </div>
         </div>
-        <Button>Пополнить</Button>
+        <div style="width: 30%" class="flex justify-content-center">
+          <Button>Пополнить</Button>
+        </div>
       </Box>
       <Box class="p-3">
-        <div class="flex justify-content-between">
+        <div class="flex justify-content-between align-items-center">
           <h1>Оценка службы поддержки</h1>
           <Dropdown
             checkmark
-            v-model="selectedPeriod"
+            v-model="selectedPeriodOfSupport"
             :options="periods"
             optionLabel="name"
             class="w-fit"
@@ -118,7 +120,7 @@
         </div>
       </Box>
       <Box class="p-3">
-        <div class="flex justify-content-between">
+        <div class="flex justify-content-between align-items-start">
           <h1>Среднее количество токен на запрос</h1>
           <Dropdown
             checkmark
@@ -144,7 +146,7 @@
           <h1>Количество обработанных и необработанных вопросов</h1>
           <Dropdown
             checkmark
-            v-model="selectedPeriod"
+            v-model="selectedPeriodOfQuantity"
             :options="periods"
             optionLabel="name"
             class="w-fit"
@@ -232,7 +234,9 @@
       <Box class="p-3">
         <div class="flex align-items-start justify-content-between">
           <h1>Данные</h1>
-          <Button severity="light">Настроить</Button>
+          <router-link to="/content/database">
+            <Button severity="light">Настроить</Button>
+          </router-link>
         </div>
 
         <div class="flex gap-2 align-items-center w-full pt-4">
@@ -265,11 +269,11 @@
 <script setup>
 import { ref, onMounted } from "vue";
 
-const selectedPeriod = ref(null);
-
 const periods = ref([{ name: "неделя" }, { name: "месяц" }, { name: "год" }]);
 
-selectedPeriod.value = periods.value[0];
+const selectedPeriod = ref(periods.value[0]);
+const selectedPeriodOfSupport = ref(periods.value[0]);
+const selectedPeriodOfQuantity = ref(periods.value[0]);
 
 onMounted(() => {
   chartData.value = setChartData();
@@ -308,18 +312,21 @@ const setChartData = () => {
         label: "5",
         backgroundColor: "#76C4FF",
         data: [5, 12, 10, 18, 12, 15, 10],
+        borderRadius: 4,
       },
       {
         type: "bar",
         label: "4",
         backgroundColor: "#6FAAFB",
         data: [2, 18, 8, 22, 10, 8, 5],
+        borderRadius: 4,
       },
       {
         type: "bar",
         label: "3",
         backgroundColor: "#949CEA",
         data: [1, 10, 5, 20, 5, 3, 2],
+        borderRadius: 4,
       },
     ],
   };
@@ -371,6 +378,7 @@ const setChartOptions = () => {
 };
 
 const chartData2 = ref();
+
 const chartOptions2 = ref();
 
 const setChartData2 = () => {
@@ -386,6 +394,7 @@ const setChartData2 = () => {
         borderColor: "#76C4FF80",
         tension: 0.4,
         backgroundColor: "rgba(107, 114, 128, 0.2)",
+        borderRadius: 4,
       },
     ],
   };
@@ -450,12 +459,14 @@ const setQuantityData = () => {
         label: "yet",
         backgroundColor: "#B286F3",
         data: [1, 10, 5, 20, 5, 3, 2],
+        borderRadius: 4,
       },
       {
         type: "bar",
         label: "done",
         backgroundColor: "#76C4FF",
         data: [5, 12, 10, 18, 12, 15, 10],
+        borderRadius: 4,
       },
     ],
   };

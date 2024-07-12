@@ -98,8 +98,8 @@
           </div>
         </div>
         <div class="flex align-items-center justify-content-center gap-3">
-          <Button label="Отмена" />
-          <Button label="Закрыть" severity="light" />
+          <Button label="Отмена" @click="declineDialog = false" />
+          <Button label="Закрыть" severity="light" @click="declineDialog = false" />
         </div>
       </form>
     </Dialog>

@@ -30,7 +30,7 @@
 
           <div class="flex justify-content-center gap-3">
             <Button type="submit" label="Изменить"/>
-            <Button label="Отменить" severity="light"/>
+            <Button label="Отменить"/>
           </div>
         </form>
       </Box>

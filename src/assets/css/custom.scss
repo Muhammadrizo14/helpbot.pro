@@ -8,7 +8,8 @@
   span {
     font-family: 'Ubuntu medium', sans-serif;
     font-weight: 500;
-    font-size: 18px;
+    font-size: 0.875rem;
+
   }
 
   &:active {
@@ -88,7 +89,8 @@
 .p-inputtext.custom-input {
   padding: 12px;
   border-radius: 8px;
-  font-size: 18px;
+  font-size: 0.875rem;
+
   border: 2px solid var(--grey-04);
 
 
@@ -149,7 +151,8 @@
 .p-datatable-footer {
   background: transparent;
   color: var(--grey-02);
-  font-size: 18px;
+  font-size: 0.875rem;
+
   font-weight: 400;
   border: 0;
 }
@@ -165,7 +168,8 @@
       th {
         background: transparent;
         color: var(--grey-01) !important;
-        font-size: 18px;
+        font-size: 0.875rem;
+
         font-weight: 400;
         border: 0;
       }
@@ -186,7 +190,8 @@
 }
 
 button {
-  font-size: 18px;
+  font-size: 0.875rem;
+
   font-weight: 500;
 }
 
@@ -198,7 +203,8 @@ button {
       th {
         background: transparent;
         color: var(--grey-02);
-        font-size: 18px;
+        font-size: 0.875rem;
+
         font-weight: 400;
         border: 0;
       }
@@ -208,7 +214,7 @@ button {
     tr {
       td {
         border: 0;
-        vertical-align: baseline;
+        vertical-align: middle;
         color: var(--grey-02);
       }
     }
@@ -229,9 +235,9 @@ button {
       th {
         background: transparent;
         color: var(--grey-02);
-        font-size: 18px;
         font-weight: 400;
         border: 0;
+        font-size: 0.875rem;
       }
     }
   }
@@ -246,6 +252,8 @@ button {
       max-height: 60px;
       border-bottom: 5px solid white;
       border-radius: 16px;
+      font-size: 0.875rem;
+
 
 
       &[data-p-highlight="true"] {
@@ -258,7 +266,7 @@ button {
 
       td {
         border: 0;
-        vertical-align: baseline;
+        vertical-align: middle;
       }
     }
 
@@ -301,7 +309,8 @@ button {
         background: transparent;
 
         .p-menuitem-text {
-          font-size: 18px;
+          font-size: 0.875rem;
+
           font-weight: 400;
           text-align: left;
         }
@@ -324,7 +333,7 @@ button {
   span {
     font-family: 'Ubuntu medium', sans-serif;
     font-weight: 500;
-    font-size: 18px;
+    font-size: 0.875rem;
   }
 
 

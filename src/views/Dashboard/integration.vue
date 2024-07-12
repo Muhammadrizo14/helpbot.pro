@@ -63,34 +63,6 @@
               />
             </svg>
           </li>
-          <li
-            :class="selectedTab === 2 && 'active'"
-            class="flex align-items-center justify-content-between"
-            @click="selectedTab = 2"
-          >
-            Другая интеграция
-            <svg
-              v-if="isIntegrated"
-              width="16"
-              height="17"
-              viewBox="0 0 16 17"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M8 2.25C4.54822 2.25 1.75 5.04822 1.75 8.5C1.75 11.9518 4.54822 14.75 8 14.75C11.4518 14.75 14.25 11.9518 14.25 8.5C14.25 5.04822 11.4518 2.25 8 2.25ZM0.25 8.5C0.25 4.21979 3.71979 0.75 8 0.75C12.2802 0.75 15.75 4.21979 15.75 8.5C15.75 12.7802 12.2802 16.25 8 16.25C3.71979 16.25 0.25 12.7802 0.25 8.5Z"
-                fill="#14182C"
-              />
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M11.5087 5.9489C11.8131 6.22985 11.8321 6.70434 11.5511 7.00871L7.85879 11.0087C7.58405 11.3064 7.1226 11.3321 6.81649 11.0668L4.5088 9.06677C4.19579 8.79549 4.16195 8.32182 4.43323 8.0088C4.70451 7.69579 5.17818 7.66195 5.4912 7.93323L7.24961 9.45719L10.4489 5.99129C10.7299 5.68692 11.2043 5.66794 11.5087 5.9489Z"
-                fill="#14182C"
-              />
-            </svg>
-          </li>
         </ul>
         <div class="divider"></div>
       </div>
@@ -205,7 +177,7 @@
                 >
               </label>
             </div>
-            <Button v-if="isIntegrated" label="Добавить" type="submit" />
+            <Button  class="px-3 py-2"  v-if="isIntegrated" label="Добавить" type="submit" />
           </form>
         </div>
 
@@ -267,7 +239,7 @@
                 >{{ error.$message }}</label
               >
             </div>
-            <Button v-if="isIntegratedUseesk" label="Добавить" type="submit" />
+            <Button  class="px-3 py-2"  v-if="isIntegratedUseesk" label="Добавить" type="submit" />
           </form>
         </div>
 
@@ -327,7 +299,7 @@
                 >{{ error.$message }}</label
               >
             </div>
-            <Button v-if="isIntegratedTelegram" label="Добавить" type="submit" />
+            <Button class="px-3 py-2" v-if="isIntegratedTelegram" label="Добавить" type="submit" />
           </form>
         </div>
       </div>

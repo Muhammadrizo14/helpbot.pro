@@ -34,7 +34,7 @@ import Toast from "primevue/toast";
   height: 100%;
 
   .dashboard-content {
-    margin-left: 360px; /* Same as the sidebar width */
+
     flex: 1;
     padding: 15px;
     width: 100%;

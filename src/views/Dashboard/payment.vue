@@ -4,7 +4,7 @@
     <div class="plans flex align-items-stretch gap-3">
       <Box class="rates">
         <h2>Старт</h2>
-        <p class="text-500 pt-2 pb-3">Все необходимое для поддержки клиентов</p>
+        <p class="text-500 pt-2 pb-1">Все необходимое для поддержки клиентов</p>
         <h1 class="pb-3">4 900 ₽</h1>
         <Button class="flex justify-content-center w-full p-3 buy-btn" severity="light"
           >Купить пакет
@@ -25,7 +25,7 @@
       </Box>
       <Box class="rates">
         <h2>Рост</h2>
-        <p class="text-500 pt-2 pb-3">
+        <p class="text-500 pt-2 pb-1">
           Для растущих компаний, набирающих обороты
         </p>
         <h1 class="pb-3">19 900 ₽</h1>
@@ -53,7 +53,7 @@
       </Box>
       <Box class="rates">
         <h2>Бизнес</h2>
-        <p class="text-500 pt-2 pb-3">
+        <p class="text-500 pt-2 pb-1">
           Комплексное предложение для крупных компаний
         </p>
         <h1 class="pb-3">49 900 ₽</h1>
@@ -146,9 +146,12 @@ const history = ref([
   display: flex;
   flex-direction: column;
   min-height: 370px;
-  height: 100%;
+  height: auto;
   @media (max-width: 1300px) {
     margin: 0px;
+  }
+  p {
+    height: 64px;
   }
 
 }

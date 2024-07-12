@@ -1,6 +1,11 @@
 <template>
   <div>
-    <h1>Боты</h1>
+    <div class="flex align-items-center justify-content-between">
+      <h1>Боты</h1>
+      <Button>
+        Создать бота
+      </Button>
+    </div>
 
     <div class="bots__wrap pt-3">
       <Box class="bot">

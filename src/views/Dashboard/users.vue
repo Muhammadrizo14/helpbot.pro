@@ -10,15 +10,18 @@
       <template #empty>
         <p class="text-center">Добавьте хотя бы одного пользователя</p>
       </template>
-      <Column field="name" header="Имя"> </Column>
+      <Column field="name" header="Имя"></Column>
       <Column field="email" header="E-mail"></Column>
       <Column field="role" header="Роль"></Column>
       <Column field="status" header="Статус"></Column>
       <Column field="status">
         <template #body="slotProps">
-          <div v-if="slotProps.data.status === 'Ожидает'">
-            <Button outlined>Отозвать приглашение</Button>
-          </div>
+          <Button
+            v-if="slotProps.data.status === 'Ожидает'"
+            outlined
+            class="px-3 py-2"
+            >Отозвать приглашение
+          </Button>
           <div
             v-if="
               slotProps.data.role === 'Администратор' &&
@@ -26,8 +29,8 @@
             "
             class="flex align-items-center gap-3"
           >
-            <Button icon="pi pi-pen-to-square"></Button>
-            <Button icon="pi pi-trash" outlined severity="danger"></Button>
+            <Button icon="pi pi-pen-to-square" @click="updateUser=true"></Button>
+            <Button icon="pi pi-trash" outlined severity="danger" @click="deleteDialog = true"></Button>
           </div>
         </template>
       </Column>
@@ -98,10 +101,112 @@
         />
 
         <Button class="w-fit py-2 border-round-lg mt-3 mx-auto" type="submit"
-          >Отправить приглашение</Button
-        >
+          >Отправить приглашение
+        </Button>
       </form>
     </Dialog>
+
+
+    <Dialog
+        v-model:visible="updateUser"
+        dismissableMask
+        modal
+        :draggable="false"
+        style="color: var(--grey-02)"
+        :closable="false"
+    >
+      <template #header>
+        <div class="pb-3">
+          <h2 class="pb-2">Изменить пользователя</h2>
+          <p>Введите новые данные пользователя</p>
+        </div>
+      </template>
+      <img
+          src="../../assets/images/icons/close.png"
+          alt="Close"
+          class="close-icon"
+          @click="updateUser = false"
+      />
+
+      <form @submit.prevent="sendInventation" class="flex flex-column gap-4 w-30rem">
+        <div class="flex flex-column gap-2">
+          <label for="email">Email</label>
+          <InputText
+              v-model="data.email"
+              :invalid="v$.email.$errors.length > 0"
+              id="username"
+              placeholder="example@gmail.com"
+              aria-describedby="username-help"
+          />
+          <label
+              for="login__form-email"
+              v-for="error in v$.email.$errors"
+              :key="error.$uid"
+              style="color: var(--red)"
+          >{{ error.$message }}</label
+          >
+        </div>
+        <div class="flex flex-column gap-2">
+          <label for="identity">Имя и Фамилия</label>
+          <InputText
+              v-model="data.identity"
+              :invalid="v$.identity.$errors.length > 0"
+              id="identity"
+              placeholder="Пётр Петров"
+              aria-describedby="username-help"
+          />
+          <label
+              for="login__form-email"
+              v-for="error in v$.email.$errors"
+              :key="error.$uid"
+              style="color: var(--red)"
+          >{{ error.$message }}</label
+          >
+        </div>
+
+        <Dropdown
+            class="default-select"
+            v-model="selectedRole"
+            :options="roles"
+            optionLabel="title"
+        />
+
+        <Button class="w-fit py-2 border-round-lg mt-3 mx-auto" type="submit"
+        >Отправить приглашение
+        </Button>
+      </form>
+    </Dialog>
+
+    <Dialog
+        v-model:visible="deleteDialog"
+        dismissableMask
+        modal
+        :draggable="false"
+        :closable="false"
+    >
+      <template #header>
+        <div class="pb-3">
+          <h2 class="pb-2">Удалить пользователя</h2>
+          <p>Вы точно хотите удалить пользователя?</p>
+        </div>
+      </template>
+      <img
+          src="../../assets/images/icons/close.png"
+          alt="Close"
+          class="close-icon"
+          @click="deleteDialog = false"
+      />
+
+      <form @submit.prevent="deleteDialog = false" class="flex justify-content-center gap-4 w-20rem">
+        <Button type="submit" >
+          Да
+        </Button>
+        <Button severity="light" @click="deleteDialog = false">
+          Отменить
+        </Button>
+      </form>
+    </Dialog>
+
   </div>
 </template>
 
@@ -113,9 +218,12 @@ import { useToast } from "primevue/usetoast";
 
 const toast = useToast();
 
+const deleteDialog = ref(false);
+const updateUser = ref(false);
+
 const roles = ref([
   { title: "Администратор", code: "admin" },
-  { title: "Владелец", code: "owner" },
+  { title: "Пользователь", code: "owner" },
 ]);
 const selectedRole = ref(roles.value[0]);
 
@@ -190,6 +298,7 @@ const products = ref([
   right: 20px;
   cursor: pointer;
 }
+
 input {
   font-size: 0.875rem;
 }

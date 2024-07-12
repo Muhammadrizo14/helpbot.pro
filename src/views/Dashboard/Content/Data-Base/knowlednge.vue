@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex align-items-center justify-content-between py-4">
+    <div class="flex align-items-center justify-content-between py-4 gap-3">
       <div class="flex align-items-center gap-3">
         <Chip class="bg-white text-sm" label="Общее количество страниц: 3" />
         <Chip class="bg-white text-sm" label="Проиндексированные страницы: 3" />
@@ -11,11 +11,13 @@
       </div>
       <div class="flex gap-3 align-items-center flex-nowrap">
         <Button
+          class="px-3 py-2"
           label="Добавить данные"
           icon="pi pi-plus"
           @click="addDataModal = true"
         />
         <Button
+          class="px-3 py-2"
           severity="light"
           @click="editDataModal = true"
           label="Редактировать источник данных"
@@ -140,53 +142,72 @@
       </Column>
     </DataTable>
 
-<!--    <Dialog-->
-<!--      modal-->
-<!--      v-model:visible="editDataModal"-->
-<!--      header="Редактировать источник данных"-->
-<!--      :closable="false"-->
-<!--      style="width: 1000px"-->
-<!--      :draggable="false"-->
-<!--    >-->
-<!--      <img-->
-<!--        src="@/assets/images/icons/close.png"-->
-<!--        alt="Close"-->
-<!--        class="close-icon"-->
-<!--        @click="editDataModal = false"-->
-<!--      />-->
-<!--      <p class="text-500 pb-4">Заполните форму, чтобы добавить сайт</p>-->
-<!--      <Box class="p-4">-->
-<!--        <div class="flex gap-2 flex-column">-->
-<!--          <div class="flex align-items-center justify-content-between">-->
-<!--            <p>https://mysite-bigname.site/page-1-1-1</p>-->
-<!--            <p>По умолчанию</p>-->
-<!--            <p>Сайт</p>-->
-<!--            <div class="flex gap-2 align-items-center">-->
-<!--              <Button icon="pi pi-copy"/>-->
-<!--              <Button icon="pi pi-sync"/>-->
-<!--              <Button icon="pi pi-trash" outlined/>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="flex align-items-center justify-content-between">-->
-<!--            <p>По умолчанию</p>-->
-<!--            <p>Сайт</p>-->
-<!--            <div class="flex gap-2 align-items-center">-->
-<!--              <Button icon="pi pi-trash" outlined/>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="flex align-items-center justify-content-between">-->
-<!--            <p>https://mysite-bigname.site/page-1-1-1</p>-->
-<!--            <p>По умолчанию</p>-->
-<!--            <p>Сайт</p>-->
-<!--            <div class="flex gap-2 align-items-center">-->
-<!--              <Button icon="pi pi-copy"/>-->
-<!--              <Button icon="pi pi-sync"/>-->
-<!--              <Button icon="pi pi-trash" outlined/>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </Box>-->
-<!--    </Dialog>-->
+    <Dialog
+      modal
+      v-model:visible="editDataModal"
+      header="Редактировать источник данных"
+      :closable="false"
+      style="width: 1000px"
+      :draggable="false"
+    >
+      <img
+        src="@/assets/images/icons/close.png"
+        alt="Close"
+        class="close-icon"
+        @click="editDataModal = false"
+      />
+      <p class="text-500 pb-4">Необходим хотя бы один источник данных</p>
+      <Box class="p-4">
+        <div class="flex gap-2 flex-column">
+          <div class="flex align-items-center justify-content-between">
+            <div class="w-6">
+              <p>https://mysite-bigname.site/page-1-1-1</p>
+            </div>
+            <div class="w-3">
+              <p>По умолчанию</p>
+
+            </div>
+            <div class="w-3">
+              <p>Сайт</p>
+            </div>
+            <div class="flex gap-2 align-items-center w-3 justify-content-end">
+              <Button icon="pi pi-copy" />
+              <Button icon="pi pi-sync" />
+              <Button icon="pi pi-trash" severity="danger" outlined />
+            </div>
+          </div>
+          <div class="flex align-items-center justify-content-between">
+            <div  class="w-6">
+
+            </div>
+            <div class="w-3">
+              <p>По умолчанию</p>
+            </div>
+            <div class="w-3">
+              <p>Сайт</p>
+            </div>
+            <div class="flex gap-2 align-items-center justify-content-end w-3">
+              <Button icon="pi pi-trash" severity="danger" outlined />
+            </div>
+          </div>
+          <div class="flex align-items-center justify-content-between">
+            <div class="w-6">
+            </div>
+            <div class="w-3">
+              <p>По умолчанию</p>
+            </div>
+            <div class="w-3">
+              <p>Сайт</p>
+            </div>
+            <div
+              class="flex gap-2 align-items-center justify-content-end w-3"
+            >
+              <Button icon="pi pi-trash" severity="danger" outlined />
+            </div>
+          </div>
+        </div>
+      </Box>
+    </Dialog>
 
     <Dialog
       v-model:visible="addDataModal"
@@ -401,7 +422,7 @@ import Box from "../../../../components/box.vue";
 
 const fileInput = ref(null);
 const uploadedFile = ref(null);
-const editDataModal = ref(true);
+const editDataModal = ref(false);
 
 const triggerFileInput = () => {
   fileInput.value.click();

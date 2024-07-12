@@ -29,7 +29,7 @@
                style="color: var(--red)">{{ error.$message }}</label>
       </div>
 
-      <Button class="w-fit" type="submit">Сохранить</Button>
+      <Button class="w-fit px-3 py-2" type="submit">Сохранить</Button>
     </form>
   </div>
 </template>
