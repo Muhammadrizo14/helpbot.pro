@@ -578,6 +578,7 @@ const setTimeOptions = () => {
 
   &__side {
     width: 100%;
+    max-width: 742px;
   }
 }
 </style>
