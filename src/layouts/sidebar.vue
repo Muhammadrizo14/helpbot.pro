@@ -63,10 +63,7 @@
         <li class="flex flex-column">
           <div
             class="flex align-items-center p-2"
-            :class="
-              (route.path.includes('content') && 'active',
-              contentSubmenu && 'activesub')
-            "
+            :class="route.path.includes('content') && 'active'"
             @click="contentToggle"
           >
             <contentIcon />
@@ -282,9 +279,7 @@ watch(
 <style scoped lang="scss">
 .sidebar-wrap {
   width: 360px;
-
 }
-
 
 .tonon-expand {
   height: fit-content;

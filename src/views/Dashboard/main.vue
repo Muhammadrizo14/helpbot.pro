@@ -14,7 +14,7 @@
           </div>
         </div>
         <div style="width: 30%" class="flex justify-content-center">
-          <Button>Пополнить</Button>
+          <router-link to="/payment"> <Button>Пополнить</Button></router-link>
         </div>
       </Box>
       <Box class="p-3">
@@ -309,21 +309,21 @@ const setChartData = () => {
     datasets: [
       {
         type: "bar",
-        label: "5",
+        label: "5★",
         backgroundColor: "#76C4FF",
-        data: [5, 12, 10, 18, 12, 15, 10],
+        data: [6, 12, 10, 18, 12, 15, 10],
         borderRadius: 4,
       },
       {
         type: "bar",
-        label: "4",
+        label: "4★",
         backgroundColor: "#6FAAFB",
         data: [2, 18, 8, 22, 10, 8, 5],
         borderRadius: 4,
       },
       {
         type: "bar",
-        label: "3",
+        label: "3★",
         backgroundColor: "#949CEA",
         data: [1, 10, 5, 20, 5, 3, 2],
         borderRadius: 4,
@@ -338,6 +338,14 @@ const setChartOptions = () => {
     "--text-color-secondary"
   );
   const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
+
+  const data = setChartData().datasets;
+
+  const maxValue = Math.max(...data.flatMap((dataset) => dataset.data));
+
+  const spacing = 10;
+
+  // console.log(maxValue + spacing);
 
   return {
     maintainAspectRatio: false,
@@ -365,6 +373,8 @@ const setChartOptions = () => {
         },
       },
       y: {
+        max: 70,
+        beginAtZero: true,
         stacked: true,
         ticks: {
           color: textColorSecondary,
@@ -456,14 +466,14 @@ const setQuantityData = () => {
     datasets: [
       {
         type: "bar",
-        label: "yet",
+        label: "не обработано",
         backgroundColor: "#B286F3",
         data: [1, 10, 5, 20, 5, 3, 2],
         borderRadius: 4,
       },
       {
         type: "bar",
-        label: "done",
+        label: "обработано",
         backgroundColor: "#76C4FF",
         data: [5, 12, 10, 18, 12, 15, 10],
         borderRadius: 4,

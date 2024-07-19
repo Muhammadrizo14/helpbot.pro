@@ -2,9 +2,7 @@
   <div>
     <div class="flex align-items-center justify-content-between">
       <h1>Боты</h1>
-      <Button>
-        Создать бота
-      </Button>
+      <Button @click="createDialog = true"> Создать б11ота </Button>
     </div>
 
     <div class="bots__wrap pt-3">
@@ -23,10 +21,87 @@
         </div>
       </Box>
     </div>
+
+    <Dialog
+      v-model:visible="createDialog"
+      :closable="false"
+      modal
+      :draggable="false"
+      class="w-27rem"
+    >
+      <template #header>
+        <div class="pb-2">
+          <h2 class="pb-2">Ответить на вопрос</h2>
+          <span class="p-text-secondary block">
+            Еще один клик до нового бота
+          </span>
+        </div>
+      </template>
+      <img
+        src="@/assets/images/icons/close.png"
+        alt="Close"
+        class="close-icon"
+        @click="createDialog = false"
+      />
+
+      <div class="flex flex-column gap-2 pb-4">
+        <label for="title" class="database-add__label"
+          >Пожалуйста, введите название бота.</label
+        >
+        <InputText
+          id="title"
+          placeholder="Название бота"
+          v-model="data.title"
+          :invalid="v$.title.$errors.length > 0"
+        />
+        <label
+          for="login__form-password"
+          v-for="error in v$.title.$errors"
+          :key="error.$uid"
+          style="color: var(--red)"
+          >{{ error.$message }}</label
+        >
+      </div>
+
+      <div class="flex justify-content-center gap-2">
+        <Button type="submit" label="Создать" @click="createBot"></Button>
+      </div>
+    </Dialog>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import useVuelidate from "@vuelidate/core";
+import { helpers, required } from "@vuelidate/validators";
+import { reactive, ref } from "vue";
+const createDialog = ref(false);
+
+const data = reactive({
+  title: "",
+});
+
+const customMessages = {
+  required: "Это поле не может быть пустым",
+};
+
+const rules = {
+  title: {
+    required: helpers.withMessage(customMessages.required, required),
+  },
+};
+
+const v$ = useVuelidate(rules, data);
+
+const createBot = async () => {
+  const result = await v$.value.$validate();
+  if (!result) {
+    console.log("Form validation failed");
+    return;
+  }
+
+  createDialog.value = false;
+};
+</script>
 
 <style scoped lang="scss">
 .bots__wrap {
