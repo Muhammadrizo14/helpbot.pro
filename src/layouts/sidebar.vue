@@ -35,7 +35,7 @@
         </template>
         <template #footer>
           <div class="dropdown__link">
-            <router-link to="/settings" class="no-underline">
+            <router-link to="/create" class="no-underline">
               <Button
                 label="Создать бота"
                 icon="pi pi-plus-circle"

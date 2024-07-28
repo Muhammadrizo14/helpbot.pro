@@ -1,15 +1,34 @@
 <template>
   <div class="container">
-    <RouterLink to="/"><img class="logo" src="../assets/images/Logo.png" alt=""></RouterLink>
+    <RouterLink to="/"
+      ><img class="logo" src="../assets/images/Logo.png" alt=""
+    /></RouterLink>
     <div class="create">
       <Box>
-        <h2>Создайте вашего первого бота</h2>
-        <form action="#" class="create__form pt-5 flex flex-column gap-5">
+        <h2>Создайте вашего первого бота {{ store.user?.first_name }}</h2>
+        <form
+          class="create__form pt-5 flex flex-column gap-5"
+          @submit.prevent="createBot()"
+        >
           <div class="create__form-title">
             <label for="create__form-title">Название бота</label>
-            <InputText :style="{'width': '100%', 'margin-top': '10px'}" id="create__form-title" type="text" placeholder="Мой_первый_бот"/>
+            <InputText
+              v-model="data.title"
+              :invalid="v$.title.$errors.length > 0"
+              :style="{ width: '100%', 'margin-top': '10px' }"
+              id="create__form-title"
+              type="text"
+              placeholder="Мой_первый_бот"
+            />
+            <label
+              for="create__form-title"
+              v-for="error in v$.title.$errors"
+              :key="error.$uid"
+              style="color: var(--red)"
+              >{{ error.$message }}</label
+            >
           </div>
-          <Button type="submit" class="create__form-submit" label="Создать"/>
+          <Button type="submit" class="create__form-submit" label="Создать" />
         </form>
       </Box>
     </div>
@@ -17,7 +36,40 @@
 </template>
 
 <script setup lang="ts">
-import Box from '../components/box.vue'
+import { useBotStore } from "@/stores/BotStore";
+import Box from "../components/box.vue";
+import { useAuthStore } from "@/stores/AuthStore";
+import { reactive } from "vue";
+import { helpers, required } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+
+const store = useAuthStore();
+const bot = useBotStore();
+
+const data = reactive({
+  title: "",
+});
+
+const customMessages = {
+  required: "Это поле не может быть пустым",
+};
+
+const rules = {
+  title: {
+    required: helpers.withMessage(customMessages.required, required),
+  },
+};
+
+const v$ = useVuelidate(rules, data);
+
+const createBot = async () => {
+  const result = await v$.value.$validate();
+  if (!result) {
+    console.log("Form validation failed");
+    return;
+  }
+  bot.createBot(data.title);
+};
 </script>
 
 <style lang="scss" scoped>

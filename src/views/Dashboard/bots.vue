@@ -2,7 +2,7 @@
   <div>
     <div class="flex align-items-center justify-content-between">
       <h1>Боты</h1>
-      <Button @click="createDialog = true"> Создать б11ота </Button>
+      <Button @click="createDialog = true"> Создать бота </Button>
     </div>
 
     <div class="bots__wrap pt-3">
