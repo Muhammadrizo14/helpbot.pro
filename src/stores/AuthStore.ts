@@ -11,7 +11,7 @@ type IUser = {
 };
 
 export const useAuthStore = defineStore("auth", () => {
-  const user = ref<IUser>(null);
+  const user = ref<IUser>();
   const token = ref(localStorage.getItem("token") || null);
 
   const login = async (username: string, password: string) => {
@@ -54,20 +54,19 @@ export const useAuthStore = defineStore("auth", () => {
   };
 
   const getUser = async () => {
-    axios
-      .get<IUser>(`${apiUrl}/user/protected`, {
+    try {
+      const res = await axios.get<IUser>(`${apiUrl}/user/protected`, {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      })
-      .then((res) => {
-        user.value = res.data;
-      })
-      .catch(()=> {
-        logout()
-      })
-    return user;
+      });
+      user.value = res.data;
+    } catch (error) {
+      logout();
+      throw error; // Ensure error is thrown to handle it in the calling function
+    }
+    return user.value; // Directly return the user value
   };
 
   return {

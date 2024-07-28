@@ -2,22 +2,14 @@
   <div>
     <div class="flex align-items-center justify-content-between">
       <h1>Боты</h1>
-      <Button @click="createDialog = true"> Создать бота </Button>
+      <Button @click="createDialog = true"> Создать бота</Button>
     </div>
 
     <div class="bots__wrap pt-3">
-      <Box class="bot">
+      <Box class="bot" v-for="bot in store.bots">
         <div class="bot__background1"></div>
         <div class="bot__text">
-          <h1>МойБот1</h1>
-          <p class="text-500 pt-2">url</p>
-        </div>
-      </Box>
-      <Box class="bot">
-        <div class="bot__background2"></div>
-        <div class="bot__text">
-          <h1>СуперБот</h1>
-          <p class="text-500 pt-2">url</p>
+          <h1>{{ bot.name }}</h1>
         </div>
       </Box>
     </div>
@@ -74,7 +66,11 @@
 import useVuelidate from "@vuelidate/core";
 import { helpers, required } from "@vuelidate/validators";
 import { reactive, ref } from "vue";
+import { useBotStore } from "../../stores/BotStore";
+
 const createDialog = ref(false);
+
+const store = useBotStore();
 
 const data = reactive({
   title: "",
@@ -100,6 +96,26 @@ const createBot = async () => {
   }
 
   createDialog.value = false;
+
+  store
+    .createBot(data.title)
+    .then(() => {
+      toast.add({
+        severity: "success",
+        summary: "Успешно",
+        detail: "Бот успешно удалено",
+        life: 3000,
+      })
+      store.getAllBots()
+    })
+    .catch(() => {
+      toast.add({
+        severity: "error",
+        summary: "Ошибка",
+        detail: "Попробуйте позже",
+        life: 3000,
+      });
+    });
 };
 </script>
 

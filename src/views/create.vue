@@ -42,6 +42,7 @@ import { useAuthStore } from "@/stores/AuthStore";
 import { reactive } from "vue";
 import { helpers, required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
+import router from "../router/index";
 
 const store = useAuthStore();
 const bot = useBotStore();
@@ -68,7 +69,10 @@ const createBot = async () => {
     console.log("Form validation failed");
     return;
   }
-  bot.createBot(data.title);
+  bot.createBot(data.title)
+  .then(()=> {
+    router.push({path: '/'})
+  })
 };
 </script>
 

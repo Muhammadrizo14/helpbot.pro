@@ -11,11 +11,12 @@
           <div class="menu"></div>
         </div>
       </div>
+
       <Dropdown
         class="dashboard-select mt-3"
         checkmark
-        v-model="selectedCity"
-        :options="cities"
+        v-model="selectedBot"
+        :options="bots"
         optionLabel="name"
       >
         <template #dropdownicon>
@@ -35,7 +36,7 @@
         </template>
         <template #footer>
           <div class="dropdown__link">
-            <router-link to="/create" class="no-underline">
+            <router-link to="/bots" class="no-underline">
               <Button
                 label="Создать бота"
                 icon="pi pi-plus-circle"
@@ -238,6 +239,7 @@ import { useRoute } from "vue-router";
 import router from "../router";
 import { useBotStore } from "@/stores/BotStore.ts";
 
+
 const store = useBotStore();
 
 const route = useRoute();
@@ -246,14 +248,15 @@ const userInfo = ref(false);
 const userInfoActivity = ref(false);
 const expandedSidebar = ref(true);
 
-const selectedCity = ref(null);
+const selectedBot = ref(store.selectedBot);
 
-const cities = computed(() => [
-  { name: store.bot, code: "MyBot" },
-  { name: "Супер Бот", code: "SuperBot" },
+
+const bots = computed(() => [
+  ...store.bots
 ]);
 
-selectedCity.value = cities.value[0];
+
+
 const toggleUserInfo = () => {
   userInfo.value.toggle(event);
   userInfoActivity.value = !userInfoActivity.value;
@@ -268,10 +271,12 @@ const contentToggle = () => {
   contentSubmenu.value = !contentSubmenu.value;
 };
 
+
+
 watch(
-  () => store.bot,
-  (newBotName) => {
-    selectedCity.value = { name: newBotName, code: "MyBot" };
+  () => selectedBot.value,
+  (newBot) => {
+    store.changeSelectedBot(newBot);
   }
 );
 </script>

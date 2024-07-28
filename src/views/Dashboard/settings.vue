@@ -96,9 +96,9 @@
         <Button
           type="button"
           label="Удалить"
-          :severity="data.title === store.bot ? 'danger' : ''"
+          :severity="data.title === store.selectedBot.name ? 'danger' : ''"
           outlined
-          :disabled="data.title !== store.bot"
+          :disabled="data.title !== store.selectedBot.name"
           icon="pi pi-trash"
           @click="deleteBot"
         ></Button>
@@ -112,6 +112,9 @@ import { useBotStore } from "../../stores/BotStore";
 import { reactive, ref, watch } from "vue";
 import { email, helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
 
 const store = useBotStore();
 
@@ -139,6 +142,10 @@ const items = ref([{ label: "Название бота" }, { label: "Удале�
 const deleteBot = () => {
   data.title = "";
   sureDialog.value = false;
+  store.deleteBot(store.selectedBot.id)
+    .then(()=>{
+      toast.add({ severity: 'success', summary: 'Успешно', detail: 'Бот успешно удалено', life: 3000 });
+    })
 };
 
 watch(sureDialog, (newState) => {
