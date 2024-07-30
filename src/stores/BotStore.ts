@@ -4,6 +4,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useAuthStore } from "./AuthStore";
 
+
 export interface IBot {
   id: number,
   name: string,
@@ -15,12 +16,14 @@ export interface IBot {
 
 export const useBotStore = defineStore("bots", () => {
   const bots = ref<IBot[]>([]);
-  const selectedBot = ref<IBot>(JSON.parse(localStorage.getItem("selectedBot")) || null);
+  const selectedBot = ref<IBot>(JSON.parse(localStorage.getItem("selectedBot")))
 
-  const changeSelectedBot = (bot: IBot) => {
-    selectedBot.value = bot;
-    localStorage.setItem("selectedBot", JSON.stringify(bot));
+
+  const changeSelectedBot = (bot : IBot) => {
+    selectedBot.value = bot
+    localStorage.setItem("selectedBot", JSON.stringify(bot))
   };
+
 
   const getAllBots = async () => {
     const authStore = useAuthStore();
@@ -36,56 +39,44 @@ export const useBotStore = defineStore("bots", () => {
       const res = await axios.get(`${apiUrl}/bot/bots?user_id=${userData.id}`);
 
       bots.value = res.data;
-      if (!selectedBot.value && bots.value.length > 0) {
-        changeSelectedBot(bots.value[0]);
-      }
     } catch (error) {
       console.error("Failed to fetch bots", error);
     }
   };
 
   const deleteBot = async (id: number) => {
-    try {
-      await axios.patch(
-        `${apiUrl}/bot/remove?bot_id=${id}`,
-        {},
-        {
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
-          }
-        }
-      );
-      await getAllBots();
-      if (bots.value.length > 0) {
-        changeSelectedBot(bots.value[0]);
-      } else {
-        selectedBot.value = null;
-        localStorage.removeItem("selectedBot");
+    return await axios.patch(
+      `${apiUrl}/bot/remove?bot_id=${id}`,
+      {
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       }
-    } catch (error) {
-      console.error("Failed to delete bot", error);
-    }
-  };
+    )
+      .then((res)=>{
+        selectedBot.value = bots.value[0]
+        localStorage.setItem("selectedBot", JSON.stringify(bots.value[0]))
+        getAllBots()
+      })
+  }
+
 
   const createBot = async (title: string) => {
-    const authStore = useAuthStore();
-    try {
-      const res = await axios.post(
-        `${apiUrl}/bot/create?user_id=${authStore.user?.id}&bot_name=${title}`,
-        {},
-        {
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
-          }
-        }
-      );
-      await getAllBots();
-      changeSelectedBot(res.data);
-    } catch (error) {
-      console.error("Failed to create bot", error);
-    }
+    const userdata = useAuthStore();
+    return await axios.post(
+      `${apiUrl}/bot/create?user_id=${userdata?.user?.id}&bot_name=${title}`,
+      {
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    )
+      .then((res)=>{
+        selectedBot.value = res.data
+        getAllBots()
+      })
   };
 
   return {
