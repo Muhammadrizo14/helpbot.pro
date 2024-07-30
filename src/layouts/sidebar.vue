@@ -224,7 +224,6 @@
     <div class="menu"></div>
   </div>
 </template>
-
 <script setup>
 import Box from "../components/box.vue";
 import { computed, ref, watch } from "vue";
@@ -239,23 +238,18 @@ import { useRoute } from "vue-router";
 import router from "../router";
 import { useBotStore } from "@/stores/BotStore.ts";
 
-
 const store = useBotStore();
-
 const route = useRoute();
+
+store.getAllBots();
+
 const contentSubmenu = ref(false);
 const userInfo = ref(false);
 const userInfoActivity = ref(false);
 const expandedSidebar = ref(true);
 
-const selectedBot = ref(store.selectedBot);
-
-
-const bots = computed(() => [
-  ...store.bots
-]);
-
-
+const selectedBot = computed(() => store.selectedBot);
+const bots = computed(() => store.bots);
 
 const toggleUserInfo = () => {
   userInfo.value.toggle(event);
@@ -271,13 +265,13 @@ const contentToggle = () => {
   contentSubmenu.value = !contentSubmenu.value;
 };
 
-
-
 watch(
-  () => selectedBot.value,
-  (newBot) => {
-    store.changeSelectedBot(newBot);
-  }
+    () => store.selectedBot,
+    (newBot) => {
+      if (newBot) {
+        selectedBot.value = newBot;
+      }
+    }
 );
 </script>
 

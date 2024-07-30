@@ -43,6 +43,7 @@ const submit = async () => {
   store.login(data.email, data.password)
       .then((res) => {
         store.addToken(res.data)
+        store.getUser()
         router.push({path: '/create'})
       })
       .catch(err => console.log(err));
