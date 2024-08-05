@@ -50,7 +50,7 @@
       <Column field="answer" header="Ответ" style="width: 392.67px">
         <template #body="slotProps">
           <Button
-            v-if="slotProps.data.answer === 'Перенаправить на оператора'"
+            v-if="slotProps.data.action === 'call_operator'"
             class="surface-200 border-none text-900 border-round-3xl w-full text-center m-auto flex justify-content-center"
           >
             Перенаправить на оператора
@@ -123,15 +123,8 @@
           class="max-w-30rem"
           rows="2"
           cols="30"
-          :invalid="v$.similar.$errors.length > 0"
         />
-        <label
-          for="login__form-title"
-          v-for="error in v$.similar.$errors"
-          :key="error.$uid"
-          style="color: var(--red)"
-          >{{ error.$message }}</label
-        >
+
       </div>
 
       <div class="flex flex-column gap-2 pb-4">
@@ -174,6 +167,16 @@
 import { reactive, ref, watch } from "vue";
 import { helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import {useQuestionStore} from "../../../../stores/QuestionStore";
+
+
+
+
+const store = useQuestionStore()
+
+
+
+
 
 const addQuestionModal = ref(false);
 
@@ -182,15 +185,15 @@ const data = reactive({
   similar: "",
   answer: "",
 });
+
+
+
 const customMessages = {
   required: "Это поле не может быть пустым",
 };
 
 const rules = reactive({
   question: {
-    required: helpers.withMessage(customMessages.required, required),
-  },
-  similar: {
     required: helpers.withMessage(customMessages.required, required),
   },
   answer: {
@@ -200,12 +203,20 @@ const rules = reactive({
 
 const questionsList = ref([]);
 
+
+store.getAllQuestions()
+    .then(res=> {
+      questionsList.value = res.data
+    })
+
 const actions = ref([
   { title: "Ответ" },
   { title: "Перенаправить на оператора" },
 ]);
 
 const selectedAction = ref(actions.value[0]);
+
+
 const remove = (id) => {
   questionsList.value = questionsList.value.filter(
     (question, index) => index !== id
@@ -216,6 +227,7 @@ const add = async () => {
     data.answer = "Перенаправить на оператора";
   }
 
+
   const result = await v$.value.$validate();
   if (!result) {
     return;
@@ -223,11 +235,11 @@ const add = async () => {
 
   const myData = {
     question: data.question,
-    answer: data.answer,
+    answer: data.answer === 'Перенаправить на оператора' ? 'call_operator' : data.answer,
     similar: data.similar,
   };
 
-  questionsList.value.push(myData);
+  store.createQuestion(myData)
 
   addQuestionModal.value = false;
 

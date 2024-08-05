@@ -1,24 +1,27 @@
 <script setup lang="ts">
-import {reactive, ref} from 'vue';
-import {useVuelidate} from '@vuelidate/core';
-import {required, email, helpers} from '@vuelidate/validators';
-import Box from '../../components/box.vue';
-import {useAuthStore} from "../../stores/AuthStore";
+import { reactive, ref } from "vue";
+import { useVuelidate } from "@vuelidate/core";
+import { required, email, helpers } from "@vuelidate/validators";
+import Box from "../../components/box.vue";
+import { useAuthStore } from "../../stores/AuthStore";
 import router from "../../router/index";
+import {useBotStore} from "../../stores/BotStore";
 
-const store = useAuthStore()
+const store = useAuthStore();
 
-const restore = ref<boolean>(false)
-const remember = ref<boolean>(false)
+const botStore = useBotStore();
+
+const restore = ref<boolean>(false);
+const remember = ref<boolean>(false);
 
 const data = reactive({
-  email: 'rizo@gmail.com',
-  password: 'lastblood1'
+  email: "rizo@gmail.com",
+  password: "lastblood1",
 });
 
 const customMessages = {
-  required: 'Это поле не может быть пустым',
-  email: 'Введите правильный адрес электронной почты'
+  required: "Это поле не может быть пустым",
+  email: "Введите правильный адрес электронной почты",
 };
 
 const rules = {
@@ -27,8 +30,8 @@ const rules = {
     email: helpers.withMessage(customMessages.email, email),
   },
   password: {
-    required: helpers.withMessage(customMessages.required, required)
-  }
+    required: helpers.withMessage(customMessages.required, required),
+  },
 };
 
 const v$ = useVuelidate(rules, data);
@@ -36,22 +39,30 @@ const v$ = useVuelidate(rules, data);
 const submit = async () => {
   const result = await v$.value.$validate();
   if (!result) {
-    console.log('Form validation failed');
+    console.log("Form validation failed");
     return;
   }
 
-  store.login(data.email, data.password)
-      .then((res) => {
-        store.addToken(res.data)
-        store.getUser()
-        router.push({path: '/create'})
-      })
-      .catch(err => console.log(err));
+  store
+    .login(data.email, data.password)
+    .then((res) => {
+      store.addToken(res.data);
+      store.getUser().then((res) => {
+        botStore.getAllBots()
+          .then(res=> {
+            if (res.length === 0) {
+              router.push({path: '/create'})
+            } else {
+              router.push({path: '/'})
+            }
+          })
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
-
 const submitForgotPassword = async () => {
-  console.log('Verify email for forgot password');
+  console.log("Verify email for forgot password");
 };
 </script>
 
@@ -62,26 +73,56 @@ const submitForgotPassword = async () => {
       <form @submit.prevent="submit" class="flex flex-column gap-4">
         <div class="flex flex-column gap-2">
           <label for="email">Email</label>
-          <InputText class="custom-input" v-model="data.email" :invalid="v$.email.$errors.length > 0" id="email"
-                     placeholder="example@gmail.com" aria-describedby="username-help"/>
-          <label for="login__form-email" v-for="error in v$.email.$errors" :key="error.$uid"
-                 style="color: var(--red)">{{ error.$message }}</label>
+          <InputText
+            class="custom-input"
+            v-model="data.email"
+            :invalid="v$.email.$errors.length > 0"
+            id="email"
+            placeholder="example@gmail.com"
+            aria-describedby="username-help"
+          />
+          <label
+            for="login__form-email"
+            v-for="error in v$.email.$errors"
+            :key="error.$uid"
+            style="color: var(--red)"
+            >{{ error.$message }}</label
+          >
         </div>
         <div class="flex flex-column gap-2 w-full">
           <label for="password">Пароль</label>
           <div class="flex justify-content-start w-full">
-            <Password v-model="data.password" inputClass="custom-input" :inputStyle="{width: '100%'}" :svgStyle="{ margin: 'auto' }"
-                      :feedback="false" toggleMask
-                      :invalid="v$.password.$errors.length > 0" id="password" class="login-password"
-                      aria-describedby="password-help" placeholder="*****"/>
+            <Password
+              v-model="data.password"
+              inputClass="custom-input"
+              :inputStyle="{ width: '100%' }"
+              :svgStyle="{ margin: 'auto' }"
+              :feedback="false"
+              toggleMask
+              :invalid="v$.password.$errors.length > 0"
+              id="password"
+              class="login-password"
+              aria-describedby="password-help"
+              placeholder="*****"
+            />
           </div>
-          <label for="login__form-password" v-for="error in v$.password.$errors" :key="error.$uid"
-                 style="color: var(--red)">{{ error.$message }}</label>
+          <label
+            for="login__form-password"
+            v-for="error in v$.password.$errors"
+            :key="error.$uid"
+            style="color: var(--red)"
+            >{{ error.$message }}</label
+          >
         </div>
 
         <div class="flex justify-content-between">
           <div class="flex align-items-center">
-            <Checkbox v-model="remember" inputId="ingredient1" name="save" :binary="true"/>
+            <Checkbox
+              v-model="remember"
+              inputId="ingredient1"
+              name="save"
+              :binary="true"
+            />
             <label for="ingredient1" class="ml-2">Запомнить пароль</label>
           </div>
           <RouterLink to="#" @click="restore = true" class="link">
@@ -89,7 +130,12 @@ const submitForgotPassword = async () => {
           </RouterLink>
         </div>
 
-        <Button class="flex justify-content-center w-full p-3" severity="submit" type="submit" label="Войти"/>
+        <Button
+          class="flex justify-content-center w-full p-3"
+          severity="submit"
+          type="submit"
+          label="Войти"
+        />
       </form>
 
       <p class="pt-4 text-center">
@@ -100,22 +146,43 @@ const submitForgotPassword = async () => {
       </p>
     </Box>
 
-    <Dialog v-model:visible="restore" dismissableMask :closable="false" modal :draggable="false"
-            :style="{'width': '550px'}">
-      <img src="../../assets/images/icons/close.png" alt="Close" class="close-icon" @click="restore = false">
+    <Dialog
+      v-model:visible="restore"
+      dismissableMask
+      :closable="false"
+      modal
+      :draggable="false"
+      :style="{ width: '550px' }"
+    >
+      <img
+        src="../../assets/images/icons/close.png"
+        alt="Close"
+        class="close-icon"
+        @click="restore = false"
+      />
       <p class="block mb-5">
-        Введите адрес электронной почты, связанный <br>
-        с вашей учетной записью, и мы вышлем вам <br>
-        ссылку для сброса пароля <br>
+        Введите адрес электронной почты, связанный <br />
+        с вашей учетной записью, и мы вышлем вам <br />
+        ссылку для сброса пароля <br />
       </p>
       <div class="flex flex-column align-items-start gap-2 mb-3">
         <label for="username">Email</label>
-        <InputText class="w-full custom-input" id="username" aria-describedby="username-help" placeholder="example@gmail.com"/>
+        <InputText
+          class="w-full custom-input"
+          id="username"
+          aria-describedby="username-help"
+          placeholder="example@gmail.com"
+        />
       </div>
 
-      <Button class="w-full" type="submit" severity="submit" label="Отправить" @click="visible = false"/>
+      <Button
+        class="w-full"
+        type="submit"
+        severity="submit"
+        label="Отправить"
+        @click="visible = false"
+      />
     </Dialog>
-
   </div>
 </template>
 
@@ -132,7 +199,6 @@ const submitForgotPassword = async () => {
 
   .login-password {
     width: 100%;
-
 
     * {
       margin: revert-layer;

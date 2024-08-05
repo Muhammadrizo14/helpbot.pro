@@ -39,6 +39,7 @@ export const useBotStore = defineStore("bots", () => {
       const res = await axios.get(`${apiUrl}/bot/bots?user_id=${userData.id}`);
 
       bots.value = res.data;
+      return res.data
     } catch (error) {
       console.error("Failed to fetch bots", error);
     }
@@ -79,12 +80,39 @@ export const useBotStore = defineStore("bots", () => {
       })
   };
 
+  const editBot = async (newData: IBot) => {
+    axios.patch(`${apiUrl}/bot/update/${selectedBot.value.id}`, {
+      ...newData
+    })
+      .then(res => {
+        getAllBots()
+          .then(res => {
+            // Assuming `res` is the updated list of bots
+            const updatedBot = res.find(data => data.id === selectedBot.value.id);
+            if (updatedBot) {
+              selectedBot.value = updatedBot; // Update selectedBot in store
+              localStorage.setItem("selectedBot", JSON.stringify(updatedBot));
+            }
+          });
+      })
+      .catch(error => {
+        console.error("Failed to edit bot:", error);
+      });
+  }
+
+  const getAllUsersOfBot = async () => {
+    return axios.get(`${apiUrl}/bot/users?bot_id=${selectedBot.value.id}`)
+  }
+
+
   return {
     bots,
     getAllBots,
     createBot,
     changeSelectedBot,
     selectedBot,
-    deleteBot
+    deleteBot,
+    editBot,
+    getAllUsersOfBot
   };
 });

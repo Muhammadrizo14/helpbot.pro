@@ -284,6 +284,14 @@ watch(
       store.changeSelectedBot(newBot);
     }
 );
+
+
+watch(
+    () => store.selectedBot,
+    (newBot) => {
+      selectedBot.value = newBot;
+    }
+);
 </script>
 
 <style scoped lang="scss">

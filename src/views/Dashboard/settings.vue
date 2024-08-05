@@ -121,7 +121,7 @@ const store = useBotStore();
 const sureDialog = ref(false);
 
 const data = reactive({
-  title: localStorage.getItem("bot"),
+  title: '',
 });
 
 const customMessages = {
@@ -157,8 +157,22 @@ watch(sureDialog, (newState) => {
   }
 });
 
-const changeName = () => {
-  store.editName(data.title);
+const changeName = async () => {
+  const result = await v$.value.$validate();
+  if (!result) {
+    toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Поле не может быть пустым', life: 3000 });
+    return;
+  }
+
+  const newData = {
+    name: data.title,
+    is_active: store.selectedBot.is_active,
+    welcome_message: store.selectedBot.welcome_message,
+    operator_switch_message: store.selectedBot.operator_switch_message,
+    feedback_message: store.selectedBot.feedback_message
+  }
+
+  store.editBot(newData)
 };
 </script>
 

@@ -1,0 +1,2 @@
+npm i docsify-cli -g  #Установка docsify
+docsify serve ./docs  #Запуск

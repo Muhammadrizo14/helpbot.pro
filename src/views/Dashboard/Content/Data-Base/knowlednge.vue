@@ -165,7 +165,6 @@
             </div>
             <div class="w-3">
               <p>По умолчанию</p>
-
             </div>
             <div class="w-3">
               <p>Сайт</p>
@@ -177,9 +176,7 @@
             </div>
           </div>
           <div class="flex align-items-center justify-content-between">
-            <div  class="w-6">
-
-            </div>
+            <div class="w-6"></div>
             <div class="w-3">
               <p>По умолчанию</p>
             </div>
@@ -191,17 +188,14 @@
             </div>
           </div>
           <div class="flex align-items-center justify-content-between">
-            <div class="w-6">
-            </div>
+            <div class="w-6"></div>
             <div class="w-3">
               <p>По умолчанию</p>
             </div>
             <div class="w-3">
               <p>Сайт</p>
             </div>
-            <div
-              class="flex gap-2 align-items-center justify-content-end w-3"
-            >
+            <div class="flex gap-2 align-items-center justify-content-end w-3">
               <Button icon="pi pi-trash" severity="danger" outlined />
             </div>
           </div>
@@ -227,23 +221,23 @@
       <TabMenu
         v-model:activeIndex="selectedAddTab"
         :model="addItems"
-        class="settings-tabmenu pb-2"
+        class="settings-tabmenu pb-4"
       />
 
-      <p class="text-500 pb-4">Заполните форму, чтобы добавить сайт</p>
+      <p class="text-500 pb-2">Заполните форму, чтобы добавить сайт</p>
 
-      <form v-if="selectedAddTab === 0">
+      <form v-if="selectedAddTab === 0" @submit.prevent="add_website">
         <div class="flex flex-column gap-2 pb-4">
           <label for="action" class="database-add__label">Адрес</label>
           <InputText
             id="question"
             placeholder="URL источника данных"
-            v-model="data.answer"
-            :invalid="v$.answer.$errors.length > 0"
+            v-model="website_data.url"
+            :invalid="w$.url.$errors.length > 0"
           />
           <label
             for="login__form-title"
-            v-for="error in v$.answer.$errors"
+            v-for="error in w$.url.$errors"
             :key="error.$uid"
             style="color: var(--red)"
             >{{ error.$message }}</label
@@ -251,13 +245,23 @@
         </div>
 
         <div class="flex flex-column gap-2 pb-4">
-          <label for="action" class="database-add__label">Парсер</label>
-          <Dropdown
-            v-model="selectedParser"
-            :options="parsers"
-            optionLabel="title"
+          <label for="action" class="database-add__label">Заголовок</label>
+          <InputText
+              id="question"
+              placeholder="Заголовок"
+              v-model="website_data.title"
+              :invalid="w$.title.$errors.length > 0"
           />
+          <label
+              for="login__form-title"
+              v-for="error in w$.title.$errors"
+              :key="error.$uid"
+              style="color: var(--red)"
+          >{{ error.$message }}</label
+          >
         </div>
+
+
 
         <div class="flex flex-column gap-2 pb-3">
           <label for="action" class="database-add__label">Парсинг</label>
@@ -299,12 +303,12 @@
           <InputText
             id="question"
             placeholder="Укажите заголовок"
-            v-model="data.answer"
-            :invalid="v$.answer.$errors.length > 0"
+            v-model="data.title"
+            :invalid="v$.title.$errors.length > 0"
           />
           <label
             for="login__form-title"
-            v-for="error in v$.answer.$errors"
+            v-for="error in v$.title.$errors"
             :key="error.$uid"
             style="color: var(--red)"
             >{{ error.$message }}</label
@@ -369,18 +373,18 @@
         </Button>
       </form>
 
-      <form v-if="selectedAddTab === 2">
+      <form v-if="selectedAddTab === 2" @submit.prevent="add_article">
         <div class="flex flex-column gap-2 pb-4">
           <label for="action" class="database-add__label">Заголовок</label>
           <InputText
             id="question"
             placeholder="Укажите заголовок"
-            v-model="data.answer"
-            :invalid="v$.answer.$errors.length > 0"
+            v-model="data.title"
+            :invalid="v$.title.$errors.length > 0"
           />
           <label
             for="login__form-title"
-            v-for="error in v$.answer.$errors"
+            v-for="error in v$.title.$errors"
             :key="error.$uid"
             style="color: var(--red)"
             >{{ error.$message }}</label
@@ -394,19 +398,19 @@
             placeholder="Разместите контент здесь"
             rows="6"
             :autoResize="false"
-            v-model="data.answer"
-            :invalid="v$.answer.$errors.length > 0"
+            v-model="data.content"
+            :invalid="v$.content.$errors.length > 0"
           />
           <label
             for="login__form-title"
-            v-for="error in v$.answer.$errors"
+            v-for="error in v$.content.$errors"
             :key="error.$uid"
             style="color: var(--red)"
             >{{ error.$message }}</label
           >
         </div>
 
-        <Button type="submit" class="flex justify-content-center mx-auto p-3"
+        <Button type="submit" class="flex justify-content-center mx-auto"
           >Добавить
         </Button>
       </form>
@@ -419,6 +423,12 @@ import { reactive, ref } from "vue";
 import { helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import Box from "../../../../components/box.vue";
+import { useKnowledgeStore } from "../../../../stores/KnowledgeStore";
+import { useToast } from "primevue/usetoast";
+
+const toast = useToast();
+
+const store = useKnowledgeStore();
 
 const fileInput = ref(null);
 const uploadedFile = ref(null);
@@ -450,27 +460,107 @@ const selectedAddTab = ref(0);
 const selectedKnowledge = ref();
 
 const data = reactive({
-  question: "",
-  similar: "",
-  answer: "",
+  title: "",
+  content: "",
 });
+
+const website_data = reactive({
+  url: "",
+  title: "",
+});
+
 const customMessages = {
   required: "Это поле не может быть пустым",
 };
 
 const rules = reactive({
-  question: {
+  title: {
     required: helpers.withMessage(customMessages.required, required),
   },
-  similar: {
-    required: helpers.withMessage(customMessages.required, required),
-  },
-  answer: {
+  content: {
     required: helpers.withMessage(customMessages.required, required),
   },
 });
 
+
+const website_rules = reactive({
+  title: {
+    required: helpers.withMessage(customMessages.required, required),
+  },
+  url: {
+    required: helpers.withMessage(customMessages.required, required),
+  },
+});
+
+const add_article = async () => {
+  const result = await v$.value.$validate();
+  if (!result) {
+    console.log("Form validation failed");
+    return;
+  }
+
+  store
+    .createArticle(data)
+    .then(() => {
+      toast.add({
+        severity: "success",
+        summary: "Успешно",
+        detail: "Статья успешно создан",
+        life: 3000,
+      });
+    })
+    .catch(() => {
+      toast.add({
+        severity: "error",
+        summary: "Ошибка",
+        life: 3000,
+      });
+    });
+};
+
+
+const add_website = async ()=> {
+  const result = await w$.value.$validate();
+  if (!result) {
+    console.log("Form validation failed");
+    return;
+  }
+
+  const myData = {
+    ...website_data,
+    parse_method: parseType.value === 'Весь сайт' && 'whole_website' || parseType.value === 'Одна страница' && 'one_page' || parseType.value === 'Папка' && 'folder'
+  }
+
+  store
+      .createWebsite(myData)
+      .then(() => {
+        toast.add({
+          severity: "success",
+          summary: "Успешно",
+          detail: "Операция успешно выполнено",
+          life: 3000,
+        });
+        website_data.title = ''
+        website_data.url = ''
+      })
+      .catch(() => {
+        toast.add({
+          severity: "error",
+          summary: "Ошибка",
+          detail: "Ошибка при выполнении операции",
+          life: 3000,
+        });
+      });
+
+
+
+
+
+}
+
 const v$ = useVuelidate(rules, data);
+
+const w$ = useVuelidate(website_rules, website_data);
 
 const parsers = ref([{ title: "По умолчанию" }, { title: "По умолчанию1" }]);
 

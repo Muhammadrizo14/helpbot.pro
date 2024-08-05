@@ -1,0 +1,15 @@
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .navbar {
+    background-color: #4CAF50;
+  }
+  
+  .sidebar-nav li a:hover {
+    color: #FF5722;
+  }
+  
+  .content h1 {
+    color: #FF5722;
+  }
