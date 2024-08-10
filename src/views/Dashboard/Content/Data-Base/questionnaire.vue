@@ -45,6 +45,7 @@
       <Column field="similar" header="Похожие вопросы" style="min-width: 390px">
         <template #body="slotProps">
           <p v-html="slotProps.data.similar"></p>
+          {{slotProps.data.id}}
         </template>
       </Column>
       <Column field="answer" header="Ответ" style="width: 392.67px">
@@ -61,12 +62,12 @@
       <Column style="width: 10%; min-width: 8rem" bodyStyle="text-align:center">
         <template #body="slotProps">
           <div class="flex gap-3">
-            <Button title="asdf" icon="pi pi-pen-to-square" />
+            <Button title="Изменить" icon="pi pi-pen-to-square"@click="updateData(slotProps.data)"  />
             <Button
               icon="pi pi-file-excel"
               outlined
               severity="danger"
-              @click="() => remove(slotProps.index)"
+              @click="() => remove(slotProps.data.id)"
             />
           </div>
         </template>
@@ -161,6 +162,94 @@
       </div>
     </form>
   </Dialog>
+
+
+  <Dialog
+      v-model:visible="editQuestionModal"
+      modal
+      :closable="false"
+      :draggable="false"
+  >
+    <template #header>
+      <div class="pb-3">
+        <h2 class="pb-2">Изменить</h2>
+      </div>
+    </template>
+    <img
+        src="@/assets/images/icons/close.png"
+        alt="Close"
+        class="close-icon"
+        @click="editQuestionModal = false"
+    />
+
+    <form @submit.prevent="edit">
+      <div class="flex flex-column gap-2 pb-4">
+        <label for="question" class="database-add__label">Главный вопрос</label>
+        <InputText
+            id="question"
+            placeholder="Я забыл свой пароль..."
+            :invalid="v$.question.$errors.length > 0"
+            v-model="data.question"
+        />
+        <label
+            for="login__form-title"
+            v-for="error in v$.question.$errors"
+            :key="error.$uid"
+            style="color: var(--red)"
+        >{{ error.$message }}</label
+        >
+      </div>
+
+      <div class="flex flex-column gap-2 pb-4">
+        <label class="database-add__label">Похожие вопросы</label>
+        <span class="database-add__help">
+          Добавьте похожие вопросы разделенные новой строкой для улучшения
+          <br />
+          поиска
+        </span>
+        <Textarea
+            v-model="data.similar"
+            class="max-w-30rem"
+            rows="2"
+            cols="30"
+        />
+
+      </div>
+
+      <div class="flex flex-column gap-2 pb-4">
+        <label for="action" class="database-add__label">Действие</label>
+        <Dropdown
+            v-model="selectedAction"
+            :options="actions"
+            optionLabel="title"
+        />
+      </div>
+
+      <div
+          v-if="selectedAction.title === 'Ответ'"
+          class="flex flex-column gap-2 pb-4"
+      >
+        <label for="action" class="database-add__label">Ответ</label>
+        <InputText
+            id="question"
+            placeholder="Здесь должен быть ответ"
+            v-model="data.answer"
+            :invalid="v$.answer.$errors.length > 0"
+        />
+        <label
+            for="login__form-title"
+            v-for="error in v$.answer.$errors"
+            :key="error.$uid"
+            style="color: var(--red)"
+        >{{ error.$message }}</label
+        >
+      </div>
+
+      <div class="flex justify-content-center gap-2">
+        <Button class="px-4 py-3" type="submit" label="Изменить"></Button>
+      </div>
+    </form>
+  </Dialog>
 </template>
 
 <script setup>
@@ -168,23 +257,73 @@ import { reactive, ref, watch } from "vue";
 import { helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import {useQuestionStore} from "../../../../stores/QuestionStore";
+import {useToast} from "primevue/usetoast";
 
 
 
-
+const toast = useToast();
 const store = useQuestionStore()
 
 
+const edit = async ()=> {
+  if (selectedAction.value.title === "Перенаправить на оператора") {
+    data.answer = "Перенаправить на оператора";
+  }
 
+  const result = await v$.value.$validate();
+  if (!result) {
+    return;
+  }
 
+  const myData = {
+    id: selectedQuestion.value.id,
+    question: data.question,
+    answer: data.answer === 'Перенаправить на оператора' ? 'call_operator' : data.answer,
+    action: data.answer === 'Перенаправить на оператора' ? 'call_operator' : 'answer',
+    similar_questions: [],
+  };
+
+  store.editQuestion(myData)
+    .then(()=> {
+      toast.add({ severity: 'success', summary: 'Изменено', detail: 'Вопрос успешно изменено', life: 3000 });
+      allQuestions()
+    })
+  .catch(()=> {
+    toast.add({ severity: 'error', summary: 'Ошибка', life: 3000 });
+  })
+
+  editQuestionModal.value = false;
+
+  data.question = "";
+  data.answer = "";
+  data.similar = "";
+
+}
+
+const updateData = (newData) => {
+
+  editQuestionModal.value = true
+  selectedQuestion.value = newData
+
+  if (newData.answer === 'call_operator') {
+    selectedAction.value = actions.value[1]
+  }
+
+  data.question = newData.question || "";
+  data.similar = newData.similar || "";
+  data.answer = newData.answer || "";
+};
 
 const addQuestionModal = ref(false);
+const editQuestionModal = ref(false);
+const selectedQuestion = ref()
 
 const data = reactive({
   question: "",
   similar: "",
   answer: "",
 });
+
 
 
 
@@ -203,11 +342,17 @@ const rules = reactive({
 
 const questionsList = ref([]);
 
+const allQuestions = ()=> {
+  store.getAllQuestions()
+      .then(res=> {
+        questionsList.value = res.data
+      })
+}
 
-store.getAllQuestions()
-    .then(res=> {
-      questionsList.value = res.data
-    })
+
+
+allQuestions()
+
 
 const actions = ref([
   { title: "Ответ" },
@@ -218,9 +363,14 @@ const selectedAction = ref(actions.value[0]);
 
 
 const remove = (id) => {
-  questionsList.value = questionsList.value.filter(
-    (question, index) => index !== id
-  );
+  store.removeQuestion(id)
+      .then(()=>{
+        allQuestions()
+        toast.add({ severity: 'success', summary: 'Успешно', detail: 'Вопрос успешно удалено', life: 3000 });
+      })
+    .catch(()=> {
+      toast.add({ severity: 'error', summary: 'Ошибка', life: 3000 });
+    })
 };
 const add = async () => {
   if (selectedAction.value.title === "Перенаправить на оператора") {
@@ -240,6 +390,13 @@ const add = async () => {
   };
 
   store.createQuestion(myData)
+    .then(()=>{
+      allQuestions()
+      toast.add({ severity: 'success', summary: 'Успешно', detail: 'Вопрос успешно создано', life: 3000 });
+    })
+    .catch(()=> {
+      toast.add({ severity: 'error', summary: 'Ошибка', life: 3000 });
+    })
 
   addQuestionModal.value = false;
 

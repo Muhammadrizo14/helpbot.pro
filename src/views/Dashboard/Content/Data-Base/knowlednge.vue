@@ -551,11 +551,6 @@ const add_website = async ()=> {
           life: 3000,
         });
       });
-
-
-
-
-
 }
 
 const v$ = useVuelidate(rules, data);
@@ -563,6 +558,7 @@ const v$ = useVuelidate(rules, data);
 const w$ = useVuelidate(website_rules, website_data);
 
 const parsers = ref([{ title: "По умолчанию" }, { title: "По умолчанию1" }]);
+
 
 const selectedParser = ref(parsers.value[0]);
 

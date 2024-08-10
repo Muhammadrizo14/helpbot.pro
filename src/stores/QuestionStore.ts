@@ -5,10 +5,10 @@ import { apiUrl } from "../main";
 import {useBotStore} from "./BotStore";
 
 type IQuestion = {
+  id: number;
   question: string;
   answer: string;
-  action: string;
-  bot_id: number;
+  action: 'call_operator' | 'answer';
   similar_questions: string[]
 };
 
@@ -25,23 +25,33 @@ export const useQuestionStore = defineStore("question", () => {
 
   const getAllQuestions = async ()=> {
     const store = useBotStore()
-    return axios.get(`${apiUrl}/trainingset/questions_list?bot_id=${store.selectedBot.id}`)
+    return axios.get(`${apiUrl}/faq/questions?bot_id=${store.selectedBot.id}`)
   }
 
   const createQuestion = async ({question, answer}: string)=> {
     const store = useBotStore()
 
     return axios.post(`${apiUrl}/trainingset/question?question=${question}&answer=${answer}&action=${answer === 'call_operator' ? 'call_operator': 'answer'}&bot_id=${store.selectedBot.id}`)
-      .then(res=> {
-        return res.data
-      })
   }
 
 
-  const removeQuestion = ()=> {
-    const store = useBotStore()
+  const editQuestion = (question: IQuestion)=> {
+    return axios.patch(`${apiUrl}/faq/update?question_id=${question.id}`, {
+      ...question
+    })
+  }
 
-    return axios.get(`${apiUrl}/trainingset/questions_list?bot_id=${store.selectedBot.id}`)
+  const removeQuestion = (id: number)=> {
+    const store = useBotStore()
+    return axios.delete(`${apiUrl}/faq/delete`, {
+      params: {
+        question_id: id,
+        bot_id: store.selectedBot.id
+      },
+      headers: {
+        'accept': 'application/json'
+      }
+    })
 
   }
 
@@ -50,6 +60,7 @@ export const useQuestionStore = defineStore("question", () => {
     questions,
     getAllProfiles,
     createQuestion,
-    removeQuestion
+    removeQuestion,
+    editQuestion
   };
 });
