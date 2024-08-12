@@ -6,8 +6,10 @@ import Box from "../../components/box.vue";
 import { useAuthStore } from "../../stores/AuthStore";
 import router from "../../router/index";
 import {useBotStore} from "../../stores/BotStore";
+import {useToast} from "primevue/usetoast";
 
 const store = useAuthStore();
+const toast = useToast();
 
 const botStore = useBotStore();
 
@@ -15,8 +17,8 @@ const restore = ref<boolean>(false);
 const remember = ref<boolean>(false);
 
 const data = reactive({
-  email: "rizo@gmail.com",
-  password: "lastblood1",
+  email: "",
+  password: "",
 });
 
 const customMessages = {
@@ -50,15 +52,20 @@ const submit = async () => {
       store.getUser().then((res) => {
         botStore.getAllBots()
           .then(res=> {
-            if (res.length === 0) {
-              router.push({path: '/create'})
-            } else {
+            if (res.length) {
               router.push({path: '/'})
             }
           })
+          .catch(err=> {
+            router.push({path: '/create'})
+          })
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err)
+      toast.add({ severity: 'error', summary: 'Ошибка', detail: `${err.response.status === 401 && 'Пользователь не найден'}`, life: 3000 });
+
+    });
 };
 
 const submitForgotPassword = async () => {

@@ -347,6 +347,9 @@ const allQuestions = ()=> {
       .then(res=> {
         questionsList.value = res.data
       })
+      .catch(res=> {
+        questionsList.value = []
+      })
 }
 
 

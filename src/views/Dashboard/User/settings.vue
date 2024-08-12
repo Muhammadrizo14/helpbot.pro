@@ -4,7 +4,7 @@
     <div class="pt-6 user-data">
       <p class="label">Электронная почта</p>
       <div class="current">
-        <p>ex@email.com</p>
+        <p>{{auth.user?.email}}</p>
       </div>
       <button class="changer" @click="emailDialog = true">
         Изменить почту
@@ -84,11 +84,15 @@
 import { reactive, ref } from "vue";
 import { helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import {useAuthStore} from "../../../stores/AuthStore";
+
+
+const auth = useAuthStore()
 
 const emailDialog = ref(false);
 
 const data = reactive({
-  current: "example@email.com",
+  current: auth.user?.email,
   new: "",
 });
 

@@ -3,7 +3,7 @@
     <Box :class="`sidebar ${expandedSidebar ? 'expanded' : 'non-expanded'}`">
       <div class="flex align-items-center justify-content-between">
         <router-link to="/"
-        ><img class="sidebar__logo" src="../assets/images/Logo.png" alt=""
+          ><img class="sidebar__logo" src="../assets/images/Logo.png" alt=""
         /></router-link>
         <div class="burgermenu" @click="expandedSidebar = false">
           <div class="menu"></div>
@@ -13,24 +13,24 @@
       </div>
 
       <Dropdown
-          class="dashboard-select mt-3"
-          checkmark
-          v-model="selectedBot"
-          :options="bots"
-          optionLabel="name"
+        class="dashboard-select mt-3"
+        checkmark
+        v-model="selectedBot"
+        :options="bots"
+        optionLabel="name"
       >
         <template #dropdownicon>
           <svg
-              width="12"
-              height="19"
-              viewBox="0 0 14 21"
-              xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="19"
+            viewBox="0 0 14 21"
+            xmlns="http://www.w3.org/2000/svg"
           >
             <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M6.4733 0.966068C6.76534 0.677977 7.23466 0.677977 7.5267 0.966068L13.0267 6.3916C13.3216 6.68249 13.3248 7.15735 13.0339 7.45224C12.743 7.74712 12.2682 7.75035 11.9733 7.45946L7 2.5535L2.0267 7.45946C1.73182 7.75035 1.25696 7.74712 0.966068 7.45224C0.675178 7.15735 0.678414 6.68249 0.973297 6.3916L6.4733 0.966068ZM0.966068 13.5478C1.25696 13.2529 1.73182 13.2496 2.0267 13.5405L7 18.4465L11.9733 13.5405C12.2682 13.2496 12.743 13.2529 13.0339 13.5478C13.3248 13.8426 13.3216 14.3175 13.0267 14.6084L7.5267 20.0339C7.23466 20.322 6.76534 20.322 6.4733 20.0339L0.973297 14.6084C0.678414 14.3175 0.675178 13.8426 0.966068 13.5478Z"
-                fill="#14182C"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M6.4733 0.966068C6.76534 0.677977 7.23466 0.677977 7.5267 0.966068L13.0267 6.3916C13.3216 6.68249 13.3248 7.15735 13.0339 7.45224C12.743 7.74712 12.2682 7.75035 11.9733 7.45946L7 2.5535L2.0267 7.45946C1.73182 7.75035 1.25696 7.74712 0.966068 7.45224C0.675178 7.15735 0.678414 6.68249 0.973297 6.3916L6.4733 0.966068ZM0.966068 13.5478C1.25696 13.2529 1.73182 13.2496 2.0267 13.5405L7 18.4465L11.9733 13.5405C12.2682 13.2496 12.743 13.2529 13.0339 13.5478C13.3248 13.8426 13.3216 14.3175 13.0267 14.6084L7.5267 20.0339C7.23466 20.322 6.76534 20.322 6.4733 20.0339L0.973297 14.6084C0.678414 14.3175 0.675178 13.8426 0.966068 13.5478Z"
+              fill="#14182C"
             />
           </svg>
         </template>
@@ -38,10 +38,10 @@
           <div class="dropdown__link">
             <router-link to="/bots" class="no-underline">
               <Button
-                  label="Создать бота"
-                  icon="pi pi-plus-circle"
-                  unstyled
-                  class="dropdown-btn flex gap-1 cursor-pointer"
+                label="Создать бота"
+                icon="pi pi-plus-circle"
+                unstyled
+                class="dropdown-btn flex gap-1 cursor-pointer"
               />
             </router-link>
           </div>
@@ -53,8 +53,8 @@
       <ul class="sidebar__list">
         <router-link to="/">
           <li
-              class="flex align-items-center p-2"
-              :class="route.path === '/' && 'active'"
+            class="flex align-items-center p-2"
+            :class="route.path === '/' && 'active'"
           >
             <HomeIcon />
             <p>Обзор</p>
@@ -63,23 +63,23 @@
 
         <li class="flex flex-column">
           <div
-              class="flex align-items-center p-2"
-              :class="route.path.includes('content') && 'active'"
-              @click="contentToggle"
+            class="flex align-items-center p-2"
+            :class="route.path.includes('content') && 'active'"
+            @click="contentToggle"
           >
             <contentIcon />
             <p>Контент</p>
           </div>
           <ul
-              class="sidebar__submenu align-items-start"
-              :style="!contentSubmenu && 'display: none; !important'"
+            class="sidebar__submenu align-items-start"
+            :style="!contentSubmenu && 'display: none; !important'"
           >
             <div class="sidebar__submenu-line" />
             <div class="w-full">
               <router-link to="/content/questions">
                 <li
-                    class="p-2 flex w-full justify-content-between"
-                    :style="
+                  class="p-2 flex w-full justify-content-between"
+                  :style="
                     route.path === '/content/questions' && {
                       color: 'var(--grey-01)',
                     }
@@ -91,8 +91,8 @@
               </router-link>
               <router-link to="/content/database">
                 <li
-                    class="p-2 flex w-full justify-content-between"
-                    :style="
+                  class="p-2 flex w-full justify-content-between"
+                  :style="
                     route.path === '/content/database' && {
                       color: 'var(--grey-01)',
                     }
@@ -103,8 +103,8 @@
               </router-link>
               <router-link to="/content/templates">
                 <li
-                    class="p-2 flex w-full justify-content-between"
-                    :style="
+                  class="p-2 flex w-full justify-content-between"
+                  :style="
                     route.path === '/content/templates' && {
                       color: 'var(--grey-01)',
                     }
@@ -118,8 +118,8 @@
         </li>
         <router-link to="/integration">
           <li
-              class="flex align-items-center p-2"
-              :class="route.path === '/integration' && 'active'"
+            class="flex align-items-center p-2"
+            :class="route.path === '/integration' && 'active'"
           >
             <integrationIcon />
             <p>Интеграции</p>
@@ -127,8 +127,8 @@
         </router-link>
         <router-link to="/users">
           <li
-              class="flex align-items-center p-2"
-              :class="route.path === '/users' && 'active'"
+            class="flex align-items-center p-2"
+            :class="route.path === '/users' && 'active'"
           >
             <UsersIcon />
             <p>Пользователи</p>
@@ -136,8 +136,8 @@
         </router-link>
         <router-link to="/settings">
           <li
-              class="flex align-items-center p-2"
-              :class="route.path === '/settings' && 'active'"
+            class="flex align-items-center p-2"
+            :class="route.path === '/settings' && 'active'"
           >
             <SettingsIcon />
             <p>Настройки</p>
@@ -157,22 +157,22 @@
               </router-link>
               <router-link to="/bots" class="no-underline">
                 <li
-                    class="flex align-items-center p-1"
-                    :class="route.path === '/bots' && 'active'"
+                  class="flex align-items-center p-1"
+                  :class="route.path === '/bots' && 'active'"
                 >
                   <svg
-                      width="24px"
-                      height="20px"
-                      viewBox="0 0 32 32"
-                      xmlns="http://www.w3.org/2000/svg"
+                    width="24px"
+                    height="20px"
+                    viewBox="0 0 32 32"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                        d="M16,19a6.9908,6.9908,0,0,1-5.833-3.1287l1.666-1.1074a5.0007,5.0007,0,0,0,8.334,0l1.666,1.1074A6.9908,6.9908,0,0,1,16,19Z"
+                      d="M16,19a6.9908,6.9908,0,0,1-5.833-3.1287l1.666-1.1074a5.0007,5.0007,0,0,0,8.334,0l1.666,1.1074A6.9908,6.9908,0,0,1,16,19Z"
                     />
                     <path d="M20,8a2,2,0,1,0,2,2A1.9806,1.9806,0,0,0,20,8Z" />
                     <path d="M12,8a2,2,0,1,0,2,2A1.9806,1.9806,0,0,0,12,8Z" />
                     <path
-                        d="M17.7358,30,16,29l4-7h6a1.9966,1.9966,0,0,0,2-2V6a1.9966,1.9966,0,0,0-2-2H6A1.9966,1.9966,0,0,0,4,6V20a1.9966,1.9966,0,0,0,2,2h9v2H6a3.9993,3.9993,0,0,1-4-4V6A3.9988,3.9988,0,0,1,6,2H26a3.9988,3.9988,0,0,1,4,4V20a3.9993,3.9993,0,0,1-4,4H21.1646Z"
+                      d="M17.7358,30,16,29l4-7h6a1.9966,1.9966,0,0,0,2-2V6a1.9966,1.9966,0,0,0-2-2H6A1.9966,1.9966,0,0,0,4,6V20a1.9966,1.9966,0,0,0,2,2h9v2H6a3.9993,3.9993,0,0,1-4-4V6A3.9988,3.9988,0,0,1,6,2H26a3.9988,3.9988,0,0,1,4,4V20a3.9993,3.9993,0,0,1-4,4H21.1646Z"
                     />
                   </svg>
                   <p>Боты</p>
@@ -193,16 +193,16 @@
           </div>
         </OverlayPanel>
         <div
-            class="flex align-items-center w-full border-round-lg justify-column-between"
-            :class="
+          class="flex align-items-center w-full border-round-lg justify-column-between"
+          :class="
             (route.path === '/payment' && 'active',
             userInfoActivity === true && 'active')
           "
-            @click="toggleUserInfo()"
+          @click="toggleUserInfo()"
         >
           <div class="flex align-items-center sidebar__user">
-            <div class="sidebar__user-icon">И</div>
-            <p>Иван Иванов</p>
+            <div class="sidebar__user-icon">{{auth.user?.first_name.slice(0,1)}}</div>
+            <p>{{ auth.user?.first_name }} {{ auth.user?.last_name }}</p>
           </div>
           <div class="flex flex-column user-menu gap-1">
             <div class="user-burger"></div>
@@ -215,9 +215,9 @@
     <div :class="`${expandedSidebar && 'sidebar-wrap'}`"></div>
   </div>
   <div
-      class="burgermenu tonon-expand"
-      v-if="!expandedSidebar"
-      @click="expandedSidebar = true"
+    class="burgermenu tonon-expand"
+    v-if="!expandedSidebar"
+    @click="expandedSidebar = true"
   >
     <div class="menu"></div>
     <div class="menu"></div>
@@ -238,14 +238,12 @@ import SingoutIcon from "../components/Icons/Sidebar/singout-icon.vue";
 import { useRoute } from "vue-router";
 import router from "../router";
 import { useBotStore } from "@/stores/BotStore.ts";
-
-
-
+import { useAuthStore } from "../stores/AuthStore";
 
 const store = useBotStore();
+const auth = useAuthStore();
 
-store.getAllBots()
-
+store.getAllBots();
 
 const route = useRoute();
 const contentSubmenu = ref(false);
@@ -255,12 +253,7 @@ const expandedSidebar = ref(true);
 
 const selectedBot = ref(store.selectedBot);
 
-
-const bots = computed(() => [
-  ...store.bots
-]);
-
-
+const bots = computed(() => [...store.bots]);
 
 const toggleUserInfo = () => {
   userInfo.value.toggle(event);
@@ -276,21 +269,18 @@ const contentToggle = () => {
   contentSubmenu.value = !contentSubmenu.value;
 };
 
-
-
 watch(
-    () => selectedBot.value,
-    (newBot) => {
-      store.changeSelectedBot(newBot);
-    }
+  () => selectedBot.value,
+  (newBot) => {
+    store.changeSelectedBot(newBot);
+  }
 );
 
-
 watch(
-    () => store.selectedBot,
-    (newBot) => {
-      selectedBot.value = newBot;
-    }
+  () => store.selectedBot,
+  (newBot) => {
+    selectedBot.value = newBot;
+  }
 );
 </script>
 
@@ -422,6 +412,8 @@ watch(
       }
 
       &-icon {
+        width: 40px;
+        text-align: center;
         padding: 6px 11px;
         background: var(--primary-04);
         border-radius: 100%;
@@ -432,6 +424,7 @@ watch(
       background: var(--primary-04);
 
       .sidebar__user-icon {
+
         background: var(--grey-09);
       }
     }

@@ -2,7 +2,12 @@
   <div>
     <div class="flex align-items-center justify-content-between py-4 gap-3">
       <div class="flex align-items-center gap-3">
-        <Chip class="bg-white text-sm" label="Общее количество страниц: 3" />
+        <Chip
+          class="bg-white text-sm"
+          :label="`Общее количество страниц: ${
+            knowledge.filter((e) => e.type === 'website').length
+          }`"
+        />
         <Chip class="bg-white text-sm" label="Проиндексированные страницы: 3" />
         <Chip
           class="bg-white text-sm"
@@ -36,7 +41,6 @@
         <Button outlined label="Перезагрузить страницы" />
       </div>
     </div>
-
     <DataTable
       v-model:selection="selectedKnowledge"
       :tableClass="'users-data'"
@@ -49,18 +53,30 @@
       currentPageReportTemplate="{first} to {last} of {totalRecords}"
     >
       <Column selectionMode="multiple" style="width: 50px"></Column>
-      <Column field="title" header="Страница датасета"></Column>
+      <Column field="title" header="Страница датасета">
+        <template #body="slotProps">
+          <div class="flex flex-column">
+            <p>{{ slotProps.data.title }}</p>
+            <a
+              v-if="slotProps.data.type === 'website'"
+              target="_blank"
+              class="w-3 white-space-nowrap overflow-hidden text-overflow-ellipsis"
+              :href="slotProps.data.url"
+              >{{ slotProps.data.url }}</a
+            >
+          </div>
+        </template>
+      </Column>
       <Column field="quality" header="Качество">
         <template #body="slotProps">
-          <div
-            style="width: 12px; height: 12px; background-color: var(--red)"
-            class="border-round"
-            v-if="!slotProps.data.quality"
-          ></div>
+          <!--          <div-->
+          <!--            style="width: 12px; height: 12px; background-color: var(&#45;&#45;red)"-->
+          <!--            class="border-round"-->
+          <!--            v-if="!slotProps.data.quality"-->
+          <!--          ></div>-->
           <div
             style="width: 12px; height: 12px; background-color: #48b8ac"
             class="border-round"
-            v-if="slotProps.data.quality"
           ></div>
         </template>
       </Column>
@@ -110,7 +126,6 @@
       </Column>
       <Column field="create_data" header="Дата добавления"></Column>
       <Column field="update_data" header="Дата изменения"></Column>
-      <Column field="update_data" header="Дата изменения"></Column>
       <Column field="update_data">
         <template #body="slotProps">
           <div class="flex align-items-center gap-3">
@@ -136,7 +151,12 @@
                 </svg>
               </template>
             </Button>
-            <Button icon="pi pi-trash" severity="danger" outlined></Button>
+            <Button
+              icon="pi pi-trash"
+              severity="danger"
+              outlined
+              @click="removeDataset(slotProps.data.id)"
+            ></Button>
           </div>
         </template>
       </Column>
@@ -247,21 +267,19 @@
         <div class="flex flex-column gap-2 pb-4">
           <label for="action" class="database-add__label">Заголовок</label>
           <InputText
-              id="question"
-              placeholder="Заголовок"
-              v-model="website_data.title"
-              :invalid="w$.title.$errors.length > 0"
+            id="question"
+            placeholder="Заголовок"
+            v-model="website_data.title"
+            :invalid="w$.title.$errors.length > 0"
           />
           <label
-              for="login__form-title"
-              v-for="error in w$.title.$errors"
-              :key="error.$uid"
-              style="color: var(--red)"
-          >{{ error.$message }}</label
+            for="login__form-title"
+            v-for="error in w$.title.$errors"
+            :key="error.$uid"
+            style="color: var(--red)"
+            >{{ error.$message }}</label
           >
         </div>
-
-
 
         <div class="flex flex-column gap-2 pb-3">
           <label for="action" class="database-add__label">Парсинг</label>
@@ -430,6 +448,19 @@ const toast = useToast();
 
 const store = useKnowledgeStore();
 
+const getDataset = () => {
+  store
+    .getDataset()
+    .then((res) => {
+      knowledge.value = res.data;
+    })
+    .catch((res) => {
+      knowledge.value = [];
+    });
+};
+
+getDataset();
+
 const fileInput = ref(null);
 const uploadedFile = ref(null);
 const editDataModal = ref(false);
@@ -457,7 +488,7 @@ const handleDrop = (event) => {
 const parseType = ref("Весь сайт");
 const addDataModal = ref(false);
 const selectedAddTab = ref(0);
-const selectedKnowledge = ref();
+const selectedKnowledge = ref([]);
 
 const data = reactive({
   title: "",
@@ -482,7 +513,6 @@ const rules = reactive({
   },
 });
 
-
 const website_rules = reactive({
   title: {
     required: helpers.withMessage(customMessages.required, required),
@@ -502,6 +532,9 @@ const add_article = async () => {
   store
     .createArticle(data)
     .then(() => {
+      getDataset();
+
+      addDataModal.value = false;
       toast.add({
         severity: "success",
         summary: "Успешно",
@@ -518,8 +551,53 @@ const add_article = async () => {
     });
 };
 
+const removeDataset = (id) => {
 
-const add_website = async ()=> {
+
+  const ids = selectedKnowledge.value.map(item => item.id)
+
+  if (ids.length) {
+    store
+        .removeMultipleDatasets(ids)
+        .then(() => {
+          getDataset();
+          toast.add({
+            severity: "success",
+            summary: "Успешно",
+            life: 3000,
+          });
+        })
+        .catch(() => {
+          toast.add({
+            severity: "error",
+            summary: "Ошибка",
+            life: 3000,
+          });
+        });
+  } else {
+    store
+        .removeDataset(id)
+        .then(() => {
+          getDataset();
+          toast.add({
+            severity: "success",
+            summary: "Успешно",
+            life: 3000,
+          });
+        })
+        .catch(() => {
+          toast.add({
+            severity: "error",
+            summary: "Ошибка",
+            life: 3000,
+          });
+        });
+  }
+
+
+};
+
+const add_website = async () => {
   const result = await w$.value.$validate();
   if (!result) {
     console.log("Form validation failed");
@@ -528,37 +606,42 @@ const add_website = async ()=> {
 
   const myData = {
     ...website_data,
-    parse_method: parseType.value === 'Весь сайт' && 'whole_website' || parseType.value === 'Одна страница' && 'one_page' || parseType.value === 'Папка' && 'folder'
-  }
+    parse_method:
+      (parseType.value === "Весь сайт" && "whole_website") ||
+      (parseType.value === "Одна страница" && "one_page") ||
+      (parseType.value === "Папка" && "folder"),
+  };
 
   store
-      .createWebsite(myData)
-      .then(() => {
-        toast.add({
-          severity: "success",
-          summary: "Успешно",
-          detail: "Операция успешно выполнено",
-          life: 3000,
-        });
-        website_data.title = ''
-        website_data.url = ''
-      })
-      .catch(() => {
-        toast.add({
-          severity: "error",
-          summary: "Ошибка",
-          detail: "Ошибка при выполнении операции",
-          life: 3000,
-        });
+    .createWebsite(myData)
+    .then(() => {
+      getDataset();
+
+      addDataModal.value = false;
+      toast.add({
+        severity: "success",
+        summary: "Успешно",
+        detail: "Операция успешно выполнено",
+        life: 3000,
       });
-}
+      website_data.title = "";
+      website_data.url = "";
+    })
+    .catch(() => {
+      toast.add({
+        severity: "error",
+        summary: "Ошибка",
+        detail: "Ошибка при выполнении операции",
+        life: 3000,
+      });
+    });
+};
 
 const v$ = useVuelidate(rules, data);
 
 const w$ = useVuelidate(website_rules, website_data);
 
 const parsers = ref([{ title: "По умолчанию" }, { title: "По умолчанию1" }]);
-
 
 const selectedParser = ref(parsers.value[0]);
 
@@ -572,22 +655,9 @@ const addItems = ref([
   { label: "Статья" },
 ]);
 
-const knowledge = ref([
-  {
-    title: "Название страницы сайта",
-    quality: true,
-    status: true,
-    create_data: "26.03.2024",
-    update_data: "26.03.2024",
-  },
-  {
-    title: "Название статьи",
-    quality: false,
-    status: false,
-    create_data: "26.03.2024",
-    update_data: "26.03.2024",
-  },
-]);
+const knowledge = ref([]);
+
+const removeData = () => {};
 </script>
 
 <style scoped>

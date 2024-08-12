@@ -49,8 +49,6 @@ const v$ = useVuelidate(rules, data);
 const submit = async () => {
   const result = await v$.value.$validate();
   if (!result) {
-    // if form is invalid
-
     return;
   }
 
@@ -58,12 +56,10 @@ const submit = async () => {
   // when form is valid
   store.register(data.email, data.password, data.name, data.surname)
       .then((res) => {
-        console.log(res)
         router.push({path: '/auth'})
       })
       .catch(err => {
-        toast.add({ severity: 'error', summary: 'Ошибка', detail: err.message, life: 3000 });
-        console.log(err)
+        toast.add({ severity: 'error', summary: 'Ошибка', detail: `${err.response.status === 409 && 'Пользователь уже зарегистрирован'}`, life: 3000 });
       })
 };
 

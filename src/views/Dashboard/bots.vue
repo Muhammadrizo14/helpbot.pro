@@ -36,28 +36,30 @@
         @click="createDialog = false"
       />
 
-      <div class="flex flex-column gap-2 pb-4">
-        <label for="title" class="database-add__label"
+      <form @submit.prevent="createBot">
+        <div class="flex flex-column gap-2 pb-4">
+          <label for="title" class="database-add__label"
           >Пожалуйста, введите название бота.</label
-        >
-        <InputText
-          id="title"
-          placeholder="Название бота"
-          v-model="data.title"
-          :invalid="v$.title.$errors.length > 0"
-        />
-        <label
-          for="login__form-password"
-          v-for="error in v$.title.$errors"
-          :key="error.$uid"
-          style="color: var(--red)"
+          >
+          <InputText
+              id="title"
+              placeholder="Название бота"
+              v-model="data.title"
+              :invalid="v$.title.$errors.length > 0"
+          />
+          <label
+              for="login__form-password"
+              v-for="error in v$.title.$errors"
+              :key="error.$uid"
+              style="color: var(--red)"
           >{{ error.$message }}</label
-        >
-      </div>
+          >
+        </div>
 
-      <div class="flex justify-content-center gap-2">
-        <Button type="submit" label="Создать" @click="createBot"></Button>
-      </div>
+        <div class="flex justify-content-center gap-2">
+          <Button type="submit" label="Создать"></Button>
+        </div>
+      </form>
     </Dialog>
   </div>
 </template>
