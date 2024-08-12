@@ -67,12 +67,40 @@ export const useKnowledgeStore = defineStore("knowledge", () => {
 
   }
 
+  // loading button icon primevue in every request
+
+
+  const uploadFile = async (title: string, file: File) => {
+    const store = useBotStore();
+
+    // Create a FormData object
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    // Send the POST request
+    return axios.post(
+      'https://helpbot.site/trainingset/file',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'accept': 'application/json',
+        },
+        params: {
+          title,
+          bot_id: store.selectedBot.id, // Ensure botId is available in your store
+        },
+      }
+    )
+  };
+
   return {
     createArticle,
     createWebsite,
     getDataset,
     dataset,
     removeDataset,
-    removeMultipleDatasets
+    removeMultipleDatasets,
+    uploadFile
   };
 });

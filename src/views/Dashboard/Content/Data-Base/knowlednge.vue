@@ -55,16 +55,22 @@
       <Column selectionMode="multiple" style="width: 50px"></Column>
       <Column field="title" header="Страница датасета">
         <template #body="slotProps">
-          <div class="flex flex-column">
+          <div v-if="slotProps.data.type === 'website'" class="flex flex-column">
             <p>{{ slotProps.data.title }}</p>
             <a
-              v-if="slotProps.data.type === 'website'"
               target="_blank"
               class="w-3 white-space-nowrap overflow-hidden text-overflow-ellipsis"
               :href="slotProps.data.url"
               >{{ slotProps.data.url }}</a
             >
           </div>
+          <div v-if="slotProps.data.type === 'document'" class="flex flex-column">
+            <p>{{ slotProps.data?.path.substring(slotProps.data?.path.lastIndexOf('/') + 1) }}</p>
+          </div>
+          <div v-if="slotProps.data.type === 'article' " class="flex flex-column">
+            <p>{{ slotProps.data.title}}</p>
+          </div>
+
         </template>
       </Column>
       <Column field="quality" header="Качество">
@@ -315,18 +321,18 @@
         </Button>
       </form>
 
-      <form v-if="selectedAddTab === 1">
+      <form v-if="selectedAddTab === 1" @submit.prevent="uploadFile">
         <div class="flex flex-column gap-2 pb-4">
           <label for="action" class="database-add__label">Заголовок</label>
           <InputText
             id="question"
             placeholder="Укажите заголовок"
-            v-model="data.title"
-            :invalid="v$.title.$errors.length > 0"
+            v-model="upload_data.title"
+            :invalid="e$.title.$errors.length > 0"
           />
           <label
-            for="login__form-title"
-            v-for="error in v$.title.$errors"
+            for="question"
+            v-for="error in e$.title.$errors"
             :key="error.$uid"
             style="color: var(--red)"
             >{{ error.$message }}</label
@@ -346,7 +352,7 @@
             accept=".pdf, .docx"
           />
           <div
-            v-if="!uploadedFile"
+            v-if="!upload_data.file"
             class="file-upload-text flex align-items-center justify-content-between"
           >
             <p class="flex gap-2">
@@ -381,8 +387,8 @@
             </p>
             <p>pdf, docx</p>
           </div>
-          <div v-if="uploadedFile" class="file-upload-text">
-            {{ uploadedFile[0].name }}
+          <div v-if="upload_data.file" class="file-upload-text">
+            {{ upload_data.file[0].name }}
           </div>
         </div>
 
@@ -448,6 +454,8 @@ const toast = useToast();
 
 const store = useKnowledgeStore();
 
+const knowledge = ref([]);
+
 const getDataset = () => {
   store
     .getDataset()
@@ -462,7 +470,7 @@ const getDataset = () => {
 getDataset();
 
 const fileInput = ref(null);
-const uploadedFile = ref(null);
+
 const editDataModal = ref(false);
 
 const triggerFileInput = () => {
@@ -472,8 +480,7 @@ const triggerFileInput = () => {
 const handleFileUpload = (event) => {
   const files = event.target.files || event.dataTransfer.files;
   if (files.length) {
-    console.log(files);
-    uploadedFile.value = files;
+    upload_data.file = files;
     // Process the files here
   }
 };
@@ -481,8 +488,7 @@ const handleFileUpload = (event) => {
 const handleDrop = (event) => {
   const files = event.dataTransfer.files;
   if (files.length) {
-    console.log(files);
-    uploadedFile.value = files;
+    upload_data.file = files;
   }
 };
 const parseType = ref("Весь сайт");
@@ -499,6 +505,34 @@ const website_data = reactive({
   url: "",
   title: "",
 });
+
+const upload_data = reactive({
+  title: "",
+  file: null,
+});
+
+const uploadFile = async () => {
+  const result = await e$.value.$validate();
+  if (!result) {
+    console.log("Form validation failed");
+    return;
+  }
+
+  store
+    .uploadFile(upload_data.title, upload_data.file[0])
+    .then(() => {
+      getDataset()
+      toast.add({
+        severity: "success",
+        summary: "Успешно",
+        detail: "Статья успешно создан",
+        life: 3000,
+      });
+    })
+    .finally(() => {
+      addDataModal.value = false;
+    });
+};
 
 const customMessages = {
   required: "Это поле не может быть пустым",
@@ -518,6 +552,15 @@ const website_rules = reactive({
     required: helpers.withMessage(customMessages.required, required),
   },
   url: {
+    required: helpers.withMessage(customMessages.required, required),
+  },
+});
+
+const upload_rules = reactive({
+  title: {
+    required: helpers.withMessage(customMessages.required, required),
+  },
+  file: {
     required: helpers.withMessage(customMessages.required, required),
   },
 });
@@ -552,49 +595,45 @@ const add_article = async () => {
 };
 
 const removeDataset = (id) => {
-
-
-  const ids = selectedKnowledge.value.map(item => item.id)
+  const ids = selectedKnowledge.value.map((item) => item.id);
 
   if (ids.length) {
     store
-        .removeMultipleDatasets(ids)
-        .then(() => {
-          getDataset();
-          toast.add({
-            severity: "success",
-            summary: "Успешно",
-            life: 3000,
-          });
-        })
-        .catch(() => {
-          toast.add({
-            severity: "error",
-            summary: "Ошибка",
-            life: 3000,
-          });
+      .removeMultipleDatasets(ids)
+      .then(() => {
+        getDataset();
+        toast.add({
+          severity: "success",
+          summary: "Успешно",
+          life: 3000,
         });
+      })
+      .catch(() => {
+        toast.add({
+          severity: "error",
+          summary: "Ошибка",
+          life: 3000,
+        });
+      });
   } else {
     store
-        .removeDataset(id)
-        .then(() => {
-          getDataset();
-          toast.add({
-            severity: "success",
-            summary: "Успешно",
-            life: 3000,
-          });
-        })
-        .catch(() => {
-          toast.add({
-            severity: "error",
-            summary: "Ошибка",
-            life: 3000,
-          });
+      .removeDataset(id)
+      .then(() => {
+        getDataset();
+        toast.add({
+          severity: "success",
+          summary: "Успешно",
+          life: 3000,
         });
+      })
+      .catch(() => {
+        toast.add({
+          severity: "error",
+          summary: "Ошибка",
+          life: 3000,
+        });
+      });
   }
-
-
 };
 
 const add_website = async () => {
@@ -640,24 +679,15 @@ const add_website = async () => {
 const v$ = useVuelidate(rules, data);
 
 const w$ = useVuelidate(website_rules, website_data);
+const e$ = useVuelidate(upload_rules, upload_data);
 
 const parsers = ref([{ title: "По умолчанию" }, { title: "По умолчанию1" }]);
-
-const selectedParser = ref(parsers.value[0]);
-
-const onUpload = (event) => {
-  console.log(event.files);
-};
 
 const addItems = ref([
   { label: "Веб-страница" },
   { label: "Файл" },
   { label: "Статья" },
 ]);
-
-const knowledge = ref([]);
-
-const removeData = () => {};
 </script>
 
 <style scoped>
