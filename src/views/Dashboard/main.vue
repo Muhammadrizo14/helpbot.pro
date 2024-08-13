@@ -133,8 +133,8 @@
         <div>
           <Chart
             type="line"
-            :data="chartData2"
-            :options="chartOptions2"
+            :data="averageCountTokenData"
+            :options="averageCountTokenChart"
             class="h-20rem"
           />
         </div>
@@ -267,20 +267,29 @@
 </template>
 `
 <script setup>
-import { ref, onMounted } from "vue";
+import {ref, onMounted, watch} from "vue";
+import {useStaticStore} from "../../stores/StaticStore";
 
-const periods = ref([{ name: "неделя" }, { name: "месяц" }, { name: "год" }]);
+
+const statics = useStaticStore()
+
+
+const periods = ref([{ name: "неделя" }, { name: "месяц" }]);
 
 const selectedPeriod = ref(periods.value[0]);
 const selectedPeriodOfSupport = ref(periods.value[0]);
 const selectedPeriodOfQuantity = ref(periods.value[0]);
 
-onMounted(() => {
+watch(selectedPeriodOfQuantity, async (newValue, oldValue) => {
+  await setQuantityData(newValue);
+});
+
+onMounted(async () => {
   chartData.value = setChartData();
   chartOptions.value = setChartOptions();
-  chartData2.value = setChartData2();
-  chartOptions2.value = setChartOptions2();
-  quantityData.value = setQuantityData();
+  averageCountTokenData.value = setAverageCountTokenData();
+  averageCountTokenChart.value = setAverageCountTokenChart();
+  quantityData.value = await setQuantityData(selectedPeriodOfQuantity.value);
   quantityOptions.value = setQuantityOptions();
   timeData.value = setTimeData();
   timeOptions.value = setTimeOptions();
@@ -387,11 +396,11 @@ const setChartOptions = () => {
   };
 };
 
-const chartData2 = ref();
+const averageCountTokenData = ref();
 
-const chartOptions2 = ref();
+const averageCountTokenChart = ref();
 
-const setChartData2 = () => {
+const setAverageCountTokenData = () => {
   const documentStyle = getComputedStyle(document.documentElement);
 
   return {
@@ -409,7 +418,7 @@ const setChartData2 = () => {
     ],
   };
 };
-const setChartOptions2 = () => {
+const setAverageCountTokenChart = () => {
   const documentStyle = getComputedStyle(document.documentElement);
   const textColor = documentStyle.getPropertyValue("--text-color");
   const textColorSecondary = documentStyle.getPropertyValue(
@@ -423,7 +432,6 @@ const setChartOptions2 = () => {
     plugins: {
       legend: {
         display: false,
-
         labels: {
           color: textColor,
         },
@@ -450,19 +458,11 @@ const setChartOptions2 = () => {
   };
 };
 
-const setQuantityData = () => {
-  const documentStyle = getComputedStyle(document.documentElement);
 
-  return {
-    labels: [
-      "01 апр",
-      "02 апр",
-      "03 апр",
-      "04 апр",
-      "05 апр",
-      "06 апр",
-      "30 апр",
-    ],
+const setQuantityData = async (type) => {
+
+  const dataset = {
+    labels: [],
     datasets: [
       {
         type: "bar",
@@ -480,7 +480,31 @@ const setQuantityData = () => {
       },
     ],
   };
+
+
+
+
+  try {
+    const { data } = await statics.getRequests(`${type.name === 'неделя' ? 'week' : 'month' }`);
+    const formatter = new Intl.DateTimeFormat('ru', { month: 'short' });
+
+    const res = data.map((item) => {
+      const dateObj = new Date(item.date.replace(/-/g, ','));
+      const month2 = formatter.format(dateObj);
+      return `${dateObj.getDate()} ${month2}`;
+    });
+
+    dataset.labels = res;
+    console.log(dataset.labels); // Verify that labels are correctly populated
+
+  } catch (error) {
+    console.error("Failed to fetch data", error);
+  }
+
+  return dataset;
 };
+
+
 const setQuantityOptions = () => {
   const documentStyle = getComputedStyle(document.documentElement);
   const textColor = documentStyle.getPropertyValue("--text-color");
