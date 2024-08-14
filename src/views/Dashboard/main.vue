@@ -3,7 +3,7 @@
     <div class="home__side">
       <Box class="flex align-items-end gap-3 p-3 m-0 justify-content-between">
         <div style="width: 70%">
-          <h1 class="pb-3">МойБот</h1>
+          <h1 class="pb-3">{{ bot.selectedBot.name }}</h1>
           <div class="flex align-items-center w-full justify-content-between">
             <p class="text-500">Количество токенов</p>
             <p>145</p>
@@ -184,7 +184,7 @@
                 <span class="ml-2">0-5 мин</span>
               </div>
               <div class="time__percent">
-                <p>19%</p>
+                <p>{{ percentages[0] }}%</p>
               </div>
             </div>
             <div
@@ -195,7 +195,7 @@
                 <span class="ml-2">5-10 мин</span>
               </div>
               <div class="time__percent">
-                <p>42%</p>
+                <p>{{ percentages[1] }}%</p>
               </div>
             </div>
             <div
@@ -206,7 +206,7 @@
                 <span class="ml-2">более 10 мин</span>
               </div>
               <div class="time__percent">
-                <p>31%</p>
+                <p>{{ percentages[2] }}%</p>
               </div>
             </div>
             <div
@@ -217,7 +217,7 @@
                 <span class="ml-2">перевод на оператора</span>
               </div>
               <div class="time__percent">
-                <p>8%</p>
+                <p>{{ percentages[3] }}%</p>
               </div>
             </div>
           </div>
@@ -260,19 +260,19 @@
             <p>9</p>
           </div>
         </div>
-        <Button>Выгрузить аналитику</Button>
+        <Button @click="downloadAnalytic">Выгрузить аналитику</Button>
       </Box>
     </div>
   </div>
 </template>
 `
 <script setup>
-import {ref, onMounted, watch} from "vue";
-import {useStaticStore} from "../../stores/StaticStore";
+import { ref, onMounted, watch } from "vue";
+import { useStaticStore } from "../../stores/StaticStore";
+import {useBotStore} from "../../stores/BotStore";
 
-
-const statics = useStaticStore()
-
+const statics = useStaticStore();
+const bot = useBotStore();
 
 const periods = ref([{ name: "неделя" }, { name: "месяц" }]);
 
@@ -291,7 +291,7 @@ onMounted(async () => {
   averageCountTokenChart.value = setAverageCountTokenChart();
   quantityData.value = await setQuantityData(selectedPeriodOfQuantity.value);
   quantityOptions.value = setQuantityOptions();
-  timeData.value = setTimeData();
+  timeData.value = await setTimeData();
   timeOptions.value = setTimeOptions();
 });
 
@@ -301,6 +301,29 @@ const timeData = ref();
 const timeOptions = ref();
 const chartData = ref();
 const chartOptions = ref();
+const percentages = ref([]);
+
+const downloadAnalytic = () => {
+  statics.downloadAnalytic().then((response) => {
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+
+    // Set the file name (you might get this from the response headers)
+    const contentDisposition = response.headers["content-disposition"];
+    let fileName = "statistics.csv"; // Default file name
+
+    if (contentDisposition) {
+      const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+      if (fileNameMatch.length === 2) fileName = fileNameMatch[1];
+    }
+
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+};
 
 const setChartData = () => {
   const documentStyle = getComputedStyle(document.documentElement);
@@ -353,8 +376,6 @@ const setChartOptions = () => {
   const maxValue = Math.max(...data.flatMap((dataset) => dataset.data));
 
   const spacing = 10;
-
-  // console.log(maxValue + spacing);
 
   return {
     maintainAspectRatio: false,
@@ -458,9 +479,7 @@ const setAverageCountTokenChart = () => {
   };
 };
 
-
 const setQuantityData = async (type) => {
-
   const dataset = {
     labels: [],
     datasets: [
@@ -481,29 +500,25 @@ const setQuantityData = async (type) => {
     ],
   };
 
-
-
-
   try {
-    const { data } = await statics.getRequests(`${type.name === 'неделя' ? 'week' : 'month' }`);
-    const formatter = new Intl.DateTimeFormat('ru', { month: 'short' });
+    const { data } = await statics.getRequests(
+      `${type.name === "неделя" ? "week" : "month"}`
+    );
+    const formatter = new Intl.DateTimeFormat("ru", { month: "short" });
 
     const res = data.map((item) => {
-      const dateObj = new Date(item.date.replace(/-/g, ','));
+      const dateObj = new Date(item.date.replace(/-/g, ","));
       const month2 = formatter.format(dateObj);
       return `${dateObj.getDate()} ${month2}`;
     });
 
     dataset.labels = res;
-    console.log(dataset.labels); // Verify that labels are correctly populated
-
   } catch (error) {
     console.error("Failed to fetch data", error);
   }
 
   return dataset;
 };
-
 
 const setQuantityOptions = () => {
   const documentStyle = getComputedStyle(document.documentElement);
@@ -551,18 +566,36 @@ const setQuantityOptions = () => {
   };
 };
 
-const setTimeData = () => {
-  const documentStyle = getComputedStyle(document.body);
-
-  return {
+const setTimeData = async () => {
+  const dataset = {
     labels: ["0-5%", "5-10%", ">10%", "перевод на оператора"],
     datasets: [
       {
-        data: [19, 42, 31, 8],
+        data: [1, 2, 4, 5],
         backgroundColor: ["#76C4FF", "#B286F3", "#6FAAFB", "#D06BF3"],
       },
     ],
   };
+
+  await statics.getTime().then(({ data }) => {
+    const statics = [
+      data[0].resolved_0_5,
+      data[0].resolved_5_10,
+      data[0].resolved_10_plus,
+      data[0].redirected_to_operator,
+    ];
+
+    const total = statics.reduce((sum, value) => sum + value, 0);
+    const calculatedPercentages = statics.map((value) =>
+      ((value / total) * 100).toFixed()
+    );
+
+    percentages.value = calculatedPercentages;
+
+    dataset.datasets[0].data = statics;
+  });
+
+  return dataset;
 };
 
 const setTimeOptions = () => {
