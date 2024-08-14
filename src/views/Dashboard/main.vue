@@ -14,7 +14,9 @@
           </div>
         </div>
         <div style="width: 30%" class="flex justify-content-center">
-          <router-link to="/payment"> <Button>Пополнить</Button></router-link>
+          <router-link to="/payment">
+            <Button>Пополнить</Button>
+          </router-link>
         </div>
       </Box>
       <Box class="p-3">
@@ -113,8 +115,8 @@
         <div>
           <Chart
             type="bar"
-            :data="chartData"
-            :options="chartOptions"
+            :data="supportData"
+            :options="supportOptions"
             class="h-20rem"
           />
         </div>
@@ -269,7 +271,7 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { useStaticStore } from "../../stores/StaticStore";
-import {useBotStore} from "../../stores/BotStore";
+import { useBotStore } from "../../stores/BotStore";
 
 const statics = useStaticStore();
 const bot = useBotStore();
@@ -284,9 +286,13 @@ watch(selectedPeriodOfQuantity, async (newValue, oldValue) => {
   await setQuantityData(newValue);
 });
 
+watch(selectedPeriodOfSupport, async (newValue, oldValue) => {
+    await setSupportData(newValue);
+});
+
 onMounted(async () => {
-  chartData.value = setChartData();
-  chartOptions.value = setChartOptions();
+  supportData.value = await setSupportData(selectedPeriodOfSupport.value);
+  supportOptions.value = setSupportOptions();
   averageCountTokenData.value = setAverageCountTokenData();
   averageCountTokenChart.value = setAverageCountTokenChart();
   quantityData.value = await setQuantityData(selectedPeriodOfQuantity.value);
@@ -299,9 +305,12 @@ const quantityData = ref();
 const quantityOptions = ref();
 const timeData = ref();
 const timeOptions = ref();
-const chartData = ref();
-const chartOptions = ref();
+const supportData = ref();
+const supportOptions = ref();
 const percentages = ref([]);
+
+const supportDataset = ref()
+
 
 const downloadAnalytic = () => {
   statics.downloadAnalytic().then((response) => {
@@ -311,7 +320,7 @@ const downloadAnalytic = () => {
 
     // Set the file name (you might get this from the response headers)
     const contentDisposition = response.headers["content-disposition"];
-    let fileName = "statistics.csv"; // Default file name
+    let fileName = "statistics.xlsx"; // Default file name
 
     if (contentDisposition) {
       const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
@@ -325,45 +334,79 @@ const downloadAnalytic = () => {
   });
 };
 
-const setChartData = () => {
-  const documentStyle = getComputedStyle(document.documentElement);
-
-  return {
-    labels: [
-      "01 апр",
-      "02 апр",
-      "03 апр",
-      "04 апр",
-      "05 апр",
-      "06 апр",
-      "07 апр",
-    ],
+const setSupportData = async (type) => {
+  const dataset = {
+    labels: [],
     datasets: [
       {
         type: "bar",
         label: "5★",
         backgroundColor: "#76C4FF",
-        data: [6, 12, 10, 18, 12, 15, 10],
+        data: [],
         borderRadius: 4,
       },
       {
         type: "bar",
         label: "4★",
         backgroundColor: "#6FAAFB",
-        data: [2, 18, 8, 22, 10, 8, 5],
+        data: [],
         borderRadius: 4,
       },
       {
         type: "bar",
         label: "3★",
-        backgroundColor: "#949CEA",
-        data: [1, 10, 5, 20, 5, 3, 2],
+        backgroundColor: "#949cea",
+        data: [],
+        borderRadius: 4,
+      },
+      {
+        type: "bar",
+        label: "2★",
+        backgroundColor: "#b286f3",
+        data: [],
+        borderRadius: 4,
+      },
+      {
+        type: "bar",
+        label: "1★",
+        backgroundColor: "#d06bf3",
+        data: [],
         borderRadius: 4,
       },
     ],
-  };
+  }
+
+  const period = type.name === "неделя" ? "week" : "month";
+  const { data } = await statics.getGrades(period);
+
+  const formatter = new Intl.DateTimeFormat("ru", { month: "short" });
+  const datasets = dataset.datasets;
+
+  const labels = data.map(item => {
+    const { grade_1, grade_2, grade_3, grade_4, grade_5, day } = item;
+
+    // Push data to datasets
+    datasets[0].data.push(grade_5);
+    datasets[1].data.push(grade_4);
+    datasets[2].data.push(grade_3);
+    datasets[3].data.push(grade_2);
+    datasets[4].data.push(grade_1);
+
+    const dateObj = new Date(day);
+    const month = formatter.format(dateObj);
+
+    return `${dateObj.getDate()} ${month}`;
+  });
+
+  dataset.labels = labels;
+
+
+  supportDataset.value = dataset.datasets
+  return dataset;
 };
-const setChartOptions = () => {
+
+
+const setSupportOptions = () => {
   const documentStyle = getComputedStyle(document.documentElement);
   const textColor = documentStyle.getPropertyValue("--text-color");
   const textColorSecondary = documentStyle.getPropertyValue(
@@ -371,11 +414,28 @@ const setChartOptions = () => {
   );
   const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
 
-  const data = setChartData().datasets;
+  let cumulativeSums = [];
 
-  const maxValue = Math.max(...data.flatMap((dataset) => dataset.data));
+  // Iterate through each dataset
+  supportDataset.value.forEach((dataset) => {
+    dataset.data.forEach((entry, i) => {
+      // Check if cumulativeSums array has enough elements, if not, append 0
+      if (i >= cumulativeSums.length) {
+        cumulativeSums.push(0);
+      }
 
-  const spacing = 10;
+      // Add the value of entry directly to the cumulative sum for that index
+      cumulativeSums[i] += entry;
+    });
+  });
+
+  let maxSum = Math.max(...cumulativeSums);
+
+  if (maxSum < 10) {
+    maxSum += 2; // Add a fixed value for smaller sums
+  } else {
+    maxSum *= 1.2; // Add 20% padding for larger sums
+  }
 
   return {
     maintainAspectRatio: false,
@@ -403,7 +463,7 @@ const setChartOptions = () => {
         },
       },
       y: {
-        max: 70,
+        max: maxSum,
         beginAtZero: true,
         stacked: true,
         ticks: {

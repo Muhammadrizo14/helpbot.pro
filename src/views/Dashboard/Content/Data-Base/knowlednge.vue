@@ -577,6 +577,13 @@ const add_article = async () => {
     .then(() => {
       getDataset();
 
+      selectedAddTab.value=0
+
+
+      data.title = ''
+      data.content = ''
+
+
       addDataModal.value = false;
       toast.add({
         severity: "success",

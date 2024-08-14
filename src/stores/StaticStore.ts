@@ -9,8 +9,6 @@ export const useStaticStore = defineStore("static", () => {
   const requests = ref();
 
   const getRequests = async (type: string) => {
-    const store = useBotStore();
-
     return axios.get(`${apiUrl}/statistics/requests?bot_id=1&interval=${type}`);
   };
 
@@ -27,11 +25,17 @@ export const useStaticStore = defineStore("static", () => {
     return axios.get(`${apiUrl}/statistics/time?bot_id=1&interval=month`,);
   };
 
+
+  const getGrades = (type: string)=> {
+    return axios.get(`${apiUrl}/statistics/grades?bot_id=1&interval=${type}`)
+  }
+
   return {
     tokens,
     requests,
     getRequests,
     downloadAnalytic,
-    getTime
+    getTime,
+    getGrades
   };
 });
