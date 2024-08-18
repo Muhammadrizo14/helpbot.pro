@@ -8,10 +8,7 @@
     />
 
     <div class="flex align-items-center justify-content-between pt-3">
-      <InputText
-          placeholder="Поиск"
-          class="w-30rem border-none"
-      />
+      <InputText placeholder="Поиск" class="w-30rem border-none" />
       <Button v-if="selectedTab !== 2" outlined label="Закрыть выделенные" />
     </div>
 
@@ -99,33 +96,58 @@
         </div>
         <div class="flex align-items-center justify-content-center gap-3">
           <Button label="Отмена" @click="declineDialog = false" />
-          <Button label="Закрыть" severity="light" @click="declineDialog = false" />
+          <Button
+            label="Закрыть"
+            severity="light"
+            @click="declineDialog = false"
+          />
         </div>
       </form>
     </Dialog>
 
     <DataTable
-      v-model:selection="selectedProduct"
+      v-model:selection="selectedRequests"
       :tableClass="` asdf ${selectedTab === 2 ? 'archive-data' : ''}`"
       class="users-table pt-4"
       :value="filteredQuestions"
       tableStyle="min-width: 50rem"
     >
-      <Column v-if="selectedTab !== 2" selectionMode="multiple" headerStyle="width: 3rem"></Column>
+      <template #empty>
+        <p class="text-center">Нету вопросов</p>
+      </template>
       <Column
-        field="name"
+        v-if="selectedTab !== 2"
+        selectionMode="multiple"
+        headerStyle="width: 3rem"
+      ></Column>
+      <Column
+        field="message_text"
         header="Текст вопроса"
         :sortable="selectedTab !== 2 && true"
         style="width: 80%"
       ></Column>
-      <Column style="width: 10%" field="data" header="Дата" :sortable="selectedTab !== 2 && true"></Column>
-      <Column field="action" :header="selectedTab === 2 ? 'Дата закрытия' : 'Действие / дата закрытия'">
+      <Column
+        style="width: 10%"
+        field="received_at"
+        header="Дата"
+        :sortable="selectedTab !== 2 && true"
+      >
+        <template #body="slotProps">
+          <p>{{ new Date(slotProps.data.received_at).toLocaleDateString() }}</p>
+        </template>
+      </Column>
+      <Column
+        field="action"
+        :header="
+          selectedTab === 2 ? 'Дата закрытия' : 'Действие / дата закрытия'
+        "
+      >
         <template #body="slotProps">
           <div
             class="flex align-items-center gap-3"
-            v-if="slotProps.data.action === 'Ответить'"
+            v-if="slotProps.data.is_resolved"
           >
-            <Button :label="slotProps.data.action" @click="answerDialog = true">
+            <Button label="Ответить" @click="answerDialog = true">
               <template #icon>
                 <svg
                   width="20"
@@ -160,11 +182,13 @@
               icon="pi pi-file-excel"
               severity="danger"
               outlined
-              @click="declineDialog = true"
+              @click="removeRequest(slotProps.data.id)"
             />
           </div>
           <div v-else>
-            <p class="text-500">{{ slotProps.data.action }}</p>
+            <p class="text-500">
+              {{ new Date(slotProps.data.ended_at).toLocaleDateString() }}
+            </p>
           </div>
         </template>
       </Column>
@@ -176,10 +200,91 @@
 import { ref, computed, reactive } from "vue";
 import { helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import { useRequestStore } from "../../../stores/RequestStore";
 
-const selectedProduct = ref();
+const selectedRequests = ref();
 const answerDialog = ref(false);
 const declineDialog = ref(false);
+
+const store = useRequestStore();
+
+const questions = ref([]);
+
+
+const items = ref([]);
+
+const getDataset = ()=> {
+  store.getRequests().then((res) => {
+
+    const tabs = [
+      { label: `Все (${store.allRequests.length})` },
+      {
+        label: `Открытые  (${
+            store.openedRequests.length
+        })`,
+      },
+      {
+        label: `Закрытые (${
+            store.closedRequests.length
+        })`,
+      },
+    ]
+
+
+    items.value = tabs
+
+
+
+    questions.value = [res.data];
+  });
+}
+
+
+getDataset()
+
+const removeRequest = (id)=> {
+  const ids = selectedRequests.value.map((item) => item.id);
+
+  if (ids.length) {
+    store
+        .removeMultipleRequests(ids)
+        .then(() => {
+          getDataset();
+          toast.add({
+            severity: "success",
+            summary: "Успешно",
+            life: 3000,
+          });
+        })
+        .catch(() => {
+          toast.add({
+            severity: "error",
+            summary: "Ошибка",
+            life: 3000,
+          });
+        });
+  } else {
+    store
+        .deleteRequest(id)
+        .then(() => {
+          getDataset();
+          toast.add({
+            severity: "success",
+            summary: "Успешно",
+            life: 3000,
+          });
+        })
+        .catch(() => {
+          toast.add({
+            severity: "error",
+            summary: "Ошибка",
+            life: 3000,
+          });
+        });
+  }
+}
+
+
 
 const data = reactive({
   answer: "",
@@ -195,53 +300,17 @@ const rules = reactive({
 });
 const v$ = useVuelidate(rules, data);
 
-const questions = ref([
-  {
-    name: "Это вопрос, который остался без ответа. Ответьте мне как можно скорее.1",
-    data: "27.03.2024",
-    action: "Ответить",
-  },
-  {
-    name: "Это вопрос, который остался без ответа. Ответьте мне как можно скорее.2",
-    data: "28.03.2024",
-    action: "Закрыт 26.03.2024",
-  },
-  {
-    name: "Это вопрос, который остался без ответа. Ответьте мне как можно скорее.3",
-    data: "29.03.2024",
-    action: "Ответить",
-  },
-  {
-    name: "Это вопрос, который остался без ответа. Ответьте мне как можно скорее.4",
-    data: "30.03.2024",
-    action: "Ответить",
-  },
-]);
-
 const selectedTab = ref(0);
 
-const items = ref([
-  { label: `Все (${questions.value.length})` },
-  {
-    label: `Открытые  (${
-      questions.value.filter((q) => q.action === "Ответить").length
-    })`,
-  },
-  {
-    label: `Закрытые (${
-      questions.value.filter((q) => q.action !== "Ответить").length
-    })`,
-  },
-]);
 
 const filteredQuestions = computed(() => {
-  selectedProduct.value = [];
+  selectedRequests.value = [];
   if (selectedTab.value === 0) {
-    return questions.value;
+    return store.allRequests;
   } else if (selectedTab.value === 1) {
-    return questions.value.filter((q) => q.action === "Ответить");
+    return questions.value = store.openedRequests
   } else if (selectedTab.value === 2) {
-    return questions.value.filter((q) => q.action !== "Ответить");
+    return questions.value = store.closedRequests
   }
 });
 </script>

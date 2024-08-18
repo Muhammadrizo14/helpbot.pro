@@ -17,8 +17,8 @@ const restore = ref<boolean>(false);
 const remember = ref<boolean>(false);
 
 const data = reactive({
-  email: "",
-  password: "",
+  email: "rizo@gmail.com",
+  password: "lastblood1",
 });
 
 const customMessages = {

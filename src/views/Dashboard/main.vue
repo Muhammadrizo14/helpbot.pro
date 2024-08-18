@@ -244,22 +244,22 @@
         <div class="flex gap-2 align-items-center w-full pt-4">
           <div class="flex align-items-center justify-content-between w-full">
             <p class="text-500">Вопрос-ответ загружено</p>
-            <p>24</p>
+            <p>{{ data?.questions }}</p>
           </div>
           <div class="flex align-items-center justify-content-between w-full">
             <p class="text-500">Файлов загружено</p>
-            <p>12</p>
+            <p>{{ data?.files }}</p>
           </div>
         </div>
 
         <div class="flex gap-2 align-items-center w-full py-4">
           <div class="flex align-items-center justify-content-between w-full">
             <p class="text-500">Статей загружено</p>
-            <p>156</p>
+            <p>{{ data?.articles }}</p>
           </div>
           <div class="flex align-items-center justify-content-between w-full">
             <p class="text-500">Веб-страниц загружено</p>
-            <p>9</p>
+            <p>{{data?.websites}}</p>
           </div>
         </div>
         <Button @click="downloadAnalytic">Выгрузить аналитику</Button>
@@ -277,17 +277,22 @@ const statics = useStaticStore();
 const bot = useBotStore();
 
 const periods = ref([{ name: "неделя" }, { name: "месяц" }]);
+const data = ref();
+const selectedPeriod = ref(periods.value[1]);
+const selectedPeriodOfSupport = ref(periods.value[1]);
+const selectedPeriodOfQuantity = ref(periods.value[1]);
 
-const selectedPeriod = ref(periods.value[0]);
-const selectedPeriodOfSupport = ref(periods.value[0]);
-const selectedPeriodOfQuantity = ref(periods.value[0]);
+statics.getData().then((res) => {
+  data.value = res.data[0];
+  console.log(res.data[0]);
+});
 
 watch(selectedPeriodOfQuantity, async (newValue, oldValue) => {
   await setQuantityData(newValue);
 });
 
 watch(selectedPeriodOfSupport, async (newValue, oldValue) => {
-    await setSupportData(newValue);
+  await setSupportData(newValue);
 });
 
 onMounted(async () => {
@@ -309,8 +314,8 @@ const supportData = ref();
 const supportOptions = ref();
 const percentages = ref([]);
 
-const supportDataset = ref()
-
+const supportDataset = ref();
+const quantityDataset = ref();
 
 const downloadAnalytic = () => {
   statics.downloadAnalytic().then((response) => {
@@ -374,7 +379,7 @@ const setSupportData = async (type) => {
         borderRadius: 4,
       },
     ],
-  }
+  };
 
   const period = type.name === "неделя" ? "week" : "month";
   const { data } = await statics.getGrades(period);
@@ -382,7 +387,7 @@ const setSupportData = async (type) => {
   const formatter = new Intl.DateTimeFormat("ru", { month: "short" });
   const datasets = dataset.datasets;
 
-  const labels = data.map(item => {
+  const labels = data.map((item) => {
     const { grade_1, grade_2, grade_3, grade_4, grade_5, day } = item;
 
     // Push data to datasets
@@ -400,11 +405,9 @@ const setSupportData = async (type) => {
 
   dataset.labels = labels;
 
-
-  supportDataset.value = dataset.datasets
+  supportDataset.value = dataset.datasets;
   return dataset;
 };
-
 
 const setSupportOptions = () => {
   const documentStyle = getComputedStyle(document.documentElement);
@@ -429,13 +432,8 @@ const setSupportOptions = () => {
     });
   });
 
-  let maxSum = Math.max(...cumulativeSums);
+  let maxSum = Math.max(...cumulativeSums)*2;
 
-  if (maxSum < 10) {
-    maxSum += 2; // Add a fixed value for smaller sums
-  } else {
-    maxSum *= 1.2; // Add 20% padding for larger sums
-  }
 
   return {
     maintainAspectRatio: false,
@@ -485,11 +483,11 @@ const setAverageCountTokenData = () => {
   const documentStyle = getComputedStyle(document.documentElement);
 
   return {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    labels: ["January",],
     datasets: [
       {
         label: "Third Dataset",
-        data: [12, 51, 62, 33, 21, 62, 45],
+        data: [12, ],
         fill: true,
         borderColor: "#76C4FF80",
         tension: 0.4,
@@ -547,14 +545,14 @@ const setQuantityData = async (type) => {
         type: "bar",
         label: "не обработано",
         backgroundColor: "#B286F3",
-        data: [1, 10, 5, 20, 5, 3, 2],
+        data: [],
         borderRadius: 4,
       },
       {
         type: "bar",
         label: "обработано",
         backgroundColor: "#76C4FF",
-        data: [5, 12, 10, 18, 12, 15, 10],
+        data: [],
         borderRadius: 4,
       },
     ],
@@ -567,10 +565,16 @@ const setQuantityData = async (type) => {
     const formatter = new Intl.DateTimeFormat("ru", { month: "short" });
 
     const res = data.map((item) => {
+
+      dataset.datasets[0].data.push(item.unresolved)
+      dataset.datasets[1].data.push(item.resolved)
+
       const dateObj = new Date(item.date.replace(/-/g, ","));
       const month2 = formatter.format(dateObj);
       return `${dateObj.getDate()} ${month2}`;
     });
+
+    quantityDataset.value = dataset.datasets
 
     dataset.labels = res;
   } catch (error) {
@@ -587,6 +591,23 @@ const setQuantityOptions = () => {
     "--text-color-secondary"
   );
   const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
+
+
+  let cumulativeSums = [];
+
+  // Iterate through each dataset
+  quantityDataset.value.forEach((dataset) => {
+    dataset.data.forEach((entry, i) => {
+      // Check if cumulativeSums array has enough elements, if not, append 0
+      if (i >= cumulativeSums.length) {
+        cumulativeSums.push(0);
+      }
+
+      cumulativeSums[i] += entry;
+    });
+  });
+
+  let maxSum = Math.max(...cumulativeSums)*2;
 
   return {
     maintainAspectRatio: false,
@@ -614,6 +635,8 @@ const setQuantityOptions = () => {
         },
       },
       y: {
+        max: maxSum,
+
         stacked: true,
         ticks: {
           color: textColorSecondary,

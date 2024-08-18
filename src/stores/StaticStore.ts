@@ -8,8 +8,17 @@ export const useStaticStore = defineStore("static", () => {
   const tokens = ref();
   const requests = ref();
 
+
   const getRequests = async (type: string) => {
-    return axios.get(`${apiUrl}/statistics/requests?bot_id=1&interval=${type}`);
+    return axios.get('https://helpbot.site/statistics/requests', {
+      params: {
+        bot_id: 1,
+        interval: type
+      },
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
   };
 
   const downloadAnalytic = async () => {
@@ -30,12 +39,25 @@ export const useStaticStore = defineStore("static", () => {
     return axios.get(`${apiUrl}/statistics/grades?bot_id=1&interval=${type}`)
   }
 
+
+  const getData = ()=> {
+    const store = useBotStore()
+    return axios.get(`${apiUrl}/statistics/count?bot_id=${store.selectedBot.id}`)
+  }
+
+  const getAverageToken = (type)=> {
+    return axios.get(`${apiUrl}/statistics/tokens?bot_id=1&interval=${type}`)
+
+  }
+
   return {
     tokens,
     requests,
     getRequests,
     downloadAnalytic,
     getTime,
-    getGrades
+    getGrades,
+    getData,
+    getAverageToken
   };
 });

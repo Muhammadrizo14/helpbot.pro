@@ -17,6 +17,9 @@ type DataType = {
   raw_text: string;
 };
 
+
+
+
 export const useKnowledgeStore = defineStore("knowledge", () => {
   const dataset = ref<DataType[]>([])
 
@@ -67,7 +70,7 @@ export const useKnowledgeStore = defineStore("knowledge", () => {
 
   }
 
-  // loading button icon primevue in every request
+
 
 
   const uploadFile = async (title: string, file: File) => {

@@ -28,10 +28,14 @@ export const useQuestionStore = defineStore("question", () => {
     return axios.get(`${apiUrl}/faq/questions?bot_id=${store.selectedBot.id}`)
   }
 
-  const createQuestion = async ({question, answer}: string)=> {
+  const createQuestion = async ({question, answer, similar}: string)=> {
     const store = useBotStore()
 
-    return axios.post(`${apiUrl}/trainingset/question?question=${question}&answer=${answer}&action=${answer === 'call_operator' ? 'call_operator': 'answer'}&bot_id=${store.selectedBot.id}`)
+    const similar_questions = similar.map(y=> `similar_questions=${y}`).join('&')
+
+
+
+    return axios.post(`${apiUrl}/trainingset/question?question=${question}&answer=${answer}&action=${answer === 'call_operator' ? 'call_operator': 'answer'}&bot_id=${store.selectedBot.id}&${answer !== 'call_operator' ? similar_questions : ''}`)
   }
 
 

@@ -86,7 +86,7 @@
                   "
                 >
                   <p>Вопросы без ответа</p>
-                  <Badge value="2" severity="danger"></Badge>
+                  <Badge :value="request.openedRequests.length" severity="danger"></Badge>
                 </li>
               </router-link>
               <router-link to="/content/database">
@@ -239,9 +239,16 @@ import { useRoute } from "vue-router";
 import router from "../router";
 import { useBotStore } from "@/stores/BotStore.ts";
 import { useAuthStore } from "../stores/AuthStore";
+import {useRequestStore} from "../stores/RequestStore";
 
 const store = useBotStore();
 const auth = useAuthStore();
+const request = useRequestStore()
+
+
+request.getRequests()
+
+
 
 store.getAllBots();
 
@@ -268,6 +275,7 @@ const logout = () => {
 const contentToggle = () => {
   contentSubmenu.value = !contentSubmenu.value;
 };
+
 
 watch(
   () => selectedBot.value,

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex align-items-center justify-content-between py-4 gap-3">
+    <div class="flex align-items-center justify-content-between py-4 gap-3 sub__header">
       <div class="flex align-items-center gap-3">
         <Chip
           class="bg-white text-sm"
@@ -8,11 +8,7 @@
             knowledge.filter((e) => e.type === 'website').length
           }`"
         />
-        <Chip class="bg-white text-sm" label="Проиндексированные страницы: 3" />
-        <Chip
-          class="bg-white text-sm"
-          label="Общее количество эмбеддингов: 32"
-        />
+
       </div>
       <div class="flex gap-3 align-items-center flex-nowrap">
         <Button
@@ -30,7 +26,7 @@
       </div>
     </div>
     <Divider />
-    <div class="flex justify-content-between align-items-center py-4">
+    <div class="flex justify-content-between align-items-center py-4 sub__header">
       <InputText
         placeholder="Отфильтровать данные..."
         class="w-20rem border-none"
@@ -717,5 +713,15 @@ const addItems = ref([
 
 .file-upload:hover {
   border-color: #007bff;
+}
+
+
+@media (max-width: 1220px) {
+  .sub__header {
+    flex-direction: column;
+    justify-content: start !important;
+    align-items: start !important;
+    gap: 30px;
+  }
 }
 </style>

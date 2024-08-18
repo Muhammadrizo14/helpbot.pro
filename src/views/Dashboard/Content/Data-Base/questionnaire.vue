@@ -44,8 +44,9 @@
       ></Column>
       <Column field="similar" header="Похожие вопросы" style="min-width: 390px">
         <template #body="slotProps">
-          <p v-html="slotProps.data.similar"></p>
-          {{slotProps.data.id}}
+          <p v-for="similar in slotProps.data.similar_questions">
+            {{similar}}
+          </p>
         </template>
       </Column>
       <Column field="answer" header="Ответ" style="width: 392.67px">
@@ -252,6 +253,10 @@
   </Dialog>
 </template>
 
+
+
+
+
 <script setup>
 import { reactive, ref, watch } from "vue";
 import { helpers, required } from "@vuelidate/validators";
@@ -386,11 +391,15 @@ const add = async () => {
     return;
   }
 
+
   const myData = {
     question: data.question,
     answer: data.answer === 'Перенаправить на оператора' ? 'call_operator' : data.answer,
-    similar: data.similar,
+    similar: data.similar.split("\n"),
   };
+
+
+
 
   store.createQuestion(myData)
     .then(()=>{
