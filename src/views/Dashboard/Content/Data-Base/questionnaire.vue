@@ -40,16 +40,16 @@
       <Column
         field="question"
         header="Главный вопрос"
-        style="min-width: 480px"
+        style="max-width: 480px"
       ></Column>
-      <Column field="similar" header="Похожие вопросы" style="min-width: 390px">
+      <Column field="similar" header="Похожие вопросы" style="max-width: 390px">
         <template #body="slotProps">
           <p v-for="similar in slotProps.data.similar_questions">
             {{similar}}
           </p>
         </template>
       </Column>
-      <Column field="answer" header="Ответ" style="width: 392.67px">
+      <Column field="answer" header="Ответ" style="max-width: 392.67px">
         <template #body="slotProps">
           <Button
             v-if="slotProps.data.action === 'call_operator'"

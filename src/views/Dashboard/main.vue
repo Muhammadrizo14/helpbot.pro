@@ -114,11 +114,13 @@
         </div>
         <div>
           <Chart
+            v-if="supportData?.datasets[0].data.length !== 0"
             type="bar"
             :data="supportData"
             :options="supportOptions"
             class="h-20rem"
           />
+          <div v-else class="low__data low__data-grades h-20rem"></div>
         </div>
       </Box>
       <Box class="p-3">
@@ -134,11 +136,13 @@
         </div>
         <div>
           <Chart
+            v-if="averageCountTokenData?.datasets[0].data.length > 2"
             type="line"
             :data="averageCountTokenData"
             :options="averageCountTokenChart"
             class="h-20rem"
           />
+          <div v-else class="low__data low__data-token h-20rem"></div>
         </div>
       </Box>
     </div>
@@ -167,17 +171,21 @@
         <div>
           <Chart
             type="bar"
+            v-if="quantityData?.datasets[0].data.length !== 0"
             :data="quantityData"
             :options="quantityOptions"
             class="h-20rem"
           />
+          <div v-else class="low__data low__data-quantity h-20rem"></div>
         </div>
       </Box>
       <Box class="p-3">
         <h1>Время решения запроса</h1>
-
-        <div class="flex justify-content-between pt-4 align-items-center gap-3">
-          <div class="times w-full flex flex-column gap-3">
+        <div class="flex justify-content-between pt-4 align-items-center gap-3"               v-if="timeData?.datasets[0].data.some(value => value !== null)"
+        >
+          <div
+              class="times w-full flex flex-column gap-3"
+          >
             <div
               class="time flex align-items-center justify-content-between w-full"
             >
@@ -230,7 +238,10 @@
               :options="timeOptions"
               class="h-20rem"
             />
+
           </div>
+        </div>
+        <div v-else class="low__data low__data-time h-20rem">
         </div>
       </Box>
       <Box class="p-3">
@@ -259,7 +270,7 @@
           </div>
           <div class="flex align-items-center justify-content-between w-full">
             <p class="text-500">Веб-страниц загружено</p>
-            <p>{{data?.websites}}</p>
+            <p>{{ data?.websites }}</p>
           </div>
         </div>
         <Button @click="downloadAnalytic">Выгрузить аналитику</Button>
@@ -432,8 +443,7 @@ const setSupportOptions = () => {
     });
   });
 
-  let maxSum = Math.max(...cumulativeSums)*2;
-
+  let maxSum = Math.max(...cumulativeSums) * 2;
 
   return {
     maintainAspectRatio: false,
@@ -483,11 +493,11 @@ const setAverageCountTokenData = () => {
   const documentStyle = getComputedStyle(document.documentElement);
 
   return {
-    labels: ["January",],
+    labels: ["January"],
     datasets: [
       {
         label: "Third Dataset",
-        data: [12, ],
+        data: [12],
         fill: true,
         borderColor: "#76C4FF80",
         tension: 0.4,
@@ -565,16 +575,15 @@ const setQuantityData = async (type) => {
     const formatter = new Intl.DateTimeFormat("ru", { month: "short" });
 
     const res = data.map((item) => {
-
-      dataset.datasets[0].data.push(item.unresolved)
-      dataset.datasets[1].data.push(item.resolved)
+      dataset.datasets[0].data.push(item.unresolved);
+      dataset.datasets[1].data.push(item.resolved);
 
       const dateObj = new Date(item.date.replace(/-/g, ","));
       const month2 = formatter.format(dateObj);
       return `${dateObj.getDate()} ${month2}`;
     });
 
-    quantityDataset.value = dataset.datasets
+    quantityDataset.value = dataset.datasets;
 
     dataset.labels = res;
   } catch (error) {
@@ -592,7 +601,6 @@ const setQuantityOptions = () => {
   );
   const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
 
-
   let cumulativeSums = [];
 
   // Iterate through each dataset
@@ -607,7 +615,7 @@ const setQuantityOptions = () => {
     });
   });
 
-  let maxSum = Math.max(...cumulativeSums)*2;
+  let maxSum = Math.max(...cumulativeSums) * 2;
 
   return {
     maintainAspectRatio: false,
@@ -730,5 +738,27 @@ const setTimeOptions = () => {
     width: 100%;
     max-width: 742px;
   }
+}
+
+.low__data {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom;
+}
+
+.low__data-grades {
+  background-image: url("../../assets/images/lowdata/grade.png");
+}
+
+.low__data-quantity {
+  background-image: url("../../assets/images/lowdata/quantity.png");
+}
+
+.low__data-time {
+  background-image: url("../../assets/images/lowdata/time.png");
+}
+
+.low__data-token {
+  background-image: url("../../assets/images/lowdata/token.png");
 }
 </style>
