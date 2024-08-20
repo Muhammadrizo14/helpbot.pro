@@ -35,7 +35,7 @@ export const useQuestionStore = defineStore("question", () => {
 
 
 
-    return axios.post(`${apiUrl}/trainingset/question?question=${question}&answer=${answer}&action=${answer === 'call_operator' ? 'call_operator': 'answer'}&bot_id=${store.selectedBot.id}&${answer !== 'call_operator' ? similar_questions : ''}`)
+    return axios.post(`${apiUrl}/trainingset/question?question=${question}&answer=${answer}&action=${answer === 'call_operator' ? 'call_operator': 'answer'}&bot_id=${store.selectedBot.id}&${similar_questions}`)
   }
 
 

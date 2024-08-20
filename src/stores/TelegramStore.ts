@@ -11,7 +11,7 @@ export const useTelegram = defineStore("telegram", () => {
     const userdata = useAuthStore();
 
     return await axios.post(
-      `${apiUrl}/integration/tg/enable-wh?token=${userdata}&bot_id=${0}`,
+      `${apiUrl}/integration/tg/disable-wh?token=${userdata.token}&bot_id=${0}`,
       {
         headers: {
           accept: "application/json",

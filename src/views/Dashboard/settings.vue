@@ -47,13 +47,6 @@
           Если вы удалите бота, пути назад уже не будет. Пожалуйста, будьте
           уверены.
         </p>
-        <label
-          for="login__form-title"
-          v-for="error in v$.title.$errors"
-          :key="error.$uid"
-          style="color: var(--red)"
-          >{{ error.$message }}</label
-        >
       </div>
       <Button
         label="Удалить этого бота"

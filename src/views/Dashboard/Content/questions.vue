@@ -9,7 +9,12 @@
 
     <div class="flex align-items-center justify-content-between pt-3">
       <InputText placeholder="Поиск" class="w-30rem border-none" />
-      <Button v-if="selectedTab !== 2" outlined label="Закрыть выделенные" />
+      <Button
+        v-if="selectedTab !== 2"
+        @click="closeQuestions"
+        outlined
+        label="Закрыть выделенные"
+      />
     </div>
 
     <Dialog
@@ -182,7 +187,7 @@
               icon="pi pi-file-excel"
               severity="danger"
               outlined
-              @click="removeRequest(slotProps.data.id)"
+              @click="removeRequest(slotProps.data.message_id)"
             />
           </div>
           <div v-else>
@@ -201,6 +206,7 @@ import { ref, computed, reactive } from "vue";
 import { helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import { useRequestStore } from "../../../stores/RequestStore";
+import { useToast } from "primevue/usetoast";
 
 const selectedRequests = ref();
 const answerDialog = ref(false);
@@ -209,82 +215,71 @@ const declineDialog = ref(false);
 const store = useRequestStore();
 
 const questions = ref([]);
-
+const toast = useToast();
 
 const items = ref([]);
 
-const getDataset = ()=> {
+const getDataset = () => {
   store.getRequests().then((res) => {
-
     const tabs = [
       { label: `Все (${store.allRequests.length})` },
       {
-        label: `Открытые  (${
-            store.openedRequests.length
-        })`,
+        label: `Открытые  (${store.openedRequests.length})`,
       },
       {
-        label: `Закрытые (${
-            store.closedRequests.length
-        })`,
+        label: `Закрытые (${store.closedRequests.length})`,
       },
-    ]
+    ];
 
-
-    items.value = tabs
-
-
+    items.value = tabs;
 
     questions.value = [res.data];
   });
-}
+};
 
+getDataset();
 
-getDataset()
-
-const removeRequest = (id)=> {
+const removeRequest = (id) => {
   const ids = selectedRequests.value.map((item) => item.id);
 
   if (ids.length) {
     store
-        .removeMultipleRequests(ids)
-        .then(() => {
-          getDataset();
-          toast.add({
-            severity: "success",
-            summary: "Успешно",
-            life: 3000,
-          });
-        })
-        .catch(() => {
-          toast.add({
-            severity: "error",
-            summary: "Ошибка",
-            life: 3000,
-          });
+      .removeMultipleRequests(ids)
+      .then(() => {
+        getDataset();
+        toast.add({
+          severity: "success",
+          summary: "Успешно",
+          life: 3000,
         });
+      })
+      .catch(() => {
+        toast.add({
+          severity: "error",
+          summary: "Ошибка",
+          life: 3000,
+        });
+      });
   } else {
     store
-        .deleteRequest(id)
-        .then(() => {
-          getDataset();
-          toast.add({
-            severity: "success",
-            summary: "Успешно",
-            life: 3000,
-          });
-        })
-        .catch(() => {
-          toast.add({
-            severity: "error",
-            summary: "Ошибка",
-            life: 3000,
-          });
+      .deleteRequest(id)
+      .then(() => {
+        getDataset();
+        toast.add({
+          severity: "success",
+          summary: "Успешно",
+          life: 3000,
         });
+      })
+      .catch(() => {
+        toast.add({
+          severity: "error",
+          summary: "Ошибка",
+          life: 3000,
+        });
+      });
   }
-}
-
-
+};
 
 const data = reactive({
   answer: "",
@@ -302,15 +297,43 @@ const v$ = useVuelidate(rules, data);
 
 const selectedTab = ref(0);
 
+const closeQuestions = () => {
+  if (selectedRequests.value.length) {
+    const ids = selectedRequests.value.map((req) => req.message_id);
+
+    store.closeQuestionMultiple(ids).then(() => {
+      getDataset();
+      toast.add({
+        severity: "success",
+        summary: "Успешно",
+        life: 3000,
+      });
+    })
+    .catch(err=> {
+      getDataset();
+      toast.add({
+        severity: "error",
+        summary: "Ошибка",
+        life: 3000,
+      });
+    })
+  } else {
+    toast.add({
+      severity: "error",
+      summary: "Надо выбрать хотя-бы один вопрос.",
+      life: 3000,
+    });
+  }
+};
 
 const filteredQuestions = computed(() => {
   selectedRequests.value = [];
   if (selectedTab.value === 0) {
     return store.allRequests;
   } else if (selectedTab.value === 1) {
-    return questions.value = store.openedRequests
+    return (questions.value = store.openedRequests);
   } else if (selectedTab.value === 2) {
-    return questions.value = store.closedRequests
+    return (questions.value = store.closedRequests);
   }
 });
 </script>

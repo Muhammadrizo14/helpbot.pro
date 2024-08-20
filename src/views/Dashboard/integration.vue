@@ -102,10 +102,6 @@ import { useToast } from "primevue/usetoast";
 const toast = useToast();
 
 const store = useTelegram();
-
-const isIntegrated = ref(false);
-const isIntegratedUseesk = ref(false);
-
 const isIntegratedTelegram = ref(store.integration);
 
 const selectedTab = ref(0);

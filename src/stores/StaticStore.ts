@@ -48,7 +48,7 @@ export const useStaticStore = defineStore("static", () => {
 
   const getData = ()=> {
     const store = useBotStore()
-    return axios.get(`${apiUrl}/statistics/count?bot_id=${store.selectedBot.id}`)
+    return axios.get(`${apiUrl}/statistics/count?bot_id=${store?.selectedBot?.id}`)
   }
 
   const getAverageToken = (type)=> {

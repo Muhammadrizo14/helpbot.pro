@@ -1,8 +1,6 @@
 <template>
   <div class="container">
-    <RouterLink to="/"
-      ><img class="logo" src="../assets/images/Logo.png" alt=""
-    /></RouterLink>
+    <img class="logo" src="../assets/images/Logo.png" alt="" />
     <div class="create">
       <Box>
         <h2>Создайте вашего первого бота {{ store.user?.first_name }}</h2>
@@ -69,10 +67,9 @@ const createBot = async () => {
     console.log("Form validation failed");
     return;
   }
-  bot.createBot(data.title)
-  .then(()=> {
-    router.push({path: '/'})
-  })
+  bot.createBot(data.title).then(() => {
+    router.push({ path: "/" });
+  });
 };
 </script>
 

@@ -391,7 +391,6 @@ const add = async () => {
     return;
   }
 
-
   const myData = {
     question: data.question,
     answer: data.answer === 'Перенаправить на оператора' ? 'call_operator' : data.answer,

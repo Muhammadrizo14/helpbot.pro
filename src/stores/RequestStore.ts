@@ -22,7 +22,7 @@ export const useRequestStore = defineStore("requests", () => {
   const getRequests = async () => {
     const store = useBotStore();
     return axios
-      .get<IRequest[]>(`${apiUrl}/requests/messages/user?bot_id=${store.selectedBot.id}`)
+      .get<IRequest[]>(`${apiUrl}/requests/messages/user?bot_id=${store?.selectedBot?.id}`)
       .then((res) => {
 
 
@@ -39,17 +39,26 @@ export const useRequestStore = defineStore("requests", () => {
   };
 
 
+  const closeQuestionMultiple = (id: number)=> {
+    const store = useBotStore();
+
+    return axios.patch(`${apiUrl}/requests/resolve_bulk?bot_id=${store.selectedBot.id}`, {
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      data: id
+    })
+  }
 
 
   const deleteRequest = (id: number)=> {
     const store = useBotStore();
 
-    return axios.delete(`${apiUrl}requests/delete?message_id=${id}&bot_id=${store.selectedBot.id}`)
+    return axios.patch(`${apiUrl}/requests/delete?message_id=${id}&bot_id=${store.selectedBot.id}`)
   }
 
   const removeMultipleRequests = async (id: number[])=> {
-
-    console.log(id)
 
     const store = useBotStore()
 
@@ -69,6 +78,7 @@ export const useRequestStore = defineStore("requests", () => {
     openedRequests,
     closedRequests,
     deleteRequest,
-    removeMultipleRequests
+    removeMultipleRequests,
+    closeQuestionMultiple
   };
 });

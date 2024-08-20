@@ -3,7 +3,8 @@ import axios from "axios";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useAuthStore } from "./AuthStore";
-
+import { useRouter } from 'vue-router'
+import router from "../router/index";
 
 export interface IBot {
   id: number,
@@ -38,6 +39,14 @@ export const useBotStore = defineStore("bots", () => {
 
       const res = await axios.get(`${apiUrl}/bot/bots?user_id=${userData.id}`);
 
+
+      if (res.data.length === 0) {
+        selectedBot.value = null;
+        router.push('/create');
+        return;
+      }
+
+
       bots.value = res.data;
       return res.data
     } catch (error) {
@@ -55,10 +64,19 @@ export const useBotStore = defineStore("bots", () => {
         },
       }
     )
-      .then((res)=>{
+      .then(async (res)=>{
+        await getAllBots()
+
+        if (bots.value.length === 0) {
+          selectedBot.value = null;
+          router.push('/create');
+          return;
+        }
+
         selectedBot.value = bots.value[0]
+
         localStorage.setItem("selectedBot", JSON.stringify(bots.value[0]))
-        getAllBots()
+
       })
   }
 
@@ -76,6 +94,7 @@ export const useBotStore = defineStore("bots", () => {
     )
       .then((res)=>{
         selectedBot.value = res.data
+        localStorage.setItem("selectedBot", JSON.stringify(res.data));
         getAllBots()
       })
   };

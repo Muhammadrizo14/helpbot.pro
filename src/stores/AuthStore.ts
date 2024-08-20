@@ -64,9 +64,9 @@ export const useAuthStore = defineStore("auth", () => {
       user.value = res.data;
     } catch (error) {
       logout();
-      throw error; // Ensure error is thrown to handle it in the calling function
+      throw error;
     }
-    return user.value; // Directly return the user value
+    return user.value;
   };
 
   return {
