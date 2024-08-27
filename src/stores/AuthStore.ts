@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import axios from "axios";
 import { apiUrl } from "../main";
+import router from "../router/index";
 
 type IUser = {
   id: number;
@@ -50,6 +51,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   const logout = () => {
     localStorage.removeItem("token");
+    router.push({ path: '/auth' })
     user.value = null;
   };
 
