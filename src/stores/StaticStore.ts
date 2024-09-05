@@ -12,7 +12,7 @@ export const useStaticStore = defineStore("static", () => {
   const getRequests = async (type: string) => {
     const store = useBotStore()
 
-    return axios.get('https://helpbot.site/statistics/requests', {
+    return axios.get(`${apiUrl}/statistics/requests`, {
       params: {
         bot_id: store.selectedBot.id,
         interval: type
@@ -24,7 +24,9 @@ export const useStaticStore = defineStore("static", () => {
   };
 
   const downloadAnalytic = async () => {
-    return axios.post(`${apiUrl}/statistics/download_statistics/?bot_id=1`, {
+    const store = useBotStore()
+
+    return axios.post(`${apiUrl}/statistics/download_statistics/?bot_id=${store.selectedBot.id}`, {
       headers: {
         accept: "application/json",
       },

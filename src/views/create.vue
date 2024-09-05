@@ -64,7 +64,6 @@ const v$ = useVuelidate(rules, data);
 const createBot = async () => {
   const result = await v$.value.$validate();
   if (!result) {
-    console.log("Form validation failed");
     return;
   }
   bot.createBot(data.title).then(() => {

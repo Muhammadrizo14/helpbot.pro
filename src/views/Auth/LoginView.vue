@@ -17,8 +17,8 @@ const restore = ref<boolean>(false);
 const remember = ref<boolean>(false);
 
 const data = reactive({
-  email: "",
-  password: "",
+  email: "rizo@gmail.com",
+  password: "lastblood1",
 });
 
 const customMessages = {
@@ -41,7 +41,6 @@ const v$ = useVuelidate(rules, data);
 const submit = async () => {
   const result = await v$.value.$validate();
   if (!result) {
-    console.log("Form validation failed");
     return;
   }
 

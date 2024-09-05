@@ -38,14 +38,15 @@
         </p>
       </template>
       <Column
-        field="question"
+        field="main_question"
         header="Главный вопрос"
         style="max-width: 480px"
-      ></Column>
+      >
+      </Column>
       <Column field="similar" header="Похожие вопросы" style="max-width: 390px">
         <template #body="slotProps">
           <p v-for="similar in slotProps.data.similar_questions">
-            {{similar}}
+            {{ similar }}
           </p>
         </template>
       </Column>
@@ -63,7 +64,11 @@
       <Column style="width: 10%; min-width: 8rem" bodyStyle="text-align:center">
         <template #body="slotProps">
           <div class="flex gap-3">
-            <Button title="Изменить" icon="pi pi-pen-to-square"@click="updateData(slotProps.data)"  />
+            <Button
+              title="Изменить"
+              icon="pi pi-pen-to-square"
+              @click="updateData(slotProps.data)"
+            />
             <Button
               icon="pi pi-file-excel"
               outlined
@@ -101,12 +106,12 @@
         <InputText
           id="question"
           placeholder="Я забыл свой пароль..."
-          :invalid="v$.question.$errors.length > 0"
-          v-model="data.question"
+          :invalid="v$.main_question.$errors.length > 0"
+          v-model="data.main_question"
         />
         <label
           for="login__form-title"
-          v-for="error in v$.question.$errors"
+          v-for="error in v$.main_question.$errors"
           :key="error.$uid"
           style="color: var(--red)"
           >{{ error.$message }}</label
@@ -126,7 +131,6 @@
           rows="2"
           cols="30"
         />
-
       </div>
 
       <div class="flex flex-column gap-2 pb-4">
@@ -159,17 +163,22 @@
       </div>
 
       <div class="flex justify-content-center gap-2">
-        <Button class="px-4 py-3" type="submit" label="Добавить"></Button>
+        <Button
+          class="px-4 py-3"
+          type="submit"
+          label="Добавить"
+          :loading="loading"
+          :disabled="loading"
+        ></Button>
       </div>
     </form>
   </Dialog>
 
-
   <Dialog
-      v-model:visible="editQuestionModal"
-      modal
-      :closable="false"
-      :draggable="false"
+    v-model:visible="editQuestionModal"
+    modal
+    :closable="false"
+    :draggable="false"
   >
     <template #header>
       <div class="pb-3">
@@ -177,27 +186,27 @@
       </div>
     </template>
     <img
-        src="@/assets/images/icons/close.png"
-        alt="Close"
-        class="close-icon"
-        @click="editQuestionModal = false"
+      src="@/assets/images/icons/close.png"
+      alt="Close"
+      class="close-icon"
+      @click="editQuestionModal = false"
     />
 
     <form @submit.prevent="edit">
       <div class="flex flex-column gap-2 pb-4">
         <label for="question" class="database-add__label">Главный вопрос</label>
         <InputText
-            id="question"
-            placeholder="Я забыл свой пароль..."
-            :invalid="v$.question.$errors.length > 0"
-            v-model="data.question"
+          id="question"
+          placeholder="Я забыл свой пароль..."
+          :invalid="v$.main_question.$errors.length > 0"
+          v-model="data.main_question"
         />
         <label
-            for="login__form-title"
-            v-for="error in v$.question.$errors"
-            :key="error.$uid"
-            style="color: var(--red)"
-        >{{ error.$message }}</label
+          for="login__form-title"
+          v-for="error in v$.main_question.$errors"
+          :key="error.$uid"
+          style="color: var(--red)"
+          >{{ error.$message }}</label
         >
       </div>
 
@@ -209,40 +218,39 @@
           поиска
         </span>
         <Textarea
-            v-model="data.similar"
-            class="max-w-30rem"
-            rows="2"
-            cols="30"
+          v-model="data.similar"
+          class="max-w-30rem"
+          rows="2"
+          cols="30"
         />
-
       </div>
 
       <div class="flex flex-column gap-2 pb-4">
         <label for="action" class="database-add__label">Действие</label>
         <Dropdown
-            v-model="selectedAction"
-            :options="actions"
-            optionLabel="title"
+          v-model="selectedAction"
+          :options="actions"
+          optionLabel="title"
         />
       </div>
 
       <div
-          v-if="selectedAction.title === 'Ответ'"
-          class="flex flex-column gap-2 pb-4"
+        v-if="selectedAction.title === 'Ответ'"
+        class="flex flex-column gap-2 pb-4"
       >
         <label for="action" class="database-add__label">Ответ</label>
         <InputText
-            id="question"
-            placeholder="Здесь должен быть ответ"
-            v-model="data.answer"
-            :invalid="v$.answer.$errors.length > 0"
+          id="question"
+          placeholder="Здесь должен быть ответ"
+          v-model="data.answer"
+          :invalid="v$.answer.$errors.length > 0"
         />
         <label
-            for="login__form-title"
-            v-for="error in v$.answer.$errors"
-            :key="error.$uid"
-            style="color: var(--red)"
-        >{{ error.$message }}</label
+          for="login__form-title"
+          v-for="error in v$.answer.$errors"
+          :key="error.$uid"
+          style="color: var(--red)"
+          >{{ error.$message }}</label
         >
       </div>
 
@@ -253,24 +261,18 @@
   </Dialog>
 </template>
 
-
-
-
-
 <script setup>
 import { reactive, ref, watch } from "vue";
 import { helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
-import {useQuestionStore} from "../../../../stores/QuestionStore";
-import {useToast} from "primevue/usetoast";
-
-
+import { useQuestionStore } from "../../../../stores/QuestionStore";
+import { useToast } from "primevue/usetoast";
 
 const toast = useToast();
-const store = useQuestionStore()
+const store = useQuestionStore();
+const loading = ref(false);
 
-
-const edit = async ()=> {
+const edit = async () => {
   if (selectedAction.value.title === "Перенаправить на оператора") {
     data.answer = "Перенаправить на оператора";
   }
@@ -282,62 +284,67 @@ const edit = async ()=> {
 
   const myData = {
     id: selectedQuestion.value.id,
-    question: data.question,
-    answer: data.answer === 'Перенаправить на оператора' ? 'call_operator' : data.answer,
-    action: data.answer === 'Перенаправить на оператора' ? 'call_operator' : 'answer',
-    similar_questions: [],
+    main_question: data.main_question,
+    answer:
+      data.answer === "Перенаправить на оператора"
+        ? "call_operator"
+        : data.answer,
+    action:
+      data.answer === "Перенаправить на оператора" ? "call_operator" : "answer",
+    similar_questions: data.similar.split("\n"),
   };
 
-  store.editQuestion(myData)
-    .then(()=> {
-      toast.add({ severity: 'success', summary: 'Изменено', detail: 'Вопрос успешно изменено', life: 3000 });
-      allQuestions()
+  store
+    .editQuestion(myData)
+    .then(() => {
+      toast.add({
+        severity: "success",
+        summary: "Изменено",
+        detail: "Вопрос успешно изменено",
+        life: 3000,
+      });
+      allQuestions();
     })
-  .catch(()=> {
-    toast.add({ severity: 'error', summary: 'Ошибка', life: 3000 });
-  })
+    .catch(() => {
+      toast.add({ severity: "error", summary: "Ошибка", life: 3000 });
+    });
 
   editQuestionModal.value = false;
 
-  data.question = "";
+  data.main_question = "";
   data.answer = "";
   data.similar = "";
-
-}
+};
 
 const updateData = (newData) => {
+  editQuestionModal.value = true;
+  selectedQuestion.value = newData;
 
-  editQuestionModal.value = true
-  selectedQuestion.value = newData
-
-  if (newData.answer === 'call_operator') {
-    selectedAction.value = actions.value[1]
+  if (newData.answer === "call_operator") {
+    selectedAction.value = actions.value[1];
   }
 
-  data.question = newData.question || "";
+  data.main_question = newData.main_question || "";
   data.similar = newData.similar || "";
   data.answer = newData.answer || "";
 };
 
 const addQuestionModal = ref(false);
 const editQuestionModal = ref(false);
-const selectedQuestion = ref()
+const selectedQuestion = ref();
 
 const data = reactive({
-  question: "",
+  main_question: "",
   similar: "",
   answer: "",
 });
-
-
-
 
 const customMessages = {
   required: "Это поле не может быть пустым",
 };
 
 const rules = reactive({
-  question: {
+  main_question: {
     required: helpers.withMessage(customMessages.required, required),
   },
   answer: {
@@ -347,20 +354,18 @@ const rules = reactive({
 
 const questionsList = ref([]);
 
-const allQuestions = ()=> {
-  store.getAllQuestions()
-      .then(res=> {
-        questionsList.value = res.data
-      })
-      .catch(res=> {
-        questionsList.value = []
-      })
-}
+const allQuestions = () => {
+  store
+    .getAllQuestions()
+    .then((res) => {
+      questionsList.value = res.data;
+    })
+    .catch((res) => {
+      questionsList.value = [];
+    });
+};
 
-
-
-allQuestions()
-
+allQuestions();
 
 const actions = ref([
   { title: "Ответ" },
@@ -369,51 +374,67 @@ const actions = ref([
 
 const selectedAction = ref(actions.value[0]);
 
-
 const remove = (id) => {
-  store.removeQuestion(id)
-      .then(()=>{
-        allQuestions()
-        toast.add({ severity: 'success', summary: 'Успешно', detail: 'Вопрос успешно удалено', life: 3000 });
-      })
-    .catch(()=> {
-      toast.add({ severity: 'error', summary: 'Ошибка', life: 3000 });
+  store
+    .removeQuestion(id)
+    .then(() => {
+      allQuestions();
+      toast.add({
+        severity: "success",
+        summary: "Успешно",
+        detail: "Вопрос успешно удалено",
+        life: 3000,
+      });
     })
+    .catch((err) => {
+      console.log(err)
+      toast.add({ severity: "error", summary: "Ошибка", life: 3000 });
+    });
 };
 const add = async () => {
+  loading.value = true;
+
   if (selectedAction.value.title === "Перенаправить на оператора") {
     data.answer = "Перенаправить на оператора";
   }
 
-
   const result = await v$.value.$validate();
   if (!result) {
+    loading.value = false;
     return;
   }
 
   const myData = {
-    question: data.question,
-    answer: data.answer === 'Перенаправить на оператора' ? 'call_operator' : data.answer,
+    main_question: data.main_question,
+    answer:
+      data.answer === "Перенаправить на оператора"
+        ? "call_operator"
+        : data.answer,
     similar: data.similar.split("\n"),
   };
 
-
-
-
-  store.createQuestion(myData)
-    .then(()=>{
-      allQuestions()
-      toast.add({ severity: 'success', summary: 'Успешно', detail: 'Вопрос успешно создано', life: 3000 });
+  store
+    .createQuestion(myData)
+    .then(() => {
+      addQuestionModal.value = false;
+      allQuestions();
+      toast.add({
+        severity: "success",
+        summary: "Успешно",
+        detail: "Вопрос успешно создано",
+        life: 3000,
+      });
     })
-    .catch(()=> {
-      toast.add({ severity: 'error', summary: 'Ошибка', life: 3000 });
+    .catch(() => {
+      toast.add({ severity: "error", summary: "Ошибка", life: 3000 });
     })
-
-  addQuestionModal.value = false;
-
-  data.question = "";
-  data.answer = "";
-  data.similar = "";
+    .finally(() => {
+      loading.value = false;
+      addQuestionModal.value = false;
+      data.main_question = "";
+      data.answer = "";
+      data.similar = "";
+    });
 };
 
 const v$ = useVuelidate(rules, data);

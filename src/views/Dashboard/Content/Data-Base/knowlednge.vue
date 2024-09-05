@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div class="flex align-items-center justify-content-between py-4 gap-3 sub__header">
+    <div
+      class="flex align-items-center justify-content-between py-4 gap-3 sub__header"
+    >
       <div class="flex align-items-center gap-3">
         <Chip
           class="bg-white text-sm"
@@ -8,7 +10,6 @@
             knowledge.filter((e) => e.type === 'website').length
           }`"
         />
-
       </div>
       <div class="flex gap-3 align-items-center flex-nowrap">
         <Button
@@ -26,7 +27,9 @@
       </div>
     </div>
     <Divider />
-    <div class="flex justify-content-between align-items-center py-4 sub__header">
+    <div
+      class="flex justify-content-between align-items-center py-4 sub__header"
+    >
       <InputText
         placeholder="Отфильтровать данные..."
         class="w-20rem border-none"
@@ -51,7 +54,10 @@
       <Column selectionMode="multiple" style="width: 50px"></Column>
       <Column field="title" header="Страница датасета">
         <template #body="slotProps">
-          <div v-if="slotProps.data.type === 'website'" class="flex flex-column">
+          <div
+            v-if="slotProps.data.type === 'website'"
+            class="flex flex-column"
+          >
             <p>{{ slotProps.data.title }}</p>
             <a
               target="_blank"
@@ -60,13 +66,18 @@
               >{{ slotProps.data.url }}</a
             >
           </div>
-          <div v-if="slotProps.data.type === 'document'" class="flex flex-column">
-            <p>{{ slotProps.data?.path.substring(slotProps.data?.path.lastIndexOf('/') + 1) }}</p>
+          <div
+            v-if="slotProps.data.type === 'document'"
+            class="flex flex-column"
+          >
+            <!--            <p>{{ slotProps.data?.path.substring(slotProps.data?.path.lastIndexOf('/') + 1) }}</p>-->
           </div>
-          <div v-if="slotProps.data.type === 'article' " class="flex flex-column">
-            <p>{{ slotProps.data.title}}</p>
+          <div
+            v-if="slotProps.data.type === 'article'"
+            class="flex flex-column"
+          >
+            <p>{{ slotProps.data.title }}</p>
           </div>
-
         </template>
       </Column>
       <Column field="quality" header="Качество">
@@ -448,7 +459,6 @@ import { useToast } from "primevue/usetoast";
 
 const toast = useToast();
 
-
 const store = useKnowledgeStore();
 
 const knowledge = ref([]);
@@ -518,7 +528,7 @@ const uploadFile = async () => {
   store
     .uploadFile(upload_data.title, upload_data.file[0])
     .then(() => {
-      getDataset()
+      getDataset();
       toast.add({
         severity: "success",
         summary: "Успешно",
@@ -574,12 +584,10 @@ const add_article = async () => {
     .then(() => {
       getDataset();
 
-      selectedAddTab.value=0
+      selectedAddTab.value = 0;
 
-
-      data.title = ''
-      data.content = ''
-
+      data.title = "";
+      data.content = "";
 
       addDataModal.value = false;
       toast.add({
@@ -715,7 +723,6 @@ const addItems = ref([
 .file-upload:hover {
   border-color: #007bff;
 }
-
 
 @media (max-width: 1220px) {
   .sub__header {

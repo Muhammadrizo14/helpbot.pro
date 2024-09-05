@@ -1,5 +1,5 @@
 import { apiUrl } from "@/main";
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useBotStore } from "./BotStore";
@@ -23,11 +23,10 @@ export const useRequestStore = defineStore("requests", () => {
     const store = useBotStore();
     return axios
       .get<IRequest[]>(`${apiUrl}/requests/messages/user?bot_id=${store?.selectedBot?.id}`)
-      .then((res) => {
+      .then((res:AxiosResponse<IRequest[]>) => {
 
 
-        allRequests.value = res.data;
-
+        allRequests.value = res.data || [];
         openedRequests.value = res.data.filter((a)=> a.is_resolved)
         closedRequests.value = res.data.filter((a)=> !a.is_resolved)
 

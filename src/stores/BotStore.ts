@@ -55,8 +55,8 @@ export const useBotStore = defineStore("bots", () => {
   };
 
   const deleteBot = async (id: number) => {
-    return await axios.patch(
-      `${apiUrl}/bot/remove?bot_id=${id}`,
+    return await axios.delete(
+      `${apiUrl}/bot/${id}/remove`,
       {
         headers: {
           accept: "application/json",
@@ -100,7 +100,7 @@ export const useBotStore = defineStore("bots", () => {
   };
 
   const editBot = async (newData: IBot) => {
-    axios.patch(`${apiUrl}/bot/update/${selectedBot.value.id}`, {
+    axios.patch(`${apiUrl}/bot/${selectedBot.value.id}/update/`, {
       ...newData
     })
       .then(res => {
@@ -120,9 +120,16 @@ export const useBotStore = defineStore("bots", () => {
   }
 
   const getAllUsersOfBot = async () => {
-    return axios.get(`${apiUrl}/bot/users?bot_id=${selectedBot.value.id}`)
+    return axios.get(`${apiUrl}/bot/${selectedBot.value.id}/users`)
   }
 
+  const inviteUser = (email: string)=> {
+    return axios.post(`${apiUrl}/bot/${selectedBot.value.id}/user/invite?email=${email}`)
+  }
+
+  const addUser = (email: string)=> {
+    return axios.post(`${apiUrl}/bot/${selectedBot.value.id}/user/invite?email=${email}`)
+  }
 
   return {
     bots,
@@ -132,6 +139,7 @@ export const useBotStore = defineStore("bots", () => {
     selectedBot,
     deleteBot,
     editBot,
-    getAllUsersOfBot
+    getAllUsersOfBot,
+    inviteUser
   };
 });

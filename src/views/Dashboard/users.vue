@@ -14,16 +14,10 @@
       <Column field="email" header="E-mail"></Column>
       <Column field="role" header="Роль">
         <template #body="slotProps">
-          <div
-              v-if="
-              slotProps.data.role === 'SUPERADMIN'
-            ">
+          <div v-if="slotProps.data.role === 'SUPERADMIN'">
             <p>Владелец</p>
           </div>
-          <div
-              v-if="
-              slotProps.data.role === 'ADMIN'
-            ">
+          <div v-if="slotProps.data.role === 'ADMIN'">
             <p>Администратор</p>
           </div>
         </template>
@@ -109,7 +103,7 @@
           />
           <label
             for="login__form-email"
-            v-for="error in v$.email.$errors"
+            v-for="error in v$.identity.$errors"
             :key="error.$uid"
             style="color: var(--red)"
             >{{ error.$message }}</label
@@ -182,11 +176,12 @@
           />
           <label
             for="login__form-email"
-            v-for="error in v$.email.$errors"
+            v-for="error in v$.identity.$errors"
             :key="error.$uid"
             style="color: var(--red)"
-            >{{ error.$message }}</label
           >
+            {{ error.$message }}
+          </label>
         </div>
 
         <Dropdown
@@ -226,7 +221,7 @@
         @submit.prevent="deleteDialog = false"
         class="flex justify-content-center gap-4 w-20rem"
       >
-        <Button type="submit"> Да </Button>
+        <Button type="submit"> Да</Button>
         <Button severity="light" @click="deleteDialog = false">
           Отменить
         </Button>
@@ -244,13 +239,13 @@ import { useBotStore } from "../../stores/BotStore";
 
 const store = useBotStore();
 
-
-
-
 const toast = useToast();
 
 const deleteDialog = ref(false);
 const updateUser = ref(false);
+const inviteUser = ref(false);
+
+const users = ref([]);
 
 const roles = ref([
   { title: "Администратор", code: "admin" },
@@ -279,28 +274,44 @@ const rules = {
   },
 };
 
-const sendInventation = () => {
-  toast.add({
-    styleClass: "users-error",
-    severity: "error",
-    summary: "Заголовок ошибки",
-    detail:
-      "Текст ошибки текст ошибки текст ошибки текст ошибки текст ошибки текст ошибки текст ошибки текст ошибки",
-    life: 3000,
-  });
+const sendInventation = async () => {
+  const result = await v$.value.$validate();
+  if (!result) {
+    return;
+  }
+  store
+    .inviteUser(data.email)
+    .then((res) => {
+      toast.add({
+        severity: "success",
+        summary: "Успешно",
+        detail:
+            "Приглашение отправлено",
+        life: 3000,
+      });
+      data.email = ''
+      data.identity = ''
+      inviteUser.value = false
+    })
+    .catch(() => {
+      toast.add({
+        styleClass: "users-error",
+        severity: "error",
+        summary: "Ошибка",
+        detail:
+          "Ошибка при добавлении пользователя.",
+        life: 3000,
+      });
+    });
 };
 
 const v$ = useVuelidate(rules, data);
 
-const inviteUser = ref(false);
-
-const users = ref([]);
 
 
 store.getAllUsersOfBot().then((res) => {
-  users.value = res.data
+  users.value = res.data;
 });
-
 </script>
 
 <style scoped lang="scss">

@@ -3,8 +3,8 @@ import { RouterView } from "vue-router";
 import { useAuthStore } from "./stores/AuthStore";
 import { useBotStore } from "./stores/BotStore";
 
-const AuthStore = useAuthStore();
 
+const AuthStore = useAuthStore();
 AuthStore.getUser()
 
 </script>

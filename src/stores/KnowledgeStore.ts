@@ -26,14 +26,16 @@ export const useKnowledgeStore = defineStore("knowledge", () => {
   const getDataset = ()=> {
     const store = useBotStore()
 
-    return axios.get(`${apiUrl}/trainingset/trainingsets?bot_id=${store.selectedBot.id}`)
+    return axios.get(`${apiUrl}/data-sources?bot_id=${store.selectedBot.id}`)
   }
+
+
 
 
   const createArticle = async ({title, content})=> {
     const store = useBotStore()
 
-    return axios.post(`${apiUrl}/trainingset/article?title=${title}&bot_id=${store.selectedBot.id}`, content, {
+    return axios.post(`${apiUrl}/data-source/create/article?title=${title}&bot_id=${store.selectedBot.id}`, content, {
       headers: {
         'accept': 'application/json',
         'Content-Type': 'application/json'
@@ -44,23 +46,26 @@ export const useKnowledgeStore = defineStore("knowledge", () => {
   const createWebsite = async ({url, title, parse_method})=> {
     const store = useBotStore()
 
-    return axios.post(`${apiUrl}/trainingset/website?url=${url}&title=${title}&bot_id=${store.selectedBot.id}&parse_method=${parse_method}`)
+    return axios.post(`${apiUrl}/data-source/create/website?url=${url}&title=${title}&bot_id=${store.selectedBot.id}&parse_method=${parse_method}`, {
+      url,
+    })
   }
 
 
   const removeDataset = async (id:number)=> {
 
-    const store = useBotStore()
-
-
-    return axios.delete(`${apiUrl}/trainingset/delete?dataset_id=${id}&bot_id=${store.selectedBot.id}`)
+    return axios.delete(`${apiUrl}/data-source/delete`, {
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      data: [id]
+    })
   }
 
   const removeMultipleDatasets = async (id: number[])=> {
 
-    const store = useBotStore()
-
-    return axios.delete(`${apiUrl}/trainingset/delete_multiple?bot_id=${store.selectedBot.id}`, {
+    return axios.delete(`${apiUrl}/data-source/delete`, {
       headers: {
         'accept': 'application/json',
         'Content-Type': 'application/json',
@@ -82,7 +87,7 @@ export const useKnowledgeStore = defineStore("knowledge", () => {
 
     // Send the POST request
     return axios.post(
-      'https://helpbot.site/trainingset/file',
+      `${apiUrl}/data-source/create/file`,
       formData,
       {
         headers: {
