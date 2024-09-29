@@ -125,6 +125,16 @@
             <p>Интеграции</p>
           </li>
         </router-link>
+        <router-link to="/chat">
+          <li
+              class="flex align-items-center p-2"
+              :class="route.path === '/chat' && 'active'"
+          >
+
+            <i class="pi pi-comment" style="font-size: 1rem"></i>
+            <p>Чат</p>
+          </li>
+        </router-link>
         <router-link to="/users">
           <li
             class="flex align-items-center p-2"

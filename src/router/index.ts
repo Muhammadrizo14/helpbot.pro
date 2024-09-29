@@ -14,6 +14,7 @@ import UserSettingsView from "../views/Dashboard/User/settings.vue";
 import changePasswordView from "../views/Dashboard/User/change-password.vue";
 import PaymentView from "../views/Dashboard/payment.vue";
 import BotsView from "../views/Dashboard/bots.vue";
+import chat from "../views/Dashboard/chat.vue";
 import error404 from "../views/Dashboard/Errors/404.vue";
 
 // Dashboard => Content
@@ -30,6 +31,10 @@ const routes = [
       {
         path: "",
         component: MainView,
+      },
+      {
+        path: "/chat",
+        component: chat,
       },
       {
         path: "/integration",
@@ -95,6 +100,7 @@ const routes = [
     path: "/:notFound",
     component: error404,
   },
+
 ];
 
 const router = createRouter({
@@ -102,13 +108,13 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  const user = localStorage.getItem("token");
-  if (!user && !to.path.includes("/auth")) {
-    next("/auth");
-  } else {
-    next();
-  }
-});
+// router.beforeEach((to, from, next) => {
+//   const user = localStorage.getItem("token");
+//   if (!user && !to.path.includes("/auth")) {
+//     next("/auth");
+//   } else {
+//     next();
+//   }
+// });
 
 export default router;

@@ -16,7 +16,7 @@ export const useQuestionStore = defineStore("question", () => {
   const questions = ref<IQuestion[]>([]);
 
   const getAllProfiles = async () => {
-    axios.get(`${apiUrl}/bot/profile`).then((res) => {
+    axios.get(`${apiUrl}/bot/detail`).then((res) => {
       console.log(res);
     });
   };
