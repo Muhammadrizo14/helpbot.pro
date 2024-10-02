@@ -108,13 +108,13 @@ const router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   const user = localStorage.getItem("token");
-//   if (!user && !to.path.includes("/auth")) {
-//     next("/auth");
-//   } else {
-//     next();
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  const user = localStorage.getItem("token");
+  if (!user && !to.path.includes("/auth")) {
+    next("/auth");
+  } else {
+    next();
+  }
+});
 
 export default router;
