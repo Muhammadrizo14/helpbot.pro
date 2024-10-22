@@ -39,15 +39,15 @@
 
 
 <script setup lang="ts">
-import {useAuthStore} from "@/stores/AuthStore.ts";
 import {ref} from "vue";
+import {useChatStore} from "@/stores/ChatStore.ts";
 
-const auth = useAuthStore();
+const chat = useChatStore();
 
 const message = ref('')
 
 const send = ()=> {
-  console.log(`${message.value} message to be sended`)
+  chat.textToBot(message.value)
 }
 
 </script>
