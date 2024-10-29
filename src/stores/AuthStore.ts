@@ -51,7 +51,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   const logout = () => {
     localStorage.removeItem("token");
-    router.push({ path: '/auth' })
+    router.push({ path: "/auth" });
     user.value = null;
   };
 
@@ -70,22 +70,27 @@ export const useAuthStore = defineStore("auth", () => {
     return user.value;
   };
 
-  const changePassword = (old_password, new_password) => {
-    return axios.post(
-      `${apiUrl}/user/password/change?old_password=${old_password}&new_password=${new_password}`,
-      {
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem("token")}`,
+  const changePassword = async (old_password, new_password) => {
+    try {
+      const res = await axios.post(
+        `${apiUrl}/user/password/change?old_password=${old_password}&new_password=${new_password}`,
+        {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      }
-    );
-  }
+      );
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+    return user.value;
+  };
 
-
-  const resetPassword = ()=> {
-    return axios.post(`${apiUrl}/user/password/reset?token=${token.value}`)
-  }
+  const resetPassword = () => {
+    return axios.post(`${apiUrl}/user/password/reset?token=${token.value}`);
+  };
 
   return {
     user,
@@ -96,6 +101,6 @@ export const useAuthStore = defineStore("auth", () => {
     getUser,
     token,
     changePassword,
-    resetPassword
+    resetPassword,
   };
 });
