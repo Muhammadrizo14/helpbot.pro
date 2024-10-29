@@ -59,7 +59,7 @@ const submit = async () => {
         router.push({path: '/auth'})
       })
       .catch(err => {
-        toast.add({ severity: 'error', summary: 'Ошибка', detail: `${err.response.status === 409 && 'Пользователь уже зарегистрирован'}`, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Ошибка', detail: `${err.response.status === 409 ? 'Пользователь уже зарегистрирован': ''}`, life: 3000 });
       })
 };
 

@@ -70,6 +70,23 @@ export const useAuthStore = defineStore("auth", () => {
     return user.value;
   };
 
+  const changePassword = (old_password, new_password) => {
+    return axios.post(
+      `${apiUrl}/user/password/change?old_password=${old_password}&new_password=${new_password}`,
+      {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem("token")}`,
+        }
+      }
+    );
+  }
+
+
+  const resetPassword = ()=> {
+    return axios.post(`${apiUrl}/user/password/reset?token=${token.value}`)
+  }
+
   return {
     user,
     addToken,
@@ -77,6 +94,8 @@ export const useAuthStore = defineStore("auth", () => {
     login,
     register,
     getUser,
-    token
+    token,
+    changePassword,
+    resetPassword
   };
 });

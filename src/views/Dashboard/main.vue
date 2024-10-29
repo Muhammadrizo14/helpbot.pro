@@ -3,7 +3,7 @@
     <div class="home__side">
       <Box class="flex align-items-end gap-3 p-3 m-0 justify-content-between">
         <div style="width: 70%">
-          <h1 class="pb-3">{{ bot.selectedBot.name }}</h1>
+          <h1 class="pb-3">{{ bot?.selectedBot?.name }}</h1>
           <div class="flex align-items-center w-full justify-content-between">
             <p class="text-500">Количество токенов</p>
             <p>145</p>
@@ -278,7 +278,7 @@
     </div>
   </div>
 </template>
-`
+
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { useStaticStore } from "../../stores/StaticStore";

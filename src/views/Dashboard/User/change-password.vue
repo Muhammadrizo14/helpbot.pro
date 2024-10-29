@@ -29,7 +29,7 @@
           </div>
 
           <div class="flex justify-content-center gap-3">
-            <Button type="submit" label="Изменить"/>
+            <Button @click.prevent="changePassword()" type="submit" label="Изменить"/>
             <Button label="Отменить"/>
           </div>
         </form>
@@ -42,11 +42,17 @@
 import {reactive} from "vue";
 import {email, helpers, required} from "@vuelidate/validators";
 import {useVuelidate} from "@vuelidate/core";
+import {useAuthStore} from "@/stores/AuthStore.ts";
+
+
+const store = useAuthStore()
 
 const data = reactive({
   cur: '',
   new: ''
 });
+
+
 
 const customMessages = {
   required: 'Это поле не может быть пустым',
@@ -62,6 +68,11 @@ const rules = {
 };
 
 const v$ = useVuelidate(rules, data);
+
+
+const changePassword = ()=> {
+  store.changePassword(data.cur, data.new)
+}
 </script>
 
 <style lang="scss" scoped>

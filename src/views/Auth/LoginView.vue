@@ -67,9 +67,10 @@ const submit = async () => {
     });
 };
 
-const submitForgotPassword = async () => {
-  console.log("Verify email for forgot password");
+const reset = async () => {
+  store.resetPassword()
 };
+
 </script>
 
 <template>
@@ -186,7 +187,7 @@ const submitForgotPassword = async () => {
         type="submit"
         severity="submit"
         label="Отправить"
-        @click="visible = false"
+        @click="reset"
       />
     </Dialog>
   </div>
