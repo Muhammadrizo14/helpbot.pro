@@ -68,7 +68,11 @@ const submit = async () => {
 };
 
 const reset = async () => {
-  store.resetPassword()
+  store.resetPassword(data.email)
+    .then(()=> {
+      restore.value = false
+      toast.add({ severity: 'success', summary: 'Проверьте почту.', life: 3000 });
+    })
 };
 
 </script>
@@ -175,6 +179,8 @@ const reset = async () => {
       <div class="flex flex-column align-items-start gap-2 mb-3">
         <label for="username">Email</label>
         <InputText
+          v-model="data.email"
+          :invalid="v$.email.$errors.length > 0"
           class="w-full custom-input"
           id="username"
           aria-describedby="username-help"

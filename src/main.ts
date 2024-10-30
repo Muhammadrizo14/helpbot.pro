@@ -16,9 +16,9 @@ const pinia = createPinia();
 export const apiUrl = import.meta.env.VITE_APP_URL;
 
 const app = createApp(App);
+app.use(ToastService);
 app.use(pinia);
 app.directive("tooltip", Tooltip);
 app.use(PrimeVue);
-app.use(ToastService);
 app.use(router);
 app.mount("#app");

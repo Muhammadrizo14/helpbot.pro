@@ -159,7 +159,7 @@
         <OverlayPanel ref="userInfo">
           <div class="flex flex-column gap-3 w-25rem sidebar__user-panel">
             <ul class="flex flex-column">
-              <router-link to="/payment" style="text-decoration: none">
+              <router-link to="/payment" class="no-underline">
                 <li class="flex align-items-center p-1">
                   <PaymentIcon width-="10px" />
                   <p>Оплата</p>
@@ -211,7 +211,7 @@
           @click="toggleUserInfo()"
         >
           <div class="flex align-items-center sidebar__user">
-            <div class="sidebar__user-icon">{{auth.user?.first_name.slice(0,1)}}</div>
+            <div class="sidebar__user-icon" style="text-transform: uppercase;">{{auth.user?.first_name.slice(0,1)}}</div>
             <p>{{ auth.user?.first_name }} {{ auth.user?.last_name }}</p>
           </div>
           <div class="flex flex-column user-menu gap-1">

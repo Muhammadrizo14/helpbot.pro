@@ -8,7 +8,7 @@ import Toast from "primevue/toast";
   <div class="wrap flex">
 
     <sidebar />
-    <Toast position="bottom-right" />
+    <Toast/>
 
     <div class="dashboard-content">
       <RouterView />

@@ -27,16 +27,16 @@ export const useAuthStore = defineStore("auth", () => {
           accept: "application/json",
           "Content-Type": "application/x-www-form-urlencoded",
         },
-      }
-    );
+      },
+      );
   };
 
   const register = async (
     email: string,
     password: string,
     first_name: string,
-    last_name: string
-  ) => {
+    last_name: string,
+    ) => {
     return await axios.post(`${apiUrl}/user/register`, {
       email,
       password,
@@ -73,23 +73,23 @@ export const useAuthStore = defineStore("auth", () => {
   const changePassword = async (old_password, new_password) => {
     try {
       const res = await axios.post(
-        `${apiUrl}/user/password/change?old_password=${old_password}&new_password=${new_password}`,
+        `${apiUrl}/user/password/change`,
+        { old_password, new_password },
         {
           headers: {
             accept: "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
-      );
-      console.log(res);
+        );
+      return res;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
-    return user.value;
   };
 
-  const resetPassword = () => {
-    return axios.post(`${apiUrl}/user/password/reset?token=${token.value}`);
+  const resetPassword = (email: string) => {
+    return axios.post(`${apiUrl}/user/password/request-reset?email=${email}`);
   };
 
   return {
