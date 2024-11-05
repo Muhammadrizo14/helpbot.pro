@@ -28,55 +28,55 @@
         </div>
       </template>
 
-      <template #closeicon>
-        <div></div>
-      </template>
 
-      <div class="flex flex-column gap-2 pb-4">
-        <label for="current" class="database-add__label"
+      <form>
+        <div class="flex flex-column gap-2 pb-4">
+          <label for="old_email" class="database-add__label"
           >Текущая электронная почта</label
-        >
-        <InputText
-          id="current"
-          placeholder="example@email.com"
-          v-model="data.current"
-          :invalid="v$.current.$errors.length > 0"
-        />
-        <label
-          for="login__form-title"
-          v-for="error in v$.current.$errors"
-          :key="error.$uid"
-          style="color: var(--red)"
+          >
+          <InputText
+              id="current"
+              placeholder="example@email.com"
+              v-model="data.old_email"
+              :invalid="v$.old_email.$errors.length > 0"
+          />
+          <label
+              for="login__form-title"
+              v-for="error in v$.old_email.$errors"
+              :key="error.$uid"
+              style="color: var(--red)"
           >{{ error.$message }}</label
-        >
-      </div>
-      <div class="flex flex-column gap-2 pb-4">
-        <label for="new" class="database-add__label">
-          Новый адрес электронной почты
-        </label>
-        <InputText
-          id="current"
-          placeholder="example@email.com"
-          v-model="data.new"
-          :invalid="v$.new.$errors.length > 0"
-        />
-        <label
-          for="login__form-title"
-          v-for="error in v$.new.$errors"
-          :key="error.$uid"
-          style="color: var(--red)"
+          >
+        </div>
+        <div class="flex flex-column gap-2 pb-4">
+          <label for="new_email" class="database-add__label">
+            Новый адрес электронной почты
+          </label>
+          <InputText
+              id="current"
+              placeholder="example@email.com"
+              v-model="data.new_email"
+              :invalid="v$.new_email.$errors.length > 0"
+          />
+          <label
+              for="login__form-title"
+              v-for="error in v$.new_email.$errors"
+              :key="error.$uid"
+              style="color: var(--red)"
           >{{ error.$message }}
-        </label>
-      </div>
-      <p class="agreement">
-        Нажимая “Изменить”, вы соглашаетесь на обработку <br />
-        ваших <a href="#">Персональных данных</a>
-      </p>
-      <div class="flex justify-content-center gap-3 pt-4">
-        <Button  @click="emailDialog = false" type="submit">Изменить</Button>
-        <Button @click="emailDialog = false"  severity="light">Отменить</Button>
-      </div>
+          </label>
+        </div>
+        <p class="agreement">
+          Нажимая “Изменить”, вы соглашаетесь на обработку <br />
+          ваших <a href="#">Персональных данных</a>
+        </p>
+        <div class="flex justify-content-center gap-3 pt-4">
+          <Button  @click.prevent="changeemail" type="submit">Изменить</Button>
+          <Button @click="emailDialog = false"  severity="light">Отменить</Button>
+        </div>
+      </form>
     </Dialog>
+    <Toast />
   </div>
 </template>
 
@@ -85,26 +85,35 @@ import { reactive, ref } from "vue";
 import { helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import {useAuthStore} from "../../../stores/AuthStore";
+import {useToast} from "primevue/usetoast";
 
 
 const auth = useAuthStore()
+const toast = useToast();
 
 const emailDialog = ref(false);
 
 const data = reactive({
-  current: auth.user?.email,
-  new: "",
+  old_email: "",
+  new_email: "",
 });
 
 const customMessages = {
   required: "Это поле не может быть пустым",
 };
 
+const changeemail = ()=> {
+  auth.changeEmail(data.old_email, data.new_email)
+    .then(()=> {
+      toast.add({ severity: 'success', summary: 'Почта изменена успешно.', life: 3000 });
+    })
+}
+
 const rules = reactive({
-  current: {
+  old_email: {
     required: helpers.withMessage(customMessages.required, required),
   },
-  new: {
+  new_email: {
     required: helpers.withMessage(customMessages.required, required),
   },
 });

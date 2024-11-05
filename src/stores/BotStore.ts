@@ -85,6 +85,7 @@ export const useBotStore = defineStore("bots", () => {
     const userdata = useAuthStore();
     return await axios.post(
       `${apiUrl}/bot/create?user_id=${userdata?.user?.id}&bot_name=${title}`,
+      {},
       {
         headers: {
           accept: "application/json",

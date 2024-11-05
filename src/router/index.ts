@@ -9,7 +9,7 @@ import HomeView from "../views/home.vue";
 import MainView from "../views/Dashboard/main.vue";
 import IntegrationView from "../views/Dashboard/integration.vue";
 import UsersView from "../views/Dashboard/users.vue";
-import SettingsView from "../views/Dashboard/settings.vue";
+import SettingsView from "../views/Dashboard/Settings/index.vue";
 import UserSettingsView from "../views/Dashboard/User/settings.vue";
 import changePasswordView from "../views/Dashboard/User/change-password.vue";
 import PaymentView from "../views/Dashboard/payment.vue";
@@ -45,7 +45,7 @@ const routes = [
         component: UsersView,
       },
       {
-        path: "/user-settings",
+        path: "/user-Settings",
         component: UserSettingsView,
       },
       {
@@ -57,7 +57,7 @@ const routes = [
         component: PaymentView,
       },
       {
-        path: "/settings",
+        path: "/Settings",
         component: SettingsView,
       },
       {

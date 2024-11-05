@@ -7,6 +7,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Accordion: typeof import('primevue/accordion')['default']
+    AccordionTab: typeof import('primevue/accordiontab')['default']
     Badge: typeof import('primevue/badge')['default']
     BaseInput: typeof import('./src/components/base-input.vue')['default']
     Box: typeof import('./src/components/box.vue')['default']
@@ -21,6 +23,7 @@ declare module 'vue' {
     Divider: typeof import('primevue/divider')['default']
     Dropdown: typeof import('primevue/dropdown')['default']
     HomeIcon: typeof import('./src/components/Icons/Sidebar/home-icon.vue')['default']
+    InputMask: typeof import('primevue/inputmask')['default']
     InputSwitch: typeof import('primevue/inputswitch')['default']
     InputText: typeof import('primevue/inputtext')['default']
     IntegrationIcon: typeof import('./src/components/Icons/Sidebar/integration-icon.vue')['default']

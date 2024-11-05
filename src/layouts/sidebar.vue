@@ -147,7 +147,7 @@
         <router-link to="/settings">
           <li
             class="flex align-items-center p-2"
-            :class="route.path === '/settings' && 'active'"
+            :class="route.path === '/Settings' && 'active'"
           >
             <SettingsIcon />
             <p>Настройки</p>

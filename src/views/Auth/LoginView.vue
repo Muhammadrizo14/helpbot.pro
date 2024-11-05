@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import { required, email, helpers } from "@vuelidate/validators";
+import {reactive, ref} from "vue";
+import {useVuelidate} from "@vuelidate/core";
+import {required, email, helpers} from "@vuelidate/validators";
 import Box from "../../components/box.vue";
-import { useAuthStore } from "../../stores/AuthStore";
+import {useAuthStore} from "../../stores/AuthStore";
 import router from "../../router/index";
 import {useBotStore} from "../../stores/BotStore";
 import {useToast} from "primevue/usetoast";
@@ -45,34 +45,43 @@ const submit = async () => {
   }
 
   store
-    .login(data.email, data.password)
-    .then((res) => {
-      store.addToken(res.data);
-      store.getUser().then((res) => {
-        botStore.getAllBots()
-          .then(res=> {
-            if (res.length) {
-              router.push({path: '/'})
-            }
-          })
-          .catch(err=> {
-            router.push({path: '/create'})
-          })
+      .login(data.email, data.password)
+      .then((res) => {
+        store.addToken(res.data);
+        store.getUser().then((res) => {
+          botStore.getAllBots()
+              .then(res => {
+                if (res.length) {
+                  router.push({path: '/'})
+                }
+              })
+              .catch(err => {
+                router.push({path: '/create'})
+              })
+        });
+      })
+      .catch((err) => {
+        console.log(err)
+        toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: `${err.response.status === 401 && 'Пользователь не найден'}`,
+          life: 3000
+        });
       });
-    })
-    .catch((err) => {
-      console.log(err)
-      toast.add({ severity: 'error', summary: 'Ошибка', detail: `${err.response.status === 401 && 'Пользователь не найден'}`, life: 3000 });
-
-    });
 };
 
 const reset = async () => {
   store.resetPassword(data.email)
-    .then(()=> {
-      restore.value = false
-      toast.add({ severity: 'success', summary: 'Проверьте почту.', life: 3000 });
-    })
+      .then(() => {
+        restore.value = false
+        toast.add({severity: 'success', summary: 'Проверьте почту.', life: 3000});
+      })
+      .catch((err) => {
+        if (err.response.status === 404) {
+          toast.add({severity: 'error', summary: 'Пользователь с таким адресом не найдено', life: 3000});
+        }
+      })
 };
 
 </script>
@@ -85,54 +94,54 @@ const reset = async () => {
         <div class="flex flex-column gap-2">
           <label for="email">Email</label>
           <InputText
-            class="custom-input"
-            v-model="data.email"
-            :invalid="v$.email.$errors.length > 0"
-            id="email"
-            placeholder="example@gmail.com"
-            aria-describedby="username-help"
+              class="custom-input"
+              v-model="data.email"
+              :invalid="v$.email.$errors.length > 0"
+              id="email"
+              placeholder="example@gmail.com"
+              aria-describedby="username-help"
           />
           <label
-            for="login__form-email"
-            v-for="error in v$.email.$errors"
-            :key="error.$uid"
-            style="color: var(--red)"
-            >{{ error.$message }}</label
+              for="login__form-email"
+              v-for="error in v$.email.$errors"
+              :key="error.$uid"
+              style="color: var(--red)"
+          >{{ error.$message }}</label
           >
         </div>
         <div class="flex flex-column gap-2 w-full">
           <label for="password">Пароль</label>
           <div class="flex justify-content-start w-full">
             <Password
-              v-model="data.password"
-              inputClass="custom-input"
-              :inputStyle="{ width: '100%' }"
-              :svgStyle="{ margin: 'auto' }"
-              :feedback="false"
-              toggleMask
-              :invalid="v$.password.$errors.length > 0"
-              id="password"
-              class="login-password"
-              aria-describedby="password-help"
-              placeholder="*****"
+                v-model="data.password"
+                inputClass="custom-input"
+                :inputStyle="{ width: '100%' }"
+                :svgStyle="{ margin: 'auto' }"
+                :feedback="false"
+                toggleMask
+                :invalid="v$.password.$errors.length > 0"
+                id="password"
+                class="login-password"
+                aria-describedby="password-help"
+                placeholder="*****"
             />
           </div>
           <label
-            for="login__form-password"
-            v-for="error in v$.password.$errors"
-            :key="error.$uid"
-            style="color: var(--red)"
-            >{{ error.$message }}</label
+              for="login__form-password"
+              v-for="error in v$.password.$errors"
+              :key="error.$uid"
+              style="color: var(--red)"
+          >{{ error.$message }}</label
           >
         </div>
 
         <div class="flex justify-content-between">
           <div class="flex align-items-center">
             <Checkbox
-              v-model="remember"
-              inputId="ingredient1"
-              name="save"
-              :binary="true"
+                v-model="remember"
+                inputId="ingredient1"
+                name="save"
+                :binary="true"
             />
             <label for="ingredient1" class="ml-2">Запомнить пароль</label>
           </div>
@@ -142,10 +151,10 @@ const reset = async () => {
         </div>
 
         <Button
-          class="flex justify-content-center w-full p-3"
-          severity="submit"
-          type="submit"
-          label="Войти"
+            class="flex justify-content-center w-full p-3"
+            severity="submit"
+            type="submit"
+            label="Войти"
         />
       </form>
 
@@ -158,43 +167,45 @@ const reset = async () => {
     </Box>
 
     <Dialog
-      v-model:visible="restore"
-      dismissableMask
-      :closable="false"
-      modal
-      :draggable="false"
-      :style="{ width: '550px' }"
+        v-model:visible="restore"
+        dismissableMask
+        :closable="false"
+        modal
+        :draggable="false"
+        :style="{ width: '550px' }"
     >
       <img
-        src="../../assets/images/icons/close.png"
-        alt="Close"
-        class="close-icon"
-        @click="restore = false"
+          src="../../assets/images/icons/close.png"
+          alt="Close"
+          class="close-icon"
+          @click="restore = false"
       />
       <p class="block mb-5">
-        Введите адрес электронной почты, связанный <br />
-        с вашей учетной записью, и мы вышлем вам <br />
-        ссылку для сброса пароля <br />
+        Введите адрес электронной почты, связанный <br/>
+        с вашей учетной записью, и мы вышлем вам <br/>
+        ссылку для сброса пароля <br/>
       </p>
-      <div class="flex flex-column align-items-start gap-2 mb-3">
-        <label for="username">Email</label>
-        <InputText
-          v-model="data.email"
-          :invalid="v$.email.$errors.length > 0"
-          class="w-full custom-input"
-          id="username"
-          aria-describedby="username-help"
-          placeholder="example@gmail.com"
-        />
-      </div>
+      <form>
+        <div class="flex flex-column align-items-start gap-2 mb-3">
+          <label for="username">Email</label>
+          <InputText
+              v-model="data.email"
+              :invalid="v$.email.$errors.length > 0"
+              class="w-full custom-input"
+              id="username"
+              aria-describedby="username-help"
+              placeholder="example@gmail.com"
+          />
+        </div>
 
-      <Button
-        class="w-full"
-        type="submit"
-        severity="submit"
-        label="Отправить"
-        @click="reset"
-      />
+        <Button
+            class="w-full"
+            type="submit"
+            severity="submit"
+            label="Отправить"
+            @click.prevent="reset"
+        />
+      </form>
     </Dialog>
   </div>
 </template>

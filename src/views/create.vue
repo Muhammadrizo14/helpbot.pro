@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="wrapper">
     <img class="logo" src="../assets/images/Logo.png" alt="" />
     <div class="create">
       <Box>
@@ -73,7 +73,7 @@ const createBot = async () => {
 </script>
 
 <style lang="scss" scoped>
-.container {
+.wrapper {
   padding: 30px 35px;
   background: var(--grey-07);
   height: 100vh;

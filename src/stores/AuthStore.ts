@@ -88,6 +88,24 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
+  const changeEmail = async (old_email, new_email) => {
+    try {
+      const res = await axios.post(
+        `${apiUrl}/user/email/change`,
+        { old_email, new_email },
+        {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const resetPassword = (email: string) => {
     return axios.post(`${apiUrl}/user/password/request-reset?email=${email}`);
   };
@@ -102,5 +120,6 @@ export const useAuthStore = defineStore("auth", () => {
     token,
     changePassword,
     resetPassword,
+    changeEmail,
   };
 });

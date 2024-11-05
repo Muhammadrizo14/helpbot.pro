@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="wrapper">
     <RouterLink to="/"><img class="logo" src="../../assets/images/Logo.png" alt="Logo"/></RouterLink>
     <router-view/>
     <Toast />
@@ -11,7 +11,7 @@ import Toast from 'primevue/toast';
 </script>
 
 <style lang="scss" scoped>
-.container {
+.wrapper {
   padding: 30px 35px;
   background: var(--grey-07);
   height: 100vh;

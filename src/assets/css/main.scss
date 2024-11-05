@@ -1,9 +1,17 @@
+@import "theme";
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+
 @import "./variables";
 @import './font';
 @import './defaults';
 @import './custom'; // custom change of primeVue
 
-@import "theme";
+
+
 
 * {
   //padding: 0;

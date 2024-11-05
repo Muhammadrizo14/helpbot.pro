@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="wrapper">
     <RouterLink to="/"
       ><img class="logo" src="@/assets/images/Logo.png" alt=""
     /></RouterLink>
@@ -20,7 +20,7 @@ import router from "@/router/index";
 </script>
 
 <style scoped lang="scss">
-.container {
+.wrapper {
   padding: 30px 35px;
   background: var(--grey-07);
   height: 100vh;
