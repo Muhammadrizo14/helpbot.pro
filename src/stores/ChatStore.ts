@@ -12,28 +12,28 @@ export interface IChat {
 }
 
 export const useChatStore = defineStore("chat", () => {
+  const bot = useBotStore()
 
-  const textToBot = (message: string)=> {
-    const bot = useBotStore()
-    const auth = useAuthStore()
-
-    console.log(message)
-
-    axios.post(`${apiUrl}/bot/chat-simulation?bot_id=${bot.selectedBot.id}&chat_user_id=${auth.user.id}&message=${message}`, {
+  const getMessages = async ()=> {
+    return axios.get(`${apiUrl}/bot/sandbox/chat/history?bot_id=${bot.selectedBot.id}`, {
       headers: {
         'accept': 'application/json',
         'Content-Type': 'application/json'
       }
     })
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+  }
+
+  const sendMessage = async (message: string)=> {
+    return axios.post(`${apiUrl}/bot/sandbox/chat?bot_id=${bot.selectedBot.id}&message=${message}`, {
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
   }
 
   return {
-    textToBot
+    getMessages,
+    sendMessage
   };
 });
