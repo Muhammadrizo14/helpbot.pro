@@ -12,16 +12,16 @@
       <div class="flex flex-col gap-2">
         <p :class="!data.schedule && 'text-[#747783]'">рабочие часы <br> (по умолчанию)</p>
         <div class="flex items-center gap-2">
-          <InputMask type="text" mask="99:99" class="text-center w-[73px] border border-grey-04 p-2"
+          <InputMask type="text" mask="99:99" class="text-center w-[73px] border border-grey-04 p-2 schedule__input"
                      v-model="data.defaultWorkTimeStart" placeholder="8:00" :disabled="!data.schedule"/>
-          <InputMask type="text" mask="99:99" class="text-center w-[73px] border border-grey-04 p-2"
+          <InputMask type="text" mask="99:99" class="text-center w-[73px] border border-grey-04 p-2 schedule__input"
                      v-model="data.defaultWorkTimeFinish" placeholder="19:00" :disabled="!data.schedule"/>
         </div>
       </div>
       <div class="flex flex-col gap-2">
         <p :class="!data.schedule && 'text-[#747783]'">изменить <br> часовой пояс</p>
         <div class="flex items-center gap-2">
-          <Dropdown v-model="data.workTimeZone" :options="UTC" class="w-[20px] md:w-fit"
+          <Dropdown v-model="data.workTimeZone" :options="UTC" class="w-[20px] md:w-fit schedule__dropdown"
                     :disabled="!data.schedule"/>
         </div>
       </div>
@@ -66,16 +66,16 @@
       <div class="flex items-stretch gap-10">
         <div class="flex items-center flex-col gap-2 pt-3" v-for="day in week" :key="day">
           <p :class="!data.schedule && 'text-[#747783]'">{{ translateDayToRussian(day.day_of_week).short }}</p>
-          <InputMask type="text" mask="99:99" class="text-center w-[73px] border border-grey-04 p-2"
+          <InputMask type="text" mask="99:99" class="text-center w-[73px] border border-grey-04 p-2 schedule__input"
                      :disabled="!data.schedule || day.is_working_day"
                      v-model="day.start_time"
                      placeholder="8:00"/>
-          <InputMask type="text" mask="99:99" class="text-center w-[73px] border border-grey-04 p-2"
+          <InputMask type="text" mask="99:99" class="text-center w-[73px] border border-grey-04 p-2 schedule__input"
                      :disabled="!data.schedule || day.is_working_day"
                      v-model="day.end_time"
                      placeholder="19:00"/>
           <p class="text-[#747783]">выходной</p>
-          <Checkbox :disabled="!data.schedule" :binary="true" v-model="day.is_working_day"/>
+          <Checkbox :disabled="!data.schedule" :binary="true" class="schedule__checkbox" v-model="day.is_working_day"/>
         </div>
       </div>
 
@@ -166,34 +166,28 @@ const changeSchedule = async () => {
   const changedDays = getChangedDays();
 
   try {
-    // Handle changes for the days
     if (changedDays.length > 0) {
       await store.update_day_week(changedDays);  // Make sure this returns a promise
     }
 
-    // Update schedule active status if changed
     if (data.schedule !== store.schedule.scheduleActive && data.schedule) {
       store.schedule.scheduleActive = true;
       await store.set_custom();  // Make sure this is asynchronous if necessary
     }
 
-    // Handle production calendar updates
     if (data.calendar !== store.schedule.calendar && data.calendar === true) {
       await store.set_prod();  // Make sure this is asynchronous if necessary
     }
 
-    // Turn off the calendar if needed
     if (data.calendar !== store.schedule.calendar) {
       store.turnoff(false);  // Assuming this is synchronous, otherwise add await
     }
 
-    // Update work times
     if (data.defaultWorkTimeFinish !== store.schedule.defaultWorkTimeFinish ||
         data.defaultWorkTimeStart !== store.schedule.defaultWorkTimeStart) {
       await store.update_time(data.defaultWorkTimeStart, data.defaultWorkTimeFinish);  // Make sure this is a promise
     }
 
-    // Update timezone
     if (data.workTimeZone !== store.schedule.defaultUTC) {
       await store.update_timezone(getTimezoneFromOffset(data.workTimeZone));  // Ensure this is async
     }
