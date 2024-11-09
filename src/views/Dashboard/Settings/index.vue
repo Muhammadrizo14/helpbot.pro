@@ -36,7 +36,7 @@
       />
     </form>
 
-    <form class="pt-3" v-if="active === 3">
+    <form class="pt-3" v-if="active === 2">
       <div class="flex flex-column gap-2 pb-3">
         <label for="title">
           <p>Полностью удалите данные бота</p>
@@ -60,7 +60,6 @@
 
 
     <schedule v-if="active === 1"/>
-    <access v-if="active === 2"/>
 
     <Dialog
       v-model:visible="sureDialog"
@@ -111,7 +110,6 @@ import { email, helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import { useToast } from 'primevue/usetoast';
 import Schedule from "./schedule.vue";
-import Access from "./access.vue";
 import {useScheduleStore} from "../../../stores/ScheduleStore";
 
 const toast = useToast();
@@ -140,7 +138,7 @@ const rules = {
 const v$ = useVuelidate(rules, data);
 
 const active = ref(0);
-const items = ref([{ label: "Название бота" }, { label: "Расписание" }, { label: "Ограничение доступа" }, { label: "Удаление" }]);
+const items = ref([{ label: "Название бота" }, { label: "Расписание" }, { label: "Удаление" }]);
 
 const deleteBot = () => {
   data.title = "";
