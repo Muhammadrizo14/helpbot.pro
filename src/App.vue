@@ -3,10 +3,13 @@
   import { useAuthStore } from "./stores/AuthStore";
   import { useBotStore } from "./stores/BotStore";
   import Toast from 'primevue/toast';
+  import {useScheduleStore} from "./stores/ScheduleStore";
 
 
   const AuthStore = useAuthStore();
-  AuthStore.getUser()
+  AuthStore.getUser().then(()=> {
+    const ScheduleStore = useScheduleStore();
+  })
 
 </script>
 

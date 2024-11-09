@@ -19,7 +19,7 @@
     <div class="flex items-center justify-between py-5">
       <div class="flex items-center gap-4">
         <InputText type="text" v-model="value" placeholder="Поиск..." class="w-[332px] border-none"/>
-        <Button icon="pi pi-plus" label="Добавить пользователя" @click="addUser = true"/>
+        <Button icon="pi pi-plus" label="Добавить пользователя" @click="addUserWindow = true"/>
         <Button label="Экспорт id из Excel" @click="uploadExcel = true"/>
         <div class="relative">
           <button class="bg-transparent border-0 flex items-center gap-2 cursor-pointer"
@@ -63,6 +63,7 @@
     </div>
 
 
+    <!--  !access denied-->
     <Dialog
         v-model:visible="accessDenied"
         modal header="У вас нет доступа :("
@@ -76,9 +77,12 @@
       </div>
     </Dialog>
 
+
+    <!--!Adding new user by its id-->
     <Dialog
-        v-model:visible="addUser"
-        modal header="Добавить пользователя"
+        v-model:visible="addUserWindow"
+        modal
+        header="Добавить пользователя"
         :style="{ maxWidth: '600px' }"
         dismissableMask
         :draggable="false"
@@ -88,42 +92,23 @@
           src="@/assets/images/icons/close.png"
           alt="Close"
           class="close-icon"
-          @click="addUser = false"
+          @click="addUserWindow = false"
       />
       <div class="text-center">
         <p class="text-[#747783] text-[16px]">Введите id пользователя, которому хотите разрешить доступ</p>
         <form class="flex items-center gap-1 pt-2 flex-col">
-          <inputText placeholder="id" class="w-full"/>
-          <Button class="mt-2" @click="accessDenied = false">Добавить</Button>
+          <inputText placeholder="id" class="w-full" v-model="newUserId"/>
+          <Button class="mt-2" @click="addUser()">Добавить</Button>
         </form>
       </div>
     </Dialog>
 
-    <Dialog
-        v-model:visible="addUser"
-        modal header="Экспорт из Excel"
-        :style="{ maxWidth: '600px' }"
-        dismissableMask
-        :draggable="false"
-        :closable="false"
-    >
-      <img
-          src="@/assets/images/icons/close.png"
-          alt="Close"
-          class="close-icon"
-          @click="addUser = false"
-      />
-      <div class="text-center">
-        <p class="text-[#747783] text-[16px]">Введите id пользователя, которому хотите разрешить доступ</p>
-        <form class="flex items-center gap-1 pt-2 flex-col">
-          <inputText placeholder="id" class="w-full"/>
-          <Button class="mt-2" @click="accessDenied = false">Добавить</Button>
-        </form>
-      </div>
-    </Dialog>
+
+    <!--!Export them from excel-->
     <Dialog
         v-model:visible="uploadExcel"
-        modal header="Экспорт из Excel"
+        modal
+        header="Экспорт из Excel"
         :style="{ maxWidth: '600px', width: '100%' }"
         dismissableMask
         :draggable="false"
@@ -198,16 +183,19 @@
 
 <script setup>
 import {reactive, ref} from "vue";
+import {useBotStore} from "../../../stores/BotStore";
 
 
 const access = ref(false)
-const addUser = ref(false)
+const addUserWindow = ref(false)
 const accessDenied = ref(false)
 const uploadExcel = ref(false)
 const templateInfo = ref(false)
+const newUserId = ref('')
 
 const fileInput = ref(null);
 
+const store = useBotStore()
 const selectedUsers = ref()
 
 const triggerFileInput = () => {
@@ -243,6 +231,10 @@ const data = ref([
   {id: '7'},
 ]);
 
+
+const addUser = () => {
+  store.addUser(newUserId)
+}
 
 </script>
 

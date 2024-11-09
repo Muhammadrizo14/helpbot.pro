@@ -13,6 +13,12 @@ export interface IBot {
   welcome_message: string,
   operator_switch_message: string,
   feedback_message: string,
+  llm_type: string,
+  system_prompt: string,
+  chat_access_restricted: boolean,
+  chat_access_invite_message: string,
+  chat_access_delete_message: string,
+  chat_access_refuse_message: string
 }
 
 export const useBotStore = defineStore("bots", () => {
@@ -46,6 +52,11 @@ export const useBotStore = defineStore("bots", () => {
         return;
       }
 
+
+
+      const selectedBotNew = res.data.find((bot)=> bot.name === selectedBot.value.name)
+
+      changeSelectedBot(selectedBotNew)
 
       bots.value = res.data;
       return res.data
@@ -103,17 +114,15 @@ export const useBotStore = defineStore("bots", () => {
   const editBot = async (newData: IBot) => {
     axios.patch(`${apiUrl}/bot/${selectedBot.value.id}/update/`, {
       ...newData
+    }, {
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
     })
       .then(res => {
-        getAllBots()
-          .then(res => {
-            // Assuming `res` is the updated list of bots
-            const updatedBot = res.find(data => data.id === selectedBot.value.id);
-            if (updatedBot) {
-              selectedBot.value = updatedBot; // Update selectedBot in store
-              localStorage.setItem("selectedBot", JSON.stringify(updatedBot));
-            }
-          });
+        selectedBot.value = res.data;
+        localStorage.setItem("selectedBot", JSON.stringify(res.data));
       })
       .catch(error => {
         console.error("Failed to edit bot:", error);
@@ -128,8 +137,8 @@ export const useBotStore = defineStore("bots", () => {
     return axios.post(`${apiUrl}/bot/${selectedBot.value.id}/user/invite?email=${email}`)
   }
 
-  const addUser = (email: string)=> {
-    return axios.post(`${apiUrl}/bot/${selectedBot.value.id}/user/invite?email=${email}`)
+  const addUser = (id: string)=> {
+    return axios.post(`${apiUrl}/bot/${selectedBot.value.id}/user/add?user_id=${id}&role=employee`)
   }
 
   return {
@@ -141,6 +150,7 @@ export const useBotStore = defineStore("bots", () => {
     deleteBot,
     editBot,
     getAllUsersOfBot,
-    inviteUser
+    inviteUser,
+    addUser
   };
 });

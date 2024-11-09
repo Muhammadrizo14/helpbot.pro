@@ -6,7 +6,7 @@
     </div>
 
     <div class="bots__wrap pt-3">
-      <Box class="bot" v-for="bot in store.bots">
+      <Box class="bot" v-for="bot in store.bots" @click="changeBot(bot)">
         <div class="bot__background1"></div>
         <div class="bot__text">
           <h1>{{ bot.name }}</h1>
@@ -15,11 +15,11 @@
     </div>
 
     <Dialog
-      v-model:visible="createDialog"
-      :closable="false"
-      modal
-      :draggable="false"
-      class="w-27rem"
+        v-model:visible="createDialog"
+        :closable="false"
+        modal
+        :draggable="false"
+        class="w-27rem"
     >
       <template #header>
         <div class="pb-2">
@@ -30,10 +30,10 @@
         </div>
       </template>
       <img
-        src="@/assets/images/icons/close.png"
-        alt="Close"
-        class="close-icon"
-        @click="createDialog = false"
+          src="@/assets/images/icons/close.png"
+          alt="Close"
+          class="close-icon"
+          @click="createDialog = false"
       />
 
       <form @submit.prevent="createBot">
@@ -66,9 +66,10 @@
 
 <script setup>
 import useVuelidate from "@vuelidate/core";
-import { helpers, required } from "@vuelidate/validators";
-import { reactive, ref } from "vue";
-import { useBotStore } from "../../stores/BotStore";
+import {helpers, required} from "@vuelidate/validators";
+import {reactive, ref} from "vue";
+import {useBotStore} from "../../stores/BotStore";
+import router from "../../router";
 
 const createDialog = ref(false);
 
@@ -100,25 +101,31 @@ const createBot = async () => {
   createDialog.value = false;
 
   store
-    .createBot(data.title)
-    .then(() => {
-      toast.add({
-        severity: "success",
-        summary: "Успешно",
-        detail: "Бот успешно удалено",
-        life: 3000,
+      .createBot(data.title)
+      .then(() => {
+        toast.add({
+          severity: "success",
+          summary: "Успешно",
+          detail: "Бот успешно удалено",
+          life: 3000,
+        })
+        store.getAllBots()
       })
-      store.getAllBots()
-    })
-    .catch(() => {
-      toast.add({
-        severity: "error",
-        summary: "Ошибка",
-        detail: "Попробуйте позже",
-        life: 3000,
+      .catch(() => {
+        toast.add({
+          severity: "error",
+          summary: "Ошибка",
+          detail: "Попробуйте позже",
+          life: 3000,
+        });
       });
-    });
 };
+
+const changeBot = (bot) => {
+  store.changeSelectedBot(bot)
+  router.replace('/');
+
+}
 </script>
 
 <style scoped lang="scss">

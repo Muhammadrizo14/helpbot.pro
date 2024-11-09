@@ -3,6 +3,7 @@ import { ref } from "vue";
 import axios from "axios";
 import { apiUrl } from "../main";
 import router from "../router/index";
+import {useBotStore} from "./BotStore";
 
 type IUser = {
   id: number;
@@ -28,7 +29,7 @@ export const useAuthStore = defineStore("auth", () => {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       },
-      );
+      )
   };
 
   const register = async (

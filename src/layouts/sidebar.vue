@@ -147,7 +147,7 @@
         <router-link to="/settings">
           <li
             class="flex align-items-center p-2"
-            :class="route.path === '/Settings' && 'active'"
+            :class="route.path === '/settings' && 'active'"
           >
             <SettingsIcon />
             <p>Настройки</p>
@@ -250,10 +250,12 @@ import router from "../router";
 import { useBotStore } from "@/stores/BotStore.ts";
 import { useAuthStore } from "../stores/AuthStore";
 import {useRequestStore} from "../stores/RequestStore";
+import {useScheduleStore} from "../stores/ScheduleStore";
 
 const store = useBotStore();
 const auth = useAuthStore();
 const request = useRequestStore()
+const ScheduleStore = useScheduleStore()
 
 
 request.getRequests()
@@ -269,6 +271,9 @@ const userInfoActivity = ref(false);
 const expandedSidebar = ref(true);
 
 const selectedBot = ref(store.selectedBot);
+
+ScheduleStore.get_schedule()
+
 
 const bots = computed(() => [...store.bots]);
 

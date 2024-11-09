@@ -60,7 +60,7 @@
           <form
             class="pt-4"
             :class="!isIntegratedTelegram && 'dis'"
-            @submit.prevent="addIntegration"
+            @submit.prevent="addIntegration()"
           >
             <div class="flex flex-column gap-2 pt-3 pb-3">
               <label for="webHook">Секретный ключ</label>
@@ -119,30 +119,7 @@ const agents = ref([
   { name: "Агент05", code: "5" },
 ]);
 
-const addIntegration = async () => {
-  const result = await v$.value.$validate();
-  if (!result) {
-    console.log("Form validation failed");
-    return;
-  }
 
-  store
-    .addTelegram(data.webHook)
-    .then(() => {
-      store.disable();
-    })
-    .catch((err) => {
-      console.log(err);
-      if (err.code === "ERR_NETWORK") {
-        toast.add({
-          severity: "error",
-          summary: "Ошибка",
-          detail: "Попробуйте позже",
-          life: 3000,
-        });
-      }
-    });
-};
 
 const data = reactive({
   token: "",
@@ -165,6 +142,32 @@ watch(isIntegratedTelegram, (newValue) => {
     store.disable();
   }
 });
+
+
+const addIntegration = async () => {
+  const result = await v$.value.$validate();
+  if (!result) {
+    console.log("Form validation failed");
+    return;
+  }
+
+  store
+      .addTelegram(data.webHook)
+      .then(() => {
+        // store.disable();
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.code === "ERR_NETWORK") {
+          toast.add({
+            severity: "error",
+            summary: "Ошибка",
+            detail: "Попробуйте позже",
+            life: 3000,
+          });
+        }
+      });
+};
 </script>
 
 <style scoped lang="scss">

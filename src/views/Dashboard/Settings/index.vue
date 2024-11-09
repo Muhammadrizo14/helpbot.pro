@@ -112,10 +112,14 @@ import { useVuelidate } from "@vuelidate/core";
 import { useToast } from 'primevue/usetoast';
 import Schedule from "./schedule.vue";
 import Access from "./access.vue";
+import {useScheduleStore} from "../../../stores/ScheduleStore";
 
 const toast = useToast();
 
 const store = useBotStore();
+
+
+
 
 const sureDialog = ref(false);
 
