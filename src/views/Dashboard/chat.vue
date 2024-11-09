@@ -6,26 +6,29 @@
     <Divider/>
 
     <div class="chat">
-      <div class="chat__messages bg-white rounded-md p-3 mt-3">
-        <div class="user">
-          <div class="user__message">
-            <p>Hello!</p>
+      <div class="chat__messages bg-white rounded-md p-3 mt-3" ref="chatMessagesContainer">
+        <div class="message" v-for="message in messagesList">
+          <div class="user" v-if="message.who_sent === 'user'">
+            <div class="user__message">
+              <p>{{ message.text }}</p>
+            </div>
+            <div class="user__icon">
+              <h3 class="user__icon-letter">T</h3>
+              <!--          {{ auth.user?.first_name.slice(0, 1) }}-->
+            </div>
           </div>
-          <div class="user__icon">
-            <h3 class="user__icon-letter">T</h3>
-            <!--          {{ auth.user?.first_name.slice(0, 1) }}-->
+          <div class="bot" v-if="message.who_sent === 'bot'">
+            <div class="bot__icon">
+              <h3 class="bot__icon-letter">
+                <i class="pi pi-microchip-ai"></i>
+              </h3>
+            </div>
+            <div class="bot__message">
+              <p>{{ message.text }}</p>
+            </div>
           </div>
         </div>
-        <div class="bot">
-          <div class="bot__icon">
-            <h3 class="bot__icon-letter">
-              <i class="pi pi-microchip-ai"></i>
-            </h3>
-          </div>
-          <div class="bot__message">
-            <p>Hey, how can i help you?</p>
-          </div>
-        </div>
+        <div ref="scrollToThis"></div>
       </div>
       <form @submit.prevent="send"  class="chat__input">
         <InputText type="text" v-model="message" />
@@ -39,16 +42,57 @@
 
 
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, onMounted} from "vue";
 import {useChatStore} from "@/stores/ChatStore.ts";
 
 const chat = useChatStore();
 
 const message = ref('')
 
-const send = ()=> {
-  chat.textToBot(message.value)
+const messagesList = ref([]);
+
+const scrollToThis = ref<HTMLDivElement | null>(null)
+
+const scrollToBottom = () => {
+  setTimeout(function () {
+    scrollToThis.value.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, 100);
 }
+
+const getMessages = () => {
+  chat
+    .getMessages()
+    .then((res) => {
+      messagesList.value = res.data;
+    })
+    .catch((res) => {
+      messagesList.value = [];
+    });
+};
+
+const send = ()=> {
+  messagesList.value.push({"who_sent": "user", "text": message.value})
+  scrollToBottom();
+  var message_value = message.value
+  message.value = null
+  chat
+    .sendMessage(message_value)
+    .then((res) => {
+      messagesList.value.push({"who_sent": "bot", "text": res.data})
+      scrollToBottom();
+    })
+    .catch((res) => {
+      console.log(res)
+    });
+}
+
+onMounted(() => {
+  getMessages();
+  scrollToBottom();
+})
 
 </script>
 
@@ -63,9 +107,10 @@ const send = ()=> {
   &__messages {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
     flex-grow: 1;
     border-radius: 6px;
+    overflow-y: auto;
+    height: 70vh;
     .user {
       display: flex;
       justify-content: end;
@@ -78,6 +123,7 @@ const send = ()=> {
         border-radius: 16px;
         padding: 15px 10px;
         border-top-right-radius: 0px;
+        max-width: 40%;
 
         p {
           font-size: 16px;
@@ -113,6 +159,7 @@ const send = ()=> {
         border-radius: 16px;
         padding: 15px 10px;
         border-top-left-radius: 0px;
+        max-width: 40%;
 
         p {
           font-size: 16px;
