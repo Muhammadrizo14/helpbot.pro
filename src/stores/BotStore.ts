@@ -112,7 +112,7 @@ export const useBotStore = defineStore("bots", () => {
   };
 
   const editBot = async (newData: IBot) => {
-    axios.patch(`${apiUrl}/bot/${selectedBot.value.id}/update/`, {
+    axios.patch(`${apiUrl}/bot/${selectedBot.value.id}/update`, {
       ...newData
     }, {
       headers: {
