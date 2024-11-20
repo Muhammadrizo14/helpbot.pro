@@ -15,17 +15,14 @@ type IQuestion = {
 export const useQuestionStore = defineStore("question", () => {
   const questions = ref<IQuestion[]>([]);
 
-  const getAllProfiles = async () => {
-    axios.get(`${apiUrl}/bot/detail`).then((res) => {
-      console.log(res);
-    });
-  };
-
   const getAllQuestions = async () => {
     const store = useBotStore();
-    return axios.get(
-      `${apiUrl}/data-source/questions?bot_id=${store.selectedBot.id}`
-    );
+    return axios.get(`${apiUrl}/data-source/questions?bot_id=${store.selectedBot.id}`, {
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
   };
 
   const createQuestion = async ({ main_question, answer, similar }: string) => {
@@ -45,6 +42,7 @@ export const useQuestionStore = defineStore("question", () => {
         headers: {
           accept: "application/json",
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
@@ -55,6 +53,12 @@ export const useQuestionStore = defineStore("question", () => {
       `${apiUrl}/data-source/question/update?question_id=${question.id}`,
       {
         ...question,
+      },
+      {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       }
     );
   };
@@ -62,8 +66,9 @@ export const useQuestionStore = defineStore("question", () => {
   const removeQuestion = (id: number) => {
     return axios.delete(`${apiUrl}/data-source/delete/question`, {
       headers: {
-        Accept: "application/json",
+        accept: "application/json",
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       data: [id],
     });
@@ -72,7 +77,6 @@ export const useQuestionStore = defineStore("question", () => {
   return {
     getAllQuestions,
     questions,
-    getAllProfiles,
     createQuestion,
     removeQuestion,
     editQuestion,

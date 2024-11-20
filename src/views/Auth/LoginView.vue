@@ -48,17 +48,15 @@ const submit = async () => {
       .login(data.email, data.password)
       .then((res) => {
         store.addToken(res.data);
-        store.getUser().then((res) => {
-          botStore.getAllBots()
-              .then(res => {
-                if (res.length) {
-                  router.push({path: '/'})
-                }
-              })
-              .catch(err => {
-                router.push({path: '/create'})
-              })
-        });
+        botStore.getAllBots()
+          .then(res => {
+            if (res.length) {
+              router.push({path: '/'})
+            }
+          })
+          .catch(err => {
+            router.push({path: '/create'})
+          })
       })
       .catch((err) => {
         console.log(err)

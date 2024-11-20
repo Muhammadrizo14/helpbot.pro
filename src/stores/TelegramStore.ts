@@ -6,42 +6,28 @@ import {useAuthStore} from "./AuthStore";
 import {useBotStore} from "./BotStore";
 
 export const useTelegram = defineStore("telegram", () => {
-  const integration = ref(JSON.parse(localStorage.getItem("telegramIntegration")) || false);
-
-  const disable = async () => {
-    const userdata = useAuthStore();
-
-    return await axios.post(
-      `${apiUrl}/integration/tg/disable-wh?token=${userdata.token}&bot_id=${0}`,
+  const getTelegramIntegration = async (bot_id: number) => {
+    return await axios.get(
+      `${apiUrl}/integration/tg?bot_id=${bot_id}`,
       {
         headers: {
           accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     )
-      .then(() => {
-        localStorage.setItem("telegramIntegration", 'false');
-        bot.value = false;
-      })
-  };
+  }
 
-  const enable = async (token) => {
-    const userdata = useAuthStore();
-    const bot = useBotStore();
-
+  const disableIntegration = async (bot_id: number) => {
     return await axios.post(
-      `${apiUrl}/integration/tg/enable-wh?token=${token}&bot_id=${bot.selectedBot.id}`,
+      `${apiUrl}/integration/tg/disable-wh?bot_id=${bot_id}`, {},
       {
         headers: {
           accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     )
-      .then(() => {
-        localStorage.setItem("telegramIntegration", 'true');
-      })
   };
 
   const addTelegram = async (bot_token: string) => {
@@ -52,7 +38,7 @@ export const useTelegram = defineStore("telegram", () => {
       {
         headers: {
           accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
@@ -65,17 +51,19 @@ export const useTelegram = defineStore("telegram", () => {
         headers: {
           accept: "application/json",
           "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
   }
   const addAccessedUser = async (bot_id: number, tg_user_id: number) => {
     return await axios.post(
-      `${apiUrl}/integration/tg/chat-access/${bot_id}/chat-user?tg_user_id=${tg_user_id}`,
+      `${apiUrl}/integration/tg/chat-access/${bot_id}/chat-user?tg_user_id=${tg_user_id}`, {},
       {
         headers: {
           accept: "application/json",
           "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
@@ -90,7 +78,8 @@ export const useTelegram = defineStore("telegram", () => {
       {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'accept': 'application/json',
+          accept: 'application/json',
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         }
       }
     )
@@ -100,8 +89,9 @@ export const useTelegram = defineStore("telegram", () => {
       `${apiUrl}/integration/tg/chat-access/${bot_id}/chat-users`,
       {
         headers: {
-          'accept': 'application/json',
+          accept: 'application/json',
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         data: selectedAccessedUsers,
       }
@@ -109,10 +99,9 @@ export const useTelegram = defineStore("telegram", () => {
   }
 
   return {
+    getTelegramIntegration,
     addTelegram,
-    disable,
-    integration,
-    enable,
+    disableIntegration,
     getAccessedUsers,
     addAccessedUser,
     exportAccessedUsersExcel,

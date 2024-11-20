@@ -37,7 +37,7 @@
     </form>
 
     <schedule v-if="active === 1"/>
-    
+
     <form class="pt-5" v-if="active === 2">
       <div class="flex flex-column gap-3">
         <div class="flex flex-row align-items-center gap-2">
@@ -97,12 +97,10 @@
           <DataTable
             v-model:selection="selectedAccessedUsers"
             :value="accessedUsersList"
-            :tableClass="'users-data'"
             paginator
             :rows="10"
             currentPageReportTemplate="Страница {currentPage} из {totalPages}"
             paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink NextPageLink LastPageLink"
-            pt:paginator:instance="justify-content-end"
             stripedRows
             class="pt-4">
             <Column
@@ -338,9 +336,6 @@ const toast = useToast();
 const store = useBotStore();
 const telegramStore = useTelegram();
 
-
-
-
 const sureDialog = ref(false);
 
 const data = reactive({
@@ -407,10 +402,6 @@ const changeName = async () => {
 
   const newData = {
     name: data.title,
-    is_active: store.selectedBot.is_active,
-    welcome_message: store.selectedBot.welcome_message,
-    operator_switch_message: store.selectedBot.operator_switch_message,
-    feedback_message: store.selectedBot.feedback_message
   }
 
   store.editBot(newData)

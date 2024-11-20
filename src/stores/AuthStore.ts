@@ -58,7 +58,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   const getUser = async () => {
     try {
-      const res = await axios.get<IUser>(`${apiUrl}/user/protected`, {
+      const res = await axios.get<IUser>(`${apiUrl}/user/me`, {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,

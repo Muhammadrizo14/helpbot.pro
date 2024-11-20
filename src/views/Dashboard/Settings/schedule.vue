@@ -96,9 +96,6 @@ import {useToast} from "primevue/usetoast";
 const store = useScheduleStore()
 const toast = useToast();
 
-
-
-
 const week = ref(JSON.parse(JSON.stringify(store.schedule.week)))
 const loading = ref(false);
 const UTC = ref([

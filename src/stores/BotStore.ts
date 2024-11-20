@@ -36,27 +36,12 @@ export const useBotStore = defineStore("bots", () => {
     const authStore = useAuthStore();
 
     try {
-      const userData = await authStore.getUser();
-
-      if (!userData || !userData.id) {
-        console.error("User is not authenticated");
-        return;
-      }
-
-      const res = await axios.get(`${apiUrl}/bot/bots?user_id=${userData.id}`);
-
-
-      if (res.data.length === 0) {
-        selectedBot.value = null;
-        router.push('/create');
-        return;
-      }
-
-
-
-      const selectedBotNew = res.data.find((bot)=> bot.name === selectedBot.value.name)
-
-      changeSelectedBot(selectedBotNew)
+      const res = await axios.get(`${apiUrl}/bot/bots`, {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       bots.value = res.data;
       return res.data
@@ -72,6 +57,7 @@ export const useBotStore = defineStore("bots", () => {
         headers: {
           accept: "application/json",
           "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     )
@@ -95,12 +81,13 @@ export const useBotStore = defineStore("bots", () => {
   const createBot = async (title: string) => {
     const userdata = useAuthStore();
     return await axios.post(
-      `${apiUrl}/bot/create?user_id=${userdata?.user?.id}&bot_name=${title}`,
+      `${apiUrl}/bot/create?bot_name=${title}`,
       {},
       {
         headers: {
           accept: "application/json",
           "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     )
@@ -116,8 +103,9 @@ export const useBotStore = defineStore("bots", () => {
       ...newData
     }, {
       headers: {
-        'accept': 'application/json',
+        accept: 'application/json',
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       }
     })
       .then(res => {

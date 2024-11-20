@@ -54,6 +54,7 @@
                 input-id="switch"
                 input-class="default-switch"
                 v-model="isIntegratedTelegram"
+                @update:modelValue="changeIsIntegratedTelegram"
               />
             </div>
           </div>
@@ -63,17 +64,17 @@
             @submit.prevent="addIntegration()"
           >
             <div class="flex flex-column gap-2 pt-3 pb-3">
-              <label for="webHook">Секретный ключ</label>
+              <label for="token">Секретный ключ</label>
               <InputText
                 :disabled="!isIntegratedTelegram"
-                v-model="data.webHook"
-                :invalid="v$.webHook.$errors.length > 0"
-                id="webHook"
+                v-model="data.token"
+                :invalid="v$.token.$errors.length > 0"
+                id="token"
                 aria-describedby="username-help"
               />
               <label
-                for="webHook"
-                v-for="error in v$.webHook.$errors"
+                for="token"
+                v-for="error in v$.token.$errors"
                 :key="error.$uid"
                 style="color: var(--red)"
                 >{{ error.$message }}</label
@@ -97,29 +98,17 @@ import { reactive, ref, watch } from "vue";
 import { helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import { useTelegram } from "../../stores/TelegramStore";
+import { useBotStore } from "../../stores/BotStore";
 import { useToast } from "primevue/usetoast";
 
 const toast = useToast();
 
 const store = useTelegram();
-const isIntegratedTelegram = ref(store.integration);
+const bot = useBotStore();
+
+const isIntegratedTelegram = ref();
 
 const selectedTab = ref(0);
-
-const items = ref([
-  { label: "New", icon: "pi pi-plus" },
-  { label: "Search", icon: "pi pi-search" },
-]);
-
-const agents = ref([
-  { name: "Агент01", code: "1" },
-  { name: "Агент02", code: "2" },
-  { name: "Агент03", code: "3" },
-  { name: "Агент04", code: "4" },
-  { name: "Агент05", code: "5" },
-]);
-
-
 
 const data = reactive({
   token: "",
@@ -130,19 +119,43 @@ const customMessages = {
 };
 
 const rules = {
-  webHook: {
+  token: {
     required: helpers.withMessage(customMessages.required, required),
   },
 };
 
 const v$ = useVuelidate(rules, data);
 
-watch(isIntegratedTelegram, (newValue) => {
-  if (!newValue) {
-    store.disable();
-  }
-});
+const getTelegramIntegration = async () => {
+  store.getTelegramIntegration(bot.selectedBot.id)
+      .then((res) => {
+        data.token = res.data.token
+        isIntegratedTelegram.value = res.data.is_active
+      });
+}
+getTelegramIntegration();
 
+const changeIsIntegratedTelegram = async (isIntegratedTelegramChange) => {
+  if (!isIntegratedTelegramChange) {
+    store.disableIntegration(bot.selectedBot.id);
+  }
+  else if (isIntegratedTelegramChange) {
+    if (data.token) {
+      store.addTelegram(data.token)
+      .catch((err) => {
+        console.log(err);
+        if (err.code === "ERR_NETWORK") {
+          toast.add({
+            severity: "error",
+            summary: "Ошибка",
+            detail: "Попробуйте позже",
+            life: 3000,
+          });
+        }
+      });
+    }
+  }
+}
 
 const addIntegration = async () => {
   const result = await v$.value.$validate();
@@ -152,9 +165,9 @@ const addIntegration = async () => {
   }
 
   store
-      .addTelegram(data.webHook)
+      .addTelegram(data.token)
       .then(() => {
-        // store.disable();
+        toast.add({ severity: 'success', summary: 'Успешно', detail: 'Токен добавлен', life: 3000 });
       })
       .catch((err) => {
         console.log(err);

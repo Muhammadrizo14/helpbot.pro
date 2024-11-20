@@ -26,7 +26,12 @@ export const useKnowledgeStore = defineStore("knowledge", () => {
   const getDataset = ()=> {
     const store = useBotStore()
 
-    return axios.get(`${apiUrl}/data-sources?bot_id=${store.selectedBot.id}`)
+    return axios.get(`${apiUrl}/data-sources?bot_id=${store.selectedBot.id}`, {
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
   }
 
 
@@ -37,8 +42,9 @@ export const useKnowledgeStore = defineStore("knowledge", () => {
 
     return axios.post(`${apiUrl}/data-source/create/article?title=${title}&bot_id=${store.selectedBot.id}`, content, {
       headers: {
-        'accept': 'application/json',
-        'Content-Type': 'application/json'
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       }
     })
   }
@@ -48,6 +54,11 @@ export const useKnowledgeStore = defineStore("knowledge", () => {
 
     return axios.post(`${apiUrl}/data-source/create/website?url=${url}&title=${title}&bot_id=${store.selectedBot.id}&parse_method=${parse_method}`, {
       url,
+    }, {
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
   }
 
@@ -56,8 +67,9 @@ export const useKnowledgeStore = defineStore("knowledge", () => {
 
     return axios.delete(`${apiUrl}/data-source/delete`, {
       headers: {
-        'accept': 'application/json',
+        accept: 'application/json',
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       data: [id]
     })
@@ -67,16 +79,14 @@ export const useKnowledgeStore = defineStore("knowledge", () => {
 
     return axios.delete(`${apiUrl}/data-source/delete`, {
       headers: {
-        'accept': 'application/json',
+        accept: 'application/json',
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       data: id
     })
 
   }
-
-
-
 
   const uploadFile = async (title: string, file: File) => {
     const store = useBotStore();
@@ -92,7 +102,8 @@ export const useKnowledgeStore = defineStore("knowledge", () => {
       {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'accept': 'application/json',
+          accept: 'application/json',
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         params: {
           title,

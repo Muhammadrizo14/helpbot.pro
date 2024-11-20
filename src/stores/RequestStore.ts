@@ -22,7 +22,12 @@ export const useRequestStore = defineStore("requests", () => {
   const getRequests = async () => {
     const store = useBotStore();
     return axios
-      .get<IRequest[]>(`${apiUrl}/requests/messages/user?bot_id=${store?.selectedBot?.id}`)
+      .get<IRequest[]>(`${apiUrl}/requests/messages/user?bot_id=${store?.selectedBot?.id}`, {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((res:AxiosResponse<IRequest[]>) => {
 
 
@@ -43,8 +48,9 @@ export const useRequestStore = defineStore("requests", () => {
 
     return axios.patch(`${apiUrl}/requests/resolve_bulk?bot_id=${store.selectedBot.id}`, {
       headers: {
-        'accept': 'application/json',
+        accept: 'application/json',
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       data: id
     })
@@ -63,8 +69,9 @@ export const useRequestStore = defineStore("requests", () => {
 
     return axios.delete(`${apiUrl}/trainingset/delete_multiple?bot_id=${store.selectedBot.id}`, {
       headers: {
-        'accept': 'application/json',
+        accept: 'application/json',
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       data: id
     })

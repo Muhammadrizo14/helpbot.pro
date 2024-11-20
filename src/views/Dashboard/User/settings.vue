@@ -82,7 +82,7 @@
 
 <script setup>
 import { reactive, ref } from "vue";
-import { helpers, required } from "@vuelidate/validators";
+import { email, helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import {useAuthStore} from "../../../stores/AuthStore";
 import {useToast} from "primevue/usetoast";
@@ -104,8 +104,10 @@ const customMessages = {
 
 const changeemail = ()=> {
   auth.changeEmail(data.old_email, data.new_email)
-    .then(()=> {
+    .then((res)=> { 
+      auth.addToken(res.data);
       toast.add({ severity: 'success', summary: 'Почта изменена успешно.', life: 3000 });
+      emailDialog.value = false;
     })
 }
 

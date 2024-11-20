@@ -49,7 +49,15 @@ export const useScheduleStore = defineStore("schedule", () => {
 
     let is_custom = false
 
-    await axios.get(`${apiUrl}/schedule/get_schedule?bot_id=${store.selectedBot.id}&year=${new Date().getFullYear()}&is_custom=${is_custom}&is_active=false`).then((res) => {
+    await axios.get(`${apiUrl}/schedule/get_schedule?bot_id=${store.selectedBot.id}&year=${new Date().getFullYear()}&is_custom=${is_custom}&is_active=false`,
+      {
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }
+      }
+    ).then((res) => {
       schedule.value.calendar = res.data.length > 0;
       if (res.data.length === 0) {
         is_custom = true;
@@ -63,8 +71,15 @@ export const useScheduleStore = defineStore("schedule", () => {
 
       const formattedDate = formatDate(date);
 
-      const promise = axios.get(`${apiUrl}/schedule/get_day?bot_id=${store.selectedBot.id}&date=${formattedDate}&is_custom=${is_custom}`)
-        .then((res) => {
+      const promise = axios.get(`${apiUrl}/schedule/get_day?bot_id=${store.selectedBot.id}&date=${formattedDate}&is_custom=${is_custom}`,
+        {
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        }
+      ).then((res) => {
           schedule.value.scheduleActive = true
           schedule.value.week.push({
             ...res.data,
@@ -179,14 +194,21 @@ export const useScheduleStore = defineStore("schedule", () => {
   const get_day = () => {
     const store = useBotStore()
 
-    return axios.get(`${apiUrl}/schedule/get_day?bot_id=${store.selectedBot.id}&date=${new Date().toLocaleDateString("en-CA")}`)
+    return axios.get(`${apiUrl}/schedule/get_day?bot_id=${store.selectedBot.id}&date=${new Date().toLocaleDateString("en-CA")}`, {
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }
+    })
   }
   const set_prod = () => {
     const store = useBotStore()
 
     return axios.post(`${apiUrl}/schedule/set_prod?bot_id=${store.selectedBot.id}`, {}, {
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       }
     })
   }
@@ -248,7 +270,8 @@ export const useScheduleStore = defineStore("schedule", () => {
       }
     }, {
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       }
     }).then(() => {
       get_schedule()
@@ -266,7 +289,8 @@ export const useScheduleStore = defineStore("schedule", () => {
       "day_type": "WORK"
     }, {
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       }
     })
   }
@@ -276,7 +300,8 @@ export const useScheduleStore = defineStore("schedule", () => {
 
     return axios.patch(`${apiUrl}/schedule/update_timezone?bot_id=${store.selectedBot.id}&timezone=${timezone}&is_custom=${(schedule.value.calendar !== true)}`, {}, {
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       }
     })
   }
@@ -299,6 +324,7 @@ export const useScheduleStore = defineStore("schedule", () => {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         }
       })
     }
@@ -311,7 +337,8 @@ export const useScheduleStore = defineStore("schedule", () => {
 
     return axios.delete(`${apiUrl}/schedule/delete_schedule?bot_id=${store.selectedBot.id}&is_custom=${custom}`, {
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       }
     }).then(() => {
       schedule.value.calendar = false
@@ -320,7 +347,8 @@ export const useScheduleStore = defineStore("schedule", () => {
         schedule.value.calendar = false
         axios.delete(`${apiUrl}/schedule/delete_schedule?bot_id=${store.selectedBot.id}&is_custom=${false}`, {
           headers: {
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           }
         })
       }

@@ -15,19 +15,21 @@ export const useChatStore = defineStore("chat", () => {
   const bot = useBotStore()
 
   const getMessages = async ()=> {
-    return axios.get(`${apiUrl}/bot/sandbox/chat/history?bot_id=${bot.selectedBot.id}`, {
+    return axios.get(`${apiUrl}/bot/${bot.selectedBot.id}/sandbox/chat/history`, {
       headers: {
-        'accept': 'application/json',
-        'Content-Type': 'application/json'
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       }
     })
   }
 
   const sendMessage = async (message: string)=> {
-    return axios.post(`${apiUrl}/bot/sandbox/chat?bot_id=${bot.selectedBot.id}&message=${message}`, {
+    return axios.post(`${apiUrl}/bot/${bot.selectedBot.id}/sandbox/chat?message=${message}`, {}, {
       headers: {
-        'accept': 'application/json',
-        'Content-Type': 'application/json'
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       }
     })
   }
