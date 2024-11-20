@@ -111,6 +111,7 @@ export const useBotStore = defineStore("bots", () => {
       .then(res => {
         selectedBot.value = res.data;
         localStorage.setItem("selectedBot", JSON.stringify(res.data));
+        getAllBots()
       })
       .catch(error => {
         console.error("Failed to edit bot:", error);

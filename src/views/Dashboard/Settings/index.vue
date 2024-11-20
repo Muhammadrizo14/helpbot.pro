@@ -405,6 +405,7 @@ const changeName = async () => {
   }
 
   store.editBot(newData)
+  toast.add({ severity: 'success', summary: 'Успех', detail: "Название бота изменено", life: 3000 });
 };
 
 const changeAccessRestricted = async (isAccessRestricted) => {
