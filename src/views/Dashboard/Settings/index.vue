@@ -345,7 +345,7 @@ const data = reactive({
 
 const customMessages = {
   required: "Это поле не может быть пустым",
-  numeric: "Это поле может содержать только символы.",
+  numeric: "Это поле может содержать только цифры.",
 };
 
 const rules = {

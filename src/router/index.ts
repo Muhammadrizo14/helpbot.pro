@@ -12,7 +12,7 @@ import UsersView from "../views/Dashboard/users.vue";
 import SettingsView from "../views/Dashboard/Settings/index.vue";
 import UserSettingsView from "../views/Dashboard/User/settings.vue";
 import changePasswordView from "../views/Dashboard/User/change-password.vue";
-import PaymentView from "../views/Dashboard/payment.vue";
+import PaymentView from "../views/Dashboard/User/payment.vue";
 import BotsView from "../views/Dashboard/bots.vue";
 import chat from "../views/Dashboard/chat.vue";
 import error404 from "../views/Dashboard/Errors/404.vue";

@@ -10,6 +10,9 @@ type IUser = {
   first_name: string;
   last_name: string;
   email: string;
+  subscription: string;
+  balance: number;
+  tokens: number;
 };
 
 export const useAuthStore = defineStore("auth", () => {

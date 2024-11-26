@@ -57,6 +57,7 @@ const submit = async () => {
           .catch(err => {
             router.push({path: '/create'})
           })
+        store.getUser();
       })
       .catch((err) => {
         console.log(err)
