@@ -542,7 +542,7 @@ const deleteSelectedAccessedUsers = async () => {
 
 store.getCurrentUserBotProfile().then((res) => {
   currentUserProfile.value = res.data
-  if (currentUserProfile.value.role === "superadmin") {
+  if (currentUserProfile.value.role === "SUPERADMIN") {
     items.push({ label: "Удаление" })
   }
 })
