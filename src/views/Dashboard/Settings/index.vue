@@ -364,7 +364,6 @@ const rules = {
 const v$ = useVuelidate(rules, data);
 
 const active = ref(0);
-const items = ref([{ label: "Название бота" }, { label: "Расписание" }, { label: "Ограничение доступа"}, { label: "Удаление" }]);
 
 const showPatternTooltip = ref(false)
 const isAccessRestricted = ref(store.selectedBot.chat_access_restricted)
@@ -373,6 +372,10 @@ const selectedAccessedUsers = ref([])
 
 const addUserModal = ref(false)
 const exportExcelModal =  ref(false)
+
+const currentUserProfile = reactive({})
+
+const items = reactive([{ label: "Название бота" }, { label: "Расписание" }, { label: "Ограничение доступа"}]);
 
 const deleteBot = () => {
   data.title = "";
@@ -536,6 +539,13 @@ const deleteSelectedAccessedUsers = async () => {
       getAccessedUsers()
     });
 }
+
+store.getCurrentUserBotProfile().then((res) => {
+  currentUserProfile.value = res.data
+  if (currentUserProfile.value.role === "superadmin") {
+    items.push({ label: "Удаление" })
+  }
+})
 </script>
 
 <style scoped lang="scss">

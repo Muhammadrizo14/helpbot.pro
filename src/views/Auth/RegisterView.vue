@@ -61,6 +61,9 @@ const submit = async () => {
       // toast.add({ severity: 'error', summary: 'Ошибка', detail: `${err.response.status === 409 ? 'Пользователь уже зарегистрирован': ''}`, life: 3000 });
     });
 };
+
+store.checkUserBotInvitation()
+
 </script>
 
 <template>

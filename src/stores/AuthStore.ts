@@ -18,6 +18,7 @@ type IUser = {
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<IUser>();
   const token = ref(localStorage.getItem("token") || null);
+  const bot_store = useBotStore();
 
   const login = async (username: string, password: string) => {
     return await axios.post(
@@ -68,8 +69,14 @@ export const useAuthStore = defineStore("auth", () => {
         },
       });
       user.value = res.data;
+      if (localStorage.getItem("user_bot_invitation_token")) {
+        applyUserBotInvitation()
+        localStorage.removeItem("user_bot_invitation_token")
+      }
     } catch (error) {
-      logout();
+      if (localStorage.getItem("token")) {
+        logout();
+      }
     }
     return user.value;
   };
@@ -114,6 +121,32 @@ export const useAuthStore = defineStore("auth", () => {
     return axios.post(`${apiUrl}/user/password/request-reset?email=${email}`);
   };
 
+  const checkUserBotInvitation = async () => {
+    let urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('user_bot_invitation_token')) {
+      localStorage.setItem("user_bot_invitation_token", urlParams.get('user_bot_invitation_token'));
+    }
+  }
+
+  const applyUserBotInvitation = async () => {
+    axios.post(`${apiUrl}/bot/user/add?user_bot_invitation_token=${localStorage.getItem("user_bot_invitation_token")}`, {}, {
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }).then((res) => {
+      bot_store.getAllBots()
+      .then(res => {
+        router.push({path: '/bots'})
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
   return {
     user,
     addToken,
@@ -125,5 +158,6 @@ export const useAuthStore = defineStore("auth", () => {
     changePassword,
     resetPassword,
     changeEmail,
+    checkUserBotInvitation,
   };
 });

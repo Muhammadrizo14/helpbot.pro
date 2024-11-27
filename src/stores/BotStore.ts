@@ -119,15 +119,53 @@ export const useBotStore = defineStore("bots", () => {
   }
 
   const getAllUsersOfBot = async () => {
-    return axios.get(`${apiUrl}/bot/${selectedBot.value.id}/users`)
+    return axios.get(`${apiUrl}/bot/${selectedBot.value.id}/users`, {
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }
+    })
   }
 
   const inviteUser = (email: string)=> {
-    return axios.post(`${apiUrl}/bot/${selectedBot.value.id}/user/invite?email=${email}`)
+    return axios.post(`${apiUrl}/bot/${selectedBot.value.id}/user/invite?email=${email}`, {}, {
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }
+    })
   }
 
-  const addUser = (id: string)=> {
-    return axios.post(`${apiUrl}/bot/${selectedBot.value.id}/user/add?user_id=${id}&role=employee`)
+  const updateUserProfile = (user_id: number, role: string) => {
+    return axios.post(`${apiUrl}/bot/${selectedBot.value.id}/user/${user_id}/change-role?role=${role.toLowerCase()}`, {}, {
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }
+    })
+  }
+
+  const deleteUserProfile = (user_id: number) => {
+    return axios.post(`${apiUrl}/bot/${selectedBot.value.id}/user/${user_id}/remove`, {}, {
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }
+    })
+  }
+
+  const getCurrentUserBotProfile = () => {
+    return axios.post(`${apiUrl}/bot/${selectedBot.value.id}/user`, {}, {
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }
+    })
   }
 
   return {
@@ -140,6 +178,8 @@ export const useBotStore = defineStore("bots", () => {
     editBot,
     getAllUsersOfBot,
     inviteUser,
-    addUser
+    updateUserProfile,
+    deleteUserProfile,
+    getCurrentUserBotProfile,
   };
 });

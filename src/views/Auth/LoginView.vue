@@ -48,6 +48,7 @@ const submit = async () => {
       .login(data.email, data.password)
       .then((res) => {
         store.addToken(res.data);
+        store.getUser();
         botStore.getAllBots()
           .then(res => {
             if (res.length) {
@@ -57,7 +58,6 @@ const submit = async () => {
           .catch(err => {
             router.push({path: '/create'})
           })
-        store.getUser();
       })
       .catch((err) => {
         console.log(err)
@@ -82,6 +82,8 @@ const reset = async () => {
         }
       })
 };
+
+store.checkUserBotInvitation()
 
 </script>
 

@@ -4,7 +4,7 @@
       class="users-header flex justify-content-between align-items-center pb-3"
     >
       <h1>Пользователи</h1>
-      <Button @click="inviteUser = true">Пригласить</Button>
+      <Button @click="inviteUser = true" v-if="currentUserProfile.value?.role !== 'EMPLOYEE'">Пригласить</Button>
     </div>
     <DataTable :value="users" :tableClass="'users-data'" class="users-table">
       <template #empty>
@@ -20,33 +20,37 @@
           <div v-if="slotProps.data.role === 'ADMIN'">
             <p>Администратор</p>
           </div>
+          <div v-if="slotProps.data.role === 'EMPLOYEE'">
+            <p>Модератор</p>
+          </div>
         </template>
       </Column>
       <Column field="status" header="Статус"></Column>
       <Column field="status">
         <template #body="slotProps">
           <Button
-            v-if="slotProps.data.status === 'Ожидает'"
+            v-if="slotProps.data.status === 'PENDING'"
             outlined
             class="px-3 py-2"
             >Отозвать приглашение
           </Button>
           <div
             v-if="
-              slotProps.data.role === 'Администратор' &&
-              slotProps.data.status !== 'Ожидает'
+              slotProps.data.role !== 'SUPERADMIN' &&
+              slotProps.data.status !== 'PENDING' &&
+              currentUserProfile.value?.role !== 'EMPLOYEE'
             "
             class="flex align-items-center gap-3"
           >
             <Button
               icon="pi pi-pen-to-square"
-              @click="updateUser = true"
+              @click="openUpdateUserProfileModal(slotProps.data)"
             ></Button>
             <Button
               icon="pi pi-trash"
               outlined
               severity="danger"
-              @click="deleteDialog = true"
+              @click="openDeleteUserProfileModal(slotProps.data)"
             ></Button>
           </div>
         </template>
@@ -74,9 +78,9 @@
         @click="inviteUser = false"
       />
 
-      <form @submit.prevent="sendInventation" class="flex flex-column gap-4">
+      <form @submit.prevent="sendInvitation" class="flex flex-column gap-4">
         <div class="flex flex-column gap-2">
-          <label for="email">Email</label>
+          <label for="email">Почта</label>
           <InputText
             v-model="data.email"
             :invalid="v$.email.$errors.length > 0"
@@ -92,30 +96,6 @@
             >{{ error.$message }}</label
           >
         </div>
-        <div class="flex flex-column gap-2">
-          <label for="identity">Имя и Фамилия</label>
-          <InputText
-            v-model="data.identity"
-            :invalid="v$.identity.$errors.length > 0"
-            id="identity"
-            placeholder="Пётр Петров"
-            aria-describedby="username-help"
-          />
-          <label
-            for="login__form-email"
-            v-for="error in v$.identity.$errors"
-            :key="error.$uid"
-            style="color: var(--red)"
-            >{{ error.$message }}</label
-          >
-        </div>
-
-        <Dropdown
-          class="default-select"
-          v-model="selectedRole"
-          :options="roles"
-          optionLabel="title"
-        />
 
         <Button class="w-fit py-2 border-round-lg mt-3 mx-auto" type="submit"
           >Отправить приглашение
@@ -145,45 +125,9 @@
       />
 
       <form
-        @submit.prevent="sendInventation"
+        @submit.prevent="updateUserProfile"
         class="flex flex-column gap-4 w-30rem"
       >
-        <div class="flex flex-column gap-2">
-          <label for="email">Email</label>
-          <InputText
-            v-model="data.email"
-            :invalid="v$.email.$errors.length > 0"
-            id="username"
-            placeholder="example@gmail.com"
-            aria-describedby="username-help"
-          />
-          <label
-            for="login__form-email"
-            v-for="error in v$.email.$errors"
-            :key="error.$uid"
-            style="color: var(--red)"
-            >{{ error.$message }}</label
-          >
-        </div>
-        <div class="flex flex-column gap-2">
-          <label for="identity">Имя и Фамилия</label>
-          <InputText
-            v-model="data.identity"
-            :invalid="v$.identity.$errors.length > 0"
-            id="identity"
-            placeholder="Пётр Петров"
-            aria-describedby="username-help"
-          />
-          <label
-            for="login__form-email"
-            v-for="error in v$.identity.$errors"
-            :key="error.$uid"
-            style="color: var(--red)"
-          >
-            {{ error.$message }}
-          </label>
-        </div>
-
         <Dropdown
           class="default-select"
           v-model="selectedRole"
@@ -218,7 +162,7 @@
       />
 
       <form
-        @submit.prevent="deleteDialog = false"
+        @submit.prevent="deleteUserProfile"
         class="flex justify-content-center gap-4 w-20rem"
       >
         <Button type="submit"> Да</Button>
@@ -236,8 +180,10 @@ import { email, helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import { useToast } from "primevue/usetoast";
 import { useBotStore } from "../../stores/BotStore";
+import { useAuthStore } from "@/stores/AuthStore";
 
 const store = useBotStore();
+const auth = useAuthStore();
 
 const toast = useToast();
 
@@ -245,18 +191,18 @@ const deleteDialog = ref(false);
 const updateUser = ref(false);
 const inviteUser = ref(false);
 
+const currentUserProfile = reactive({})
 const users = ref([]);
+const selectedUser = ref()
 
 const roles = ref([
-  { title: "Администратор", code: "admin" },
-  { title: "Пользователь", code: "owner" },
+  { title: "Администратор", code: "ADMIN" },
+  { title: "Модератор", code: "EMPLOYEE" },
 ]);
-const selectedRole = ref(roles.value[0]);
+const selectedRole = ref();
 
 const data = reactive({
   email: "",
-  identity: "",
-  role: "",
 });
 
 const customMessages = {
@@ -269,12 +215,11 @@ const rules = {
     required: helpers.withMessage(customMessages.required, required),
     email: helpers.withMessage(customMessages.email, email),
   },
-  identity: {
-    required: helpers.withMessage(customMessages.required, required),
-  },
 };
 
-const sendInventation = async () => {
+const v$ = useVuelidate(rules, data);
+
+const sendInvitation = async () => {
   const result = await v$.value.$validate();
   if (!result) {
     return;
@@ -305,9 +250,81 @@ const sendInventation = async () => {
     });
 };
 
-const v$ = useVuelidate(rules, data);
+const openUpdateUserProfileModal = async (data) => {
+  selectedUser.value = data
+  updateUser.value = true;
+  if (data.role === "EMPLOYEE") 
+    selectedRole.value = { code: data.role, title: "Модератор"}
+  else if (data.role === "ADMIN") 
+    selectedRole.value = { code: data.role, title: "Администратор"}
+}
 
+const updateUserProfile = async () => {
+  store
+    .updateUserProfile(selectedUser.value.id, selectedRole.value.code)
+    .then((res) => {
+      toast.add({
+        severity: "success",
+        summary: "Успешно",
+        detail:
+            "Роль изменена",
+        life: 3000,
+      });
+      selectedUser.value = null
+      updateUser.value = false
+      store.getAllUsersOfBot().then((res) => {
+        users.value = res.data;
+      });
+    })
+    .catch(() => {
+      toast.add({
+        styleClass: "users-error",
+        severity: "error",
+        summary: "Ошибка",
+        detail:
+          "Ошибка при изменении роли.",
+        life: 3000,
+      });
+    });
+}
 
+const openDeleteUserProfileModal = async (data) => {
+  selectedUser.value = data
+  deleteDialog.value = true;
+}
+
+const deleteUserProfile = async () => {
+  store
+    .deleteUserProfile(selectedUser.value.id)
+    .then((res) => {
+      toast.add({
+        severity: "success",
+        summary: "Успешно",
+        detail:
+            "Пользователь удалён",
+        life: 3000,
+      });
+      selectedUser.value = null
+      deleteDialog.value = false
+      store.getAllUsersOfBot().then((res) => {
+        users.value = res.data;
+      });
+    })
+    .catch(() => {
+      toast.add({
+        styleClass: "users-error",
+        severity: "error",
+        summary: "Ошибка",
+        detail:
+          "Ошибка при удалении пользователя.",
+        life: 3000,
+      });
+    });
+}
+
+store.getCurrentUserBotProfile().then((res) => {
+  currentUserProfile.value = res.data
+})
 
 store.getAllUsersOfBot().then((res) => {
   users.value = res.data;
