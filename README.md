@@ -1,4 +1,4 @@
-# ![](./src/assets/images/Logo.png)
+<img src="./src/assets/images/Logo.png" width="150" />
 
 ## Stack
 
