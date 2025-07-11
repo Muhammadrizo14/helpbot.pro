@@ -13,7 +13,15 @@ type IQuestion = {
 };
 
 export const useQuestionStore = defineStore("question", () => {
-  const questions = ref<IQuestion[]>([]);
+  const questions = ref<IQuestion[]>([
+    {
+      id: 1,
+      main_question: 'Как работать с вопросами',
+      answer: 'Через бота',
+      action: "call_operator",
+      similar_questions: ['Как ответить на вопросы'],
+    }
+  ]);
 
   const getAllQuestions = async () => {
     const store = useBotStore();

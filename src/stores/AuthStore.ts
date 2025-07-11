@@ -13,7 +13,12 @@ type IUser = {
 };
 
 export const useAuthStore = defineStore("auth", () => {
-  const user = ref<IUser>();
+  const user = ref<IUser>({
+    id: 1,
+    first_name: 'Rizos',
+    last_name: 'Rizos',
+    email: 'example@example.com',
+  });
   const token = ref(localStorage.getItem("token") || null);
 
   const login = async (username: string, password: string) => {

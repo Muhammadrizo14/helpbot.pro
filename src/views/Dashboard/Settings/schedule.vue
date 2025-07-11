@@ -164,34 +164,33 @@ const changeSchedule = async () => {
 
   try {
     if (changedDays.length > 0) {
-      await store.update_day_week(changedDays);  // Make sure this returns a promise
+      await store.update_day_week(changedDays);
     }
 
     if (data.schedule !== store.schedule.scheduleActive && data.schedule) {
       store.schedule.scheduleActive = true;
-      await store.set_custom();  // Make sure this is asynchronous if necessary
+      await store.set_custom();
     }
 
     if (data.calendar !== store.schedule.calendar && data.calendar === true) {
-      await store.set_prod();  // Make sure this is asynchronous if necessary
+      await store.set_prod();
     }
 
     if (data.calendar !== store.schedule.calendar) {
-      store.turnoff(false);  // Assuming this is synchronous, otherwise add await
+      store.turnoff(false);
     }
 
     if (data.defaultWorkTimeFinish !== store.schedule.defaultWorkTimeFinish ||
         data.defaultWorkTimeStart !== store.schedule.defaultWorkTimeStart) {
-      await store.update_time(data.defaultWorkTimeStart, data.defaultWorkTimeFinish);  // Make sure this is a promise
+      await store.update_time(data.defaultWorkTimeStart, data.defaultWorkTimeFinish)
     }
 
     if (data.workTimeZone !== store.schedule.defaultUTC) {
-      await store.update_timezone(getTimezoneFromOffset(data.workTimeZone));  // Ensure this is async
+      await store.update_timezone(getTimezoneFromOffset(data.workTimeZone));
     }
   } catch (error) {
     toast.add({severity: 'error', summary: 'Ошибка при выполнение операции попробуйте позже.', life: 3000});
   } finally {
-    toast.add({severity: 'success', summary: 'Успешно изменили расписание', life: 3000});
     loading.value = false;
   }
 };

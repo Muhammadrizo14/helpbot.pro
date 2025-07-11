@@ -22,7 +22,22 @@ export interface IBot {
 }
 
 export const useBotStore = defineStore("bots", () => {
-  const bots = ref<IBot[]>([]);
+  const bots = ref<IBot[]>([
+    {
+      id: 1,
+      name: 'Ridy',
+      is_active: true,
+      welcome_message: 'Hola amigo',
+      operator_switch_message: '',
+      feedback_message: '',
+      llm_type: '',
+      system_prompt: '',
+      chat_access_restricted: false,
+      chat_access_invite_message: '',
+      chat_access_delete_message: '',
+      chat_access_refuse_message: ''
+    }
+  ]);
   const selectedBot = ref<IBot>(JSON.parse(localStorage.getItem("selectedBot")))
 
 

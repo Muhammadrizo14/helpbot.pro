@@ -49,17 +49,8 @@ const submit = async () => {
     return;
   }
 
-  // when form is valid
-  store
-    .register(data.email, data.password, data.name, data.surname)
-    .then((res) => {
-      router.push({ path: "/auth" });
-    })
-    .catch((err) => {
-      console.log(err);
+  router.push({ path: "/auth" });
 
-      // toast.add({ severity: 'error', summary: 'Ошибка', detail: `${err.response.status === 409 ? 'Пользователь уже зарегистрирован': ''}`, life: 3000 });
-    });
 };
 </script>
 

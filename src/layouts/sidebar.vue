@@ -1,15 +1,10 @@
 <template>
   <div class="flex">
-    <Box :class="`sidebar ${expandedSidebar ? 'expanded' : 'non-expanded'}`">
+    <Box :class="`sidebar `">
       <div class="flex align-items-center justify-content-between">
         <router-link to="/"
           ><img class="sidebar__logo" src="../assets/images/Logo.png" alt=""
         /></router-link>
-        <div class="burgermenu" @click="expandedSidebar = false">
-          <div class="menu"></div>
-          <div class="menu"></div>
-          <div class="menu"></div>
-        </div>
       </div>
 
       <Dropdown

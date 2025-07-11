@@ -44,29 +44,10 @@ const submit = async () => {
     return;
   }
 
-  store
-      .login(data.email, data.password)
-      .then((res) => {
-        store.addToken(res.data);
-        botStore.getAllBots()
-          .then(res => {
-            if (res.length) {
-              router.push({path: '/'})
-            }
-          })
-          .catch(err => {
-            router.push({path: '/create'})
-          })
-      })
-      .catch((err) => {
-        console.log(err)
-        toast.add({
-          severity: 'error',
-          summary: 'Ошибка',
-          detail: `${err.response.status === 401 && 'Пользователь не найден'}`,
-          life: 3000
-        });
-      });
+
+
+  router.push({path: '/'})
+
 };
 
 const reset = async () => {
